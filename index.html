@@ -243,7 +243,8 @@
         </div>
         <div class="input-group">
             <label for="qtdDias">Quantidade de Dias</label>
-            <input type="number" id="qtdDias" value="60" oninput="calcularPrazo()">
+            <!-- AQUI FOI ALTERADO PARA 70 DIAS -->
+            <input type="number" id="qtdDias" value="70" oninput="calcularPrazo()">
         </div>
         <div class="input-group">
             <label>Data Final (Vencimento)</label>
@@ -298,7 +299,9 @@
         const dia = String(hoje.getDate()).padStart(2, '0');
         
         document.getElementById('dataInicial').value = `${ano}-${mes}-${dia}`;
-        document.getElementById('qtdDias').value = '60'; // Padrão 60 dias
+        
+        // AQUI FOI ALTERADO PARA 70 DIAS
+        document.getElementById('qtdDias').value = '70'; 
         calcularPrazo();
     }
 
