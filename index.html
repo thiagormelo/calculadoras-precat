@@ -246,7 +246,6 @@
     <div class="global-inputs">
         <div class="input-group">
             <label for="valorBase">Valor Base do Cálculo (R$)</label>
-            <!-- Alterado para inputmode numeric para ativar formatação de máscara -->
             <input type="text" inputmode="numeric" id="valorBase" placeholder="0,00" oninput="mascaraMoeda(this); calcularAlvaras()" style="font-size: 1.1em; padding: 12px;">
         </div>
         <div class="input-group">
@@ -261,8 +260,8 @@
     
     <!-- Barra de Status e Trava de Segurança -->
     <div class="status-bar" id="barraStatus">
-        <div>Total Original Rateado: <span id="spanTotalRateado">R$ 0,00</span></div>
-        <div class="erro-msg">⚠️ ERRO: O valor rateado ultrapassa a Base de Cálculo!</div>
+        <div>Total Final dos Alvarás: <span id="spanTotalFinalAlvaras">R$ 0,00</span></div>
+        <div class="erro-msg">⚠️ ERRO: A soma dos alvarás ultrapassa o Saldo da Conta Judicial!</div>
     </div>
 
     <button class="btn btn-add" onclick="adicionarAlvara('', false)">+ Adicionar outro Alvará</button>
@@ -330,30 +329,25 @@
     /* ========================================================
        FUNÇÕES DE MÁSCARA E CONVERSÃO DE MOEDA
        ======================================================== */
-    // Aplica a máscara enquanto o usuário digita (ex: 1000 = 10,00)
     function mascaraMoeda(campo) {
         let valor = campo.value;
-        valor = valor.replace(/\D/g, ""); // Remove tudo o que não é número
+        valor = valor.replace(/\D/g, ""); 
         if (valor === "") {
             campo.value = "";
             return;
         }
-        // Converte para decimal
         valor = (parseInt(valor, 10) / 100).toFixed(2) + "";
-        // Adiciona separador de milhar e decimal
         valor = valor.replace(".", ",");
         valor = valor.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
         campo.value = valor;
     }
 
-    // Pega o texto formatado (ex: 1.234,56) e transforma em número pro Javascript calcular (1234.56)
     function extrairNumero(valorString) {
         if (!valorString) return 0;
         let str = valorString.replace(/\./g, "").replace(",", ".");
         return parseFloat(str) || 0;
     }
 
-    // Transforma o número do Javascript para R$ bonito na tela
     function formatarMoedaVisual(valor) {
         return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     }
@@ -438,18 +432,28 @@
         const linhas = document.querySelectorAll('.alvara-row');
         const barraStatus = document.getElementById('barraStatus');
         
-        let somaValoresOriginais = 0;
+        // 1º Passo: Calcula os valores provisórios de cada linha para somar o montante final
+        let valoresCalculados = [];
+        let somaTotalFinalAlvaras = 0;
 
-        // Verifica a soma antes de calcular os finais
         linhas.forEach(linha => {
             const valOriginal = extrairNumero(linha.querySelector('.val-original').value);
-            somaValoresOriginais += valOriginal;
+            let valorAtualizado = 0;
+            let proporcao = 0;
+
+            if (valorBase > 0 && valOriginal > 0) {
+                proporcao = valOriginal / valorBase;
+                valorAtualizado = saldoConta * proporcao;
+            }
+
+            somaTotalFinalAlvaras += valorAtualizado;
+            valoresCalculados.push({ linha, valOriginal, proporcao, valorAtualizado });
         });
 
-        document.getElementById('spanTotalRateado').innerText = formatarMoedaVisual(somaValoresOriginais);
+        document.getElementById('spanTotalFinalAlvaras').innerText = formatarMoedaVisual(somaTotalFinalAlvaras);
 
-        // TRAVA DE SEGURANÇA: Se a soma passar do valor base
-        const erroTravado = (somaValoresOriginais > valorBase) && (valorBase > 0);
+        // TRAVA DE SEGURANÇA: Se a soma dos valores finais dos alvarás ultrapassar o saldo atual da conta
+        const erroTravado = (somaTotalFinalAlvaras > saldoConta) && (saldoConta > 0);
 
         if (erroTravado) {
             barraStatus.classList.add('erro');
@@ -457,30 +461,27 @@
             barraStatus.classList.remove('erro');
         }
 
-        linhas.forEach(linha => {
-            const valOriginal = extrairNumero(linha.querySelector('.val-original').value);
-            const propBox = linha.querySelector('.prop-resultado');
-            const atualizadoBox = linha.querySelector('.val-atualizado');
+        // 2º Passo: Renderiza os valores ou aplica o bloqueio de erro se passar do saldo atual
+        valoresCalculados.forEach(item => {
+            const propBox = item.linha.querySelector('.prop-resultado');
+            const atualizadoBox = item.linha.querySelector('.val-atualizado');
 
-            // Se estiver em modo de erro (ultrapassou), os alvarás param de ser gerados e ficam zerados
             if (erroTravado) {
-                linha.classList.add('erro-linha');
+                item.linha.classList.add('erro-linha');
                 propBox.innerText = 'ERRO';
                 atualizadoBox.innerText = 'TRAVADO';
                 atualizadoBox.style.color = '#c0392b';
                 atualizadoBox.style.borderColor = '#e74c3c';
                 atualizadoBox.style.backgroundColor = '#fadbd8';
             } else {
-                linha.classList.remove('erro-linha');
+                item.linha.classList.remove('erro-linha');
                 atualizadoBox.style.color = '#1b5e20';
                 atualizadoBox.style.borderColor = '#4caf50';
                 atualizadoBox.style.backgroundColor = '#e8f5e9';
 
-                if (valorBase > 0 && valOriginal > 0) {
-                    const proporcao = valOriginal / valorBase;
-                    const valorAtualizado = saldoConta * proporcao;
-                    propBox.innerText = (proporcao * 100).toFixed(2).replace('.', ',') + '%';
-                    atualizadoBox.innerText = formatarMoedaVisual(valorAtualizado);
+                if (valorBase > 0 && item.valOriginal > 0) {
+                    propBox.innerText = (item.proporcao * 100).toFixed(2).replace('.', ',') + '%';
+                    atualizadoBox.innerText = formatarMoedaVisual(item.valorAtualizado);
                 } else {
                     propBox.innerText = '0,00%';
                     atualizadoBox.innerText = 'R$ 0,00';
@@ -496,7 +497,6 @@
         const valorTotalParte = extrairNumero(document.getElementById('valorAtualizadoParte').value);
         let percentual = parseFloat(document.getElementById('percentualDestaque').value) || 0;
 
-        // Trava de segurança para não ultrapassar 100% de desconto
         if(percentual > 100) {
             percentual = 100;
             document.getElementById('percentualDestaque').value = 100;
