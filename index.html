@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadoras | Alvarás e Prazos</title>
+    <title>Calculadoras do Gabinete (Alvarás e Prazos)</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -13,7 +13,6 @@
             padding: 20px;
         }
         
-        /* Botão de Limpar Cálculos no topo */
         .top-actions {
             max-width: 850px;
             margin: 0 auto 15px auto;
@@ -55,6 +54,8 @@
             margin-bottom: 30px;
             font-size: 0.95em;
         }
+        
+        /* Módulo 1 - Inputs Globais */
         .global-inputs {
             display: flex;
             gap: 20px;
@@ -88,18 +89,25 @@
             border-color: #2c3e50;
         }
         
-        /* Módulo 1 - Estilos */
+        /* Módulo 1 - Linhas dos Alvarás */
         .alvara-row {
             display: flex;
             gap: 15px;
             align-items: center;
             background: #fff;
-            padding: 15px;
+            padding: 20px 15px;
             border: 1px solid #e9ecef;
-            border-left: 4px solid #3498db;
-            border-radius: 4px;
-            margin-bottom: 12px;
+            border-left: 5px solid #3498db;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            transition: 0.3s;
         }
+        .alvara-row.erro-linha {
+            border-left-color: #e74c3c;
+            background-color: #fdf2f1;
+        }
+        
         .btn {
             padding: 10px 15px;
             border: none;
@@ -108,37 +116,85 @@
             font-weight: bold;
             color: #fff;
         }
-        .btn-add { background-color: #34495e; margin-bottom: 10px; margin-top: 10px;}
+        .btn-add { background-color: #34495e; margin-bottom: 10px; margin-top: 10px; font-size: 0.95em; padding: 12px 20px;}
         .btn-add:hover { background-color: #2c3e50; }
-        .btn-remove { background-color: #e74c3c; padding: 10px; height: 40px; width: 40px; margin-top: 22px; }
+        .btn-remove { background-color: #e74c3c; padding: 10px; height: 44px; width: 44px; margin-top: 22px; font-size: 1.1em;}
         .btn-remove:hover { background-color: #c0392b; }
-        .placeholder-btn { width: 40px; }
+        .placeholder-btn { width: 44px; }
 
-        .result-box {
-            background-color: #f1f8e9;
-            padding: 10px;
+        .result-box-prop {
+            background-color: #f1f3f5;
+            color: #868e96;
+            border: 1px dashed #ced4da;
+            padding: 12px;
             border-radius: 4px;
-            font-weight: bold;
-            color: #27ae60;
+            font-weight: 600;
             text-align: center;
-            border: 1px solid #c5e1a5;
             display: flex;
             align-items: center;
             justify-content: center;
             height: 20px;
-        }
-        .result-box-prop {
-            background-color: #f8f9fa;
-            color: #6c757d;
-            border: 1px solid #dee2e6;
+            font-size: 0.95em;
         }
         
-        /* Módulo 2 - Estilos */
+        .result-box-destaque {
+            background-color: #e8f5e9; 
+            color: #1b5e20; 
+            font-size: 1.35em; 
+            padding: 10px 15px;
+            border-radius: 6px;
+            border: 2px solid #4caf50; 
+            font-weight: 900; 
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 24px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        /* Trava de Segurança - Barra de Status */
+        .status-bar {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .status-bar.erro {
+            background-color: #e74c3c;
+            color: white;
+            border-color: #c0392b;
+        }
+        .erro-msg {
+            display: none;
+            font-size: 0.9em;
+            text-transform: uppercase;
+        }
+        .status-bar.erro .erro-msg {
+            display: inline;
+        }
+
+        /* Módulo 2 e 3 */
         .box-prazo {
             background-color: #e3f2fd; 
             border-color: #90caf9;
             color: #1565c0;
-            font-size: 1.1em;
+            font-size: 1.2em;
+            padding: 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 24px;
+            border: 1px solid #90caf9;
         }
         .info-prazo {
             font-size: 0.85em; 
@@ -147,7 +203,6 @@
             margin-top: -10px;
         }
 
-        /* Módulo 3 - Destaque de Honorários */
         .destaque-resultados {
             display: flex;
             gap: 20px;
@@ -159,6 +214,7 @@
             border-radius: 6px;
             color: #fff;
             text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
         .box-parte { background-color: #2c3e50; }
         .box-advogado { background-color: #00796b; }
@@ -190,16 +246,25 @@
     <div class="global-inputs">
         <div class="input-group">
             <label for="valorBase">Valor Base do Cálculo (R$)</label>
-            <input type="number" id="valorBase" placeholder="Ex: 2810.33" step="0.01" oninput="calcularAlvaras()">
+            <!-- Alterado para inputmode numeric para ativar formatação de máscara -->
+            <input type="text" inputmode="numeric" id="valorBase" placeholder="0,00" oninput="mascaraMoeda(this); calcularAlvaras()" style="font-size: 1.1em; padding: 12px;">
         </div>
         <div class="input-group">
             <label for="saldoConta">Saldo Atual na Conta Judicial (R$)</label>
-            <input type="number" id="saldoConta" placeholder="Ex: 2881.97" step="0.01" oninput="calcularAlvaras()">
+            <input type="text" inputmode="numeric" id="saldoConta" placeholder="0,00" oninput="mascaraMoeda(this); calcularAlvaras()" style="font-size: 1.1em; padding: 12px;">
         </div>
     </div>
 
-    <h2 style="font-size: 1.1em; color: #2c3e50; border-bottom: 1px solid #eee; padding-bottom: 5px;">Alvarás a Expedir</h2>
+    <h2 style="font-size: 1.1em; color: #2c3e50; border-bottom: 2px solid #e9ecef; padding-bottom: 8px; margin-bottom: 20px; text-transform: uppercase;">Valores a Expedir</h2>
+    
     <div id="alvaras-container"></div>
+    
+    <!-- Barra de Status e Trava de Segurança -->
+    <div class="status-bar" id="barraStatus">
+        <div>Total Original Rateado: <span id="spanTotalRateado">R$ 0,00</span></div>
+        <div class="erro-msg">⚠️ ERRO: O valor rateado ultrapassa a Base de Cálculo!</div>
+    </div>
+
     <button class="btn btn-add" onclick="adicionarAlvara('', false)">+ Adicionar outro Alvará</button>
 </div>
 
@@ -211,11 +276,11 @@
     <div class="global-inputs">
         <div class="input-group">
             <label for="valorAtualizadoParte">Valor Atualizado da Parte (R$)</label>
-            <input type="number" id="valorAtualizadoParte" placeholder="Ex: 5000.00" step="0.01" oninput="calcularDestaque()">
+            <input type="text" inputmode="numeric" id="valorAtualizadoParte" placeholder="0,00" oninput="mascaraMoeda(this); calcularDestaque()">
         </div>
         <div class="input-group">
             <label for="percentualDestaque">Percentual a Destacar (%)</label>
-            <input type="number" id="percentualDestaque" placeholder="Ex: 30" step="0.01" oninput="calcularDestaque()">
+            <input type="number" id="percentualDestaque" placeholder="Ex: 30" step="0.01" max="100" oninput="calcularDestaque()">
         </div>
     </div>
 
@@ -243,12 +308,11 @@
         </div>
         <div class="input-group">
             <label for="qtdDias">Quantidade de Dias</label>
-            <!-- AQUI FOI ALTERADO PARA 70 DIAS -->
             <input type="number" id="qtdDias" value="70" oninput="calcularPrazo()">
         </div>
         <div class="input-group">
             <label>Data Final (Vencimento)</label>
-            <div class="result-box box-prazo" id="dataFinal">-</div>
+            <div class="box-prazo" id="dataFinal">-</div>
         </div>
     </div>
     <p class="info-prazo">
@@ -264,49 +328,70 @@
     };
 
     /* ========================================================
+       FUNÇÕES DE MÁSCARA E CONVERSÃO DE MOEDA
+       ======================================================== */
+    // Aplica a máscara enquanto o usuário digita (ex: 1000 = 10,00)
+    function mascaraMoeda(campo) {
+        let valor = campo.value;
+        valor = valor.replace(/\D/g, ""); // Remove tudo o que não é número
+        if (valor === "") {
+            campo.value = "";
+            return;
+        }
+        // Converte para decimal
+        valor = (parseInt(valor, 10) / 100).toFixed(2) + "";
+        // Adiciona separador de milhar e decimal
+        valor = valor.replace(".", ",");
+        valor = valor.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+        campo.value = valor;
+    }
+
+    // Pega o texto formatado (ex: 1.234,56) e transforma em número pro Javascript calcular (1234.56)
+    function extrairNumero(valorString) {
+        if (!valorString) return 0;
+        let str = valorString.replace(/\./g, "").replace(",", ".");
+        return parseFloat(str) || 0;
+    }
+
+    // Transforma o número do Javascript para R$ bonito na tela
+    function formatarMoedaVisual(valor) {
+        return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+
+    /* ========================================================
        FUNÇÃO PARA LIMPAR TODOS OS CÁLCULOS
        ======================================================== */
     function limparTudo() {
-        // Limpa Módulo 1 (Valores Globais)
         document.getElementById('valorBase').value = '';
         document.getElementById('saldoConta').value = '';
         
-        // Limpa Módulo 3 (Destaque)
         document.getElementById('valorAtualizadoParte').value = '';
         document.getElementById('percentualDestaque').value = '';
-        calcularDestaque(); // Zera os displays
+        calcularDestaque(); 
         
-        // Limpa o Container de Alvarás (remove todos os extras criados)
         document.getElementById('alvaras-container').innerHTML = '';
         contadorIds = 0;
         
-        // Recria apenas os padrões e reseta datas do prazo
         iniciarValoresPadrao();
-        
-        // Dá um "scroll" suave de volta pro topo da página
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function iniciarValoresPadrao() {
-        // Cria as duas linhas fixas novamente
         adicionarAlvara('Crédito da Parte', true);
         adicionarAlvara('Honorários Sucumbenciais', true);
         
-        // Reseta data para hoje
         const hoje = new Date();
         const ano = hoje.getFullYear();
         const mes = String(hoje.getMonth() + 1).padStart(2, '0');
         const dia = String(hoje.getDate()).padStart(2, '0');
         
         document.getElementById('dataInicial').value = `${ano}-${mes}-${dia}`;
-        
-        // AQUI FOI ALTERADO PARA 70 DIAS
         document.getElementById('qtdDias').value = '70'; 
         calcularPrazo();
     }
 
     /* ========================================================
-       LÓGICA DO MÓDULO 1: ALVARÁS (RATEIO PROPORCIONAL)
+       LÓGICA DO MÓDULO 1: ALVARÁS
        ======================================================== */
     function adicionarAlvara(descricaoPadrao = '', fixo = false) {
         contadorIds++;
@@ -322,19 +407,19 @@
         div.innerHTML = `
             <div class="input-group" style="flex: 2;">
                 <label>Referência / Beneficiário</label>
-                <input type="text" placeholder="Ex: Honorários Periciais" value="${descricaoPadrao}" ${fixo ? 'readonly style="background-color: #e9ecef; color: #495057;"' : ''}>
+                <input type="text" placeholder="Ex: Honorários Periciais" value="${descricaoPadrao}" ${fixo ? 'readonly style="background-color: #f1f3f5; color: #495057;"' : ''}>
             </div>
             <div class="input-group" style="flex: 1.2;">
                 <label>V. Original (R$)</label>
-                <input type="number" class="val-original" step="0.01" placeholder="0.00" oninput="calcularAlvaras()">
+                <input type="text" inputmode="numeric" class="val-original" placeholder="0,00" oninput="mascaraMoeda(this); calcularAlvaras()">
             </div>
             <div class="input-group" style="flex: 0.8;">
-                <label>Proporção</label>
-                <div class="result-box result-box-prop prop-resultado">0,00%</div>
+                <label style="color:#868e96;">Proporção</label>
+                <div class="result-box-prop prop-resultado">0,00%</div>
             </div>
-            <div class="input-group" style="flex: 1.5;">
-                <label>Valor do Alvará (R$)</label>
-                <div class="result-box val-atualizado">R$ 0,00</div>
+            <div class="input-group" style="flex: 1.8;">
+                <label style="color:#1b5e20; font-size: 0.95em;">Valor Final do Alvará</label>
+                <div class="result-box-destaque val-atualizado">R$ 0,00</div>
             </div>
             ${botaoRemover}
         `;
@@ -347,28 +432,59 @@
         calcularAlvaras();
     }
 
-    function formatarMoeda(valor) {
-        return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-    }
-
     function calcularAlvaras() {
-        const valorBase = parseFloat(document.getElementById('valorBase').value) || 0;
-        const saldoConta = parseFloat(document.getElementById('saldoConta').value) || 0;
+        const valorBase = extrairNumero(document.getElementById('valorBase').value);
+        const saldoConta = extrairNumero(document.getElementById('saldoConta').value);
         const linhas = document.querySelectorAll('.alvara-row');
+        const barraStatus = document.getElementById('barraStatus');
         
+        let somaValoresOriginais = 0;
+
+        // Verifica a soma antes de calcular os finais
         linhas.forEach(linha => {
-            const valOriginal = parseFloat(linha.querySelector('.val-original').value) || 0;
+            const valOriginal = extrairNumero(linha.querySelector('.val-original').value);
+            somaValoresOriginais += valOriginal;
+        });
+
+        document.getElementById('spanTotalRateado').innerText = formatarMoedaVisual(somaValoresOriginais);
+
+        // TRAVA DE SEGURANÇA: Se a soma passar do valor base
+        const erroTravado = (somaValoresOriginais > valorBase) && (valorBase > 0);
+
+        if (erroTravado) {
+            barraStatus.classList.add('erro');
+        } else {
+            barraStatus.classList.remove('erro');
+        }
+
+        linhas.forEach(linha => {
+            const valOriginal = extrairNumero(linha.querySelector('.val-original').value);
             const propBox = linha.querySelector('.prop-resultado');
             const atualizadoBox = linha.querySelector('.val-atualizado');
 
-            if (valorBase > 0 && valOriginal > 0) {
-                const proporcao = valOriginal / valorBase;
-                const valorAtualizado = saldoConta * proporcao;
-                propBox.innerText = (proporcao * 100).toFixed(2).replace('.', ',') + '%';
-                atualizadoBox.innerText = formatarMoeda(valorAtualizado);
+            // Se estiver em modo de erro (ultrapassou), os alvarás param de ser gerados e ficam zerados
+            if (erroTravado) {
+                linha.classList.add('erro-linha');
+                propBox.innerText = 'ERRO';
+                atualizadoBox.innerText = 'TRAVADO';
+                atualizadoBox.style.color = '#c0392b';
+                atualizadoBox.style.borderColor = '#e74c3c';
+                atualizadoBox.style.backgroundColor = '#fadbd8';
             } else {
-                propBox.innerText = '0,00%';
-                atualizadoBox.innerText = 'R$ 0,00';
+                linha.classList.remove('erro-linha');
+                atualizadoBox.style.color = '#1b5e20';
+                atualizadoBox.style.borderColor = '#4caf50';
+                atualizadoBox.style.backgroundColor = '#e8f5e9';
+
+                if (valorBase > 0 && valOriginal > 0) {
+                    const proporcao = valOriginal / valorBase;
+                    const valorAtualizado = saldoConta * proporcao;
+                    propBox.innerText = (proporcao * 100).toFixed(2).replace('.', ',') + '%';
+                    atualizadoBox.innerText = formatarMoedaVisual(valorAtualizado);
+                } else {
+                    propBox.innerText = '0,00%';
+                    atualizadoBox.innerText = 'R$ 0,00';
+                }
             }
         });
     }
@@ -377,17 +493,23 @@
        LÓGICA DO MÓDULO 3: DESTAQUE DE HONORÁRIOS
        ======================================================== */
     function calcularDestaque() {
-        const valorTotalParte = parseFloat(document.getElementById('valorAtualizadoParte').value) || 0;
-        const percentual = parseFloat(document.getElementById('percentualDestaque').value) || 0;
+        const valorTotalParte = extrairNumero(document.getElementById('valorAtualizadoParte').value);
+        let percentual = parseFloat(document.getElementById('percentualDestaque').value) || 0;
+
+        // Trava de segurança para não ultrapassar 100% de desconto
+        if(percentual > 100) {
+            percentual = 100;
+            document.getElementById('percentualDestaque').value = 100;
+        }
 
         if (valorTotalParte > 0 && percentual > 0) {
             const valorHonorarios = valorTotalParte * (percentual / 100);
             const valorLiquidoParte = valorTotalParte - valorHonorarios;
 
-            document.getElementById('resParteLiquido').innerText = formatarMoeda(valorLiquidoParte);
-            document.getElementById('resHonorariosDestaque').innerText = formatarMoeda(valorHonorarios);
+            document.getElementById('resParteLiquido').innerText = formatarMoedaVisual(valorLiquidoParte);
+            document.getElementById('resHonorariosDestaque').innerText = formatarMoedaVisual(valorHonorarios);
         } else {
-            document.getElementById('resParteLiquido').innerText = formatarMoeda(valorTotalParte);
+            document.getElementById('resParteLiquido').innerText = formatarMoedaVisual(valorTotalParte);
             document.getElementById('resHonorariosDestaque').innerText = 'R$ 0,00';
         }
     }
