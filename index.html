@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadoras do Gabinete (Alvarás e Prazos)</title>
+    <title>Calculadoras do Gabinete — Alvarás, Tributação, Certidão, Honorários e Prazos</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -14,7 +14,7 @@
         }
         
         .top-actions {
-            max-width: 850px;
+            max-width: 1120px;
             margin: 0 auto 15px auto;
             display: flex;
             justify-content: flex-end;
@@ -33,10 +33,10 @@
         .btn-clear:hover { background-color: #636e72; }
 
         .container {
-            max-width: 850px;
+            max-width: 1120px;
             margin: 0 auto;
             background: #fff;
-            padding: 30px;
+            padding: 32px;
             border-radius: 6px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             border-top: 5px solid #2c3e50;
@@ -81,12 +81,14 @@
             padding: 10px;
             border: 1px solid #ced4da;
             border-radius: 4px;
-            font-size: 1em;
+            font-size: 1rem;
+            min-height: 46px;
             outline: none;
             transition: border-color 0.2s;
         }
-        input:focus {
-            border-color: #2c3e50;
+        input:focus, select:focus {
+            border-color: #1f5f8b;
+            box-shadow: 0 0 0 3px rgba(31,95,139,.14);
         }
         
         /* Módulo 1 - Linhas dos Alvarás */
@@ -230,6 +232,441 @@
             font-size: 1.6em;
             font-weight: bold;
         }
+
+
+
+        .module-nav {
+            max-width: 1120px;
+            margin: 0 auto 18px auto;
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 10px;
+        }
+        .module-nav a {
+            text-decoration: none;
+            text-align: center;
+            padding: 12px 10px;
+            border-radius: 8px;
+            background: #fff;
+            color: #2c3e50;
+            border: 1px solid #dbe2e8;
+            font-weight: 800;
+            box-shadow: 0 2px 5px rgba(0,0,0,.05);
+        }
+        .module-nav a:hover, .module-nav a:focus {
+            border-color: #1f5f8b;
+            color: #1f5f8b;
+        }
+        select {
+            padding: 10px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            font-size: 1rem;
+            min-height: 46px;
+            background: #fff;
+            outline: none;
+        }
+        .step-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0 0 14px 0;
+            font-size: 1rem;
+            color: #253746;
+        }
+        .step-number {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 auto;
+            background: #2d6287;
+            color: #fff;
+            font-weight: 900;
+        }
+        .tax-step {
+            border: 1px solid #dfe5ea;
+            border-radius: 10px;
+            padding: 18px;
+            margin-bottom: 16px;
+            background: #fbfcfd;
+        }
+        .field-label-main {
+            display: block;
+            font-weight: 800;
+            color: #253746;
+            font-size: .9rem;
+            margin-bottom: 7px;
+            text-transform: none;
+        }
+        .required-hint {
+            font-size: .72rem;
+            font-weight: 800;
+            color: #8b3a3a;
+            margin-left: 4px;
+        }
+        .tax-callout {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 16px;
+            align-items: center;
+            border: 1px solid #bed7c4;
+            background: #f1f8f3;
+            padding: 14px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+        .tax-callout strong { color: #20552c; }
+        .regime-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 7px 10px;
+            border-radius: 999px;
+            background: #e8f1f7;
+            border: 1px solid #c6dbe9;
+            color: #204f6f;
+            font-size: .8rem;
+            font-weight: 900;
+            white-space: nowrap;
+        }
+        .readonly-info {
+            background: #f1f3f5 !important;
+            color: #495057;
+        }
+        .tax-form-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+        }
+        .tax-form-grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .tax-result-flow {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 8px;
+            align-items: stretch;
+            margin-top: 14px;
+        }
+        .flow-box {
+            border: 1px solid #dbe2e8;
+            border-radius: 8px;
+            background: #fff;
+            padding: 13px;
+            min-width: 0;
+        }
+        .flow-box .kicker {
+            font-size: .72rem;
+            font-weight: 800;
+            color: #687681;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+        .flow-box .amount {
+            font-size: 1.15rem;
+            font-weight: 900;
+            color: #20394d;
+            overflow-wrap: anywhere;
+        }
+        .flow-box.deduction { background: #fff8f2; border-color: #efcfb4; }
+        .flow-box.final { background: #eaf7ed; border: 2px solid #3f9653; }
+        .flow-box.final .amount { color: #176329; font-size: 1.35rem; }
+        .formula-panel {
+            margin-top: 16px;
+            border-radius: 8px;
+            border: 1px solid #dbe2e8;
+            background: #fff;
+            padding: 15px 16px;
+        }
+        .formula-line {
+            display: flex;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 7px 0;
+            border-bottom: 1px dashed #e1e6ea;
+            font-size: .9rem;
+        }
+        .formula-line:last-child { border-bottom: 0; }
+        .formula-line strong { color: #20394d; }
+        .plain-note {
+            margin-top: 8px;
+            padding: 10px 12px;
+            border-radius: 6px;
+            background: #eef5f9;
+            border-left: 4px solid #2d6287;
+            color: #314b5f;
+            font-size: .84rem;
+            line-height: 1.45;
+        }
+        .subtle-note {
+            font-size: .8rem;
+            color: #65727b;
+            line-height: 1.4;
+            margin-top: 6px;
+        }
+        .certidao-panel {
+            margin-top: 20px;
+            border: 2px solid #2d6287;
+            border-radius: 10px;
+            background: #f8fbfd;
+            overflow: hidden;
+        }
+        .certidao-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 14px 16px;
+            background: #eaf3f8;
+            border-bottom: 1px solid #c9dce8;
+        }
+        .certidao-panel-header h3 {
+            margin: 0;
+            color: #244f6c;
+            font-size: 1.02rem;
+        }
+        .certidao-panel-header p {
+            margin: 4px 0 0;
+            color: #5f6d77;
+            font-size: .8rem;
+            line-height: 1.35;
+        }
+        .certidao-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+        .btn-copy-cert {
+            border: 0;
+            border-radius: 6px;
+            padding: 10px 13px;
+            background: #244f6c;
+            color: #fff;
+            font-weight: 800;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .btn-copy-cert:hover { background: #183c55; }
+        .btn-copy-cert.alt {
+            background: #fff;
+            color: #244f6c;
+            border: 1px solid #9db9cb;
+        }
+        .btn-copy-cert.alt:hover { background: #eef5f9; }
+        .certidao-body { padding: 16px; }
+        .certidao-textarea {
+            width: 100%;
+            min-height: 430px;
+            box-sizing: border-box;
+            resize: vertical;
+            border: 1px solid #b9cad6;
+            border-radius: 7px;
+            background: #fff;
+            color: #24343f;
+            padding: 15px;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: .94rem;
+            line-height: 1.55;
+        }
+        .certidao-textarea:focus {
+            outline: 3px solid rgba(45,98,135,.18);
+            border-color: #2d6287;
+        }
+        .copy-status {
+            min-height: 20px;
+            margin-top: 8px;
+            color: #1f6b35;
+            font-size: .82rem;
+            font-weight: 800;
+        }
+        .copy-status.error { color: #9b2c2c; }
+        .btn-tax.secondary {
+            background: #315d7b;
+        }
+        .btn-tax.secondary:hover { background: #274a62; }
+        .btn-tax.ghost {
+            background: #fff;
+            color: #315d7b;
+            border: 1px solid #9db9cb;
+        }
+        .btn-tax.ghost:hover { background: #eef5f9; }
+
+        /* Módulo de Tributação */
+        .tax-note {
+            background: #f8f5fb;
+            border: 1px solid #e2d8ea;
+            border-left: 4px solid #6c4a7d;
+            padding: 12px 14px;
+            border-radius: 5px;
+            color: #4f4455;
+            font-size: 0.9em;
+            line-height: 1.45;
+            margin-bottom: 18px;
+        }
+
+        .tax-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 18px;
+            border: 1px solid #dee2e6;
+        }
+
+        .tax-grid.secondary {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        .tax-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: -2px 0 18px 0;
+        }
+
+        .btn-tax {
+            background: #6c4a7d;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 14px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-tax:hover { background: #573964; }
+
+        .tax-summary {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 14px;
+        }
+
+        .tax-card {
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 14px;
+            background: #fff;
+            min-width: 0;
+        }
+
+        .tax-card .tax-label {
+            font-size: 0.76em;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            color: #6c757d;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .tax-card .tax-value {
+            font-size: 1.18em;
+            color: #2c3e50;
+            font-weight: 800;
+            overflow-wrap: anywhere;
+        }
+
+        .tax-card.final {
+            background: #edf7ef;
+            border: 2px solid #4caf50;
+        }
+
+        .tax-card.final .tax-value {
+            color: #1b5e20;
+            font-size: 1.35em;
+        }
+
+        .tax-table-wrap {
+            margin-top: 16px;
+            overflow-x: auto;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+        }
+
+        .tax-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 620px;
+            font-size: 0.9em;
+        }
+
+        .tax-table th, .tax-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e9ecef;
+            text-align: left;
+        }
+
+        .tax-table th {
+            background: #f1f3f5;
+            color: #495057;
+            text-transform: uppercase;
+            font-size: 0.78em;
+            letter-spacing: 0.03em;
+        }
+
+        .tax-table td:last-child, .tax-table th:last-child {
+            text-align: right;
+            font-weight: 700;
+        }
+
+        .tax-table tr:last-child td { border-bottom: none; }
+
+        .tax-warning {
+            display: none;
+            margin: 12px 0 0 0;
+            padding: 10px 12px;
+            border-radius: 5px;
+            background: #fff3cd;
+            color: #664d03;
+            border: 1px solid #ffecb5;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .tax-warning.show { display: block; }
+
+        .input-help {
+            margin-top: 5px;
+            color: #7a7f85;
+            font-size: 0.76em;
+            line-height: 1.3;
+        }
+
+        @media (max-width: 760px) {
+            .global-inputs,
+            .alvara-row,
+            .destaque-resultados {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .tax-grid,
+            .tax-grid.secondary,
+            .tax-summary,
+            .tax-form-grid,
+            .tax-form-grid.two,
+            .tax-result-flow,
+            .module-nav {
+                grid-template-columns: 1fr;
+            }
+            .tax-callout { grid-template-columns: 1fr; }
+            .module-nav { gap: 7px; }
+            .module-nav a { text-align: left; }
+            .certidao-panel-header { align-items: flex-start; flex-direction: column; }
+            .certidao-actions { width: 100%; justify-content: stretch; }
+            .btn-copy-cert { width: 100%; }
+            .certidao-textarea { min-height: 520px; font-size: .9rem; }
+
+            .placeholder-btn { display: none; }
+            .btn-remove { margin-top: 0; width: 100%; }
+            .container { padding: 20px 16px; }
+        }
+
     </style>
 </head>
 <body>
@@ -238,8 +675,15 @@
     <button class="btn-clear" onclick="limparTudo()">🗑️ Limpar Todos os Cálculos</button>
 </div>
 
+<nav class="module-nav" aria-label="Atalhos da calculadora">
+    <a href="#mod-rateio">1. Rateio de Alvarás</a>
+    <a href="#mod-tributacao">2. Tributação</a>
+    <a href="#mod-honorarios">3. Honorários</a>
+    <a href="#mod-prazo">4. Prazo</a>
+</nav>
+
 <!-- MÓDULO 1: RATEIO DE ALVARÁS -->
-<div class="container">
+<div class="container" id="mod-rateio">
     <h1>Cálculo de Rateio para Expedição de Alvarás</h1>
     <p class="subtitle">Ferramenta de atualização proporcional de valores bloqueados/depositados</p>
 
@@ -267,8 +711,174 @@
     <button class="btn btn-add" onclick="adicionarAlvara('', false)">+ Adicionar outro Alvará</button>
 </div>
 
+
+<!-- MÓDULO 2: TRIBUTAÇÃO DO CRÉDITO -->
+<div class="container" id="mod-tributacao" style="border-top-color: #2d6287;">
+    <h1 style="color: #244f6c;">Tributação do Crédito</h1>
+    <p class="subtitle">Preenchimento guiado para contribuição previdenciária, IRRF e valor líquido</p>
+
+    <div class="tax-callout">
+        <div>
+            <strong>Como preencher:</strong> informe primeiro o valor disponível na conta/GRV e o principal corrigido sem juros. Depois selecione o regime previdenciário e confira os descontos.
+            <div class="subtle-note">Juros e rendimentos ficam separados da base de contribuição. Alíquotas patronais não reduzem o crédito do servidor.</div>
+        </div>
+        <span class="regime-chip" id="regimeChip">Regime: IMPAR • 14%</span>
+    </div>
+
+    <div class="tax-actions">
+        <button type="button" class="btn-tax secondary" onclick="usarCreditoParteNaTributacao()">Usar “Crédito da Parte” do rateio</button>
+        <button type="button" class="btn-tax ghost" onclick="limparTributacao()">Limpar somente tributação</button>
+    </div>
+
+    <section class="tax-step" aria-labelledby="etapa1Trib">
+        <h2 class="step-title" id="etapa1Trib"><span class="step-number">1</span> Informe os valores do processo</h2>
+        <div class="tax-form-grid two">
+            <div class="input-group">
+                <label class="field-label-main" for="creditoTrib">Valor disponível / Calc GRV (R$)<span class="required-hint">obrigatório</span></label>
+                <input type="text" inputmode="decimal" id="creditoTrib" placeholder="Ex.: 617,41" oninput="mascaraMoeda(this); calcularTributacao()" aria-describedby="helpCreditoTrib">
+                <div class="input-help" id="helpCreditoTrib">É o saldo bruto que será liberado ao final, antes dos descontos legais.</div>
+            </div>
+            <div class="input-group">
+                <label class="field-label-main" for="basePrevInformadaTrib">Principal corrigido / base de contribuição (R$)<span class="required-hint">obrigatório</span></label>
+                <input type="text" inputmode="decimal" id="basePrevInformadaTrib" placeholder="Ex.: 419,18" oninput="mascaraMoeda(this); calcularTributacao()" aria-describedby="helpBaseTrib">
+                <div class="input-help" id="helpBaseTrib">Use o principal corrigido da memória de cálculo, sem juros de mora/rendimentos.</div>
+            </div>
+            <div class="input-group">
+                <label class="field-label-main" for="mesesTrib">Período remuneratório (meses)<span class="required-hint">obrigatório</span></label>
+                <input type="number" id="mesesTrib" value="1" min="1" step="1" oninput="calcularTributacao()" aria-describedby="helpMesesTrib">
+                <div class="input-help" id="helpMesesTrib">Quantidade de competências usadas para a verba remuneratória. Ex.: mar/2020 a set/2020 = 7 meses.</div>
+            </div>
+            <div class="input-group">
+                <label class="field-label-main" for="periodoTextoTrib">Descrição do período <span style="font-size:.72rem;color:#6c757d;font-weight:700;">opcional</span></label>
+                <input type="text" id="periodoTextoTrib" placeholder="Ex.: mar/2020 a set/2020" oninput="calcularTributacao()" aria-describedby="helpPeriodoTextoTrib">
+                <div class="input-help" id="helpPeriodoTextoTrib">Aparece no texto pronto da certidão. Não altera o cálculo.</div>
+            </div>
+        </div>
+
+        <div class="formula-panel" aria-live="polite">
+            <div class="formula-line"><span>Juros/rendimentos excluídos da base</span><strong id="resJurosTrib">R$ 0,00</strong></div>
+            <div class="formula-line"><span>Parcela média do principal corrigido</span><strong id="resParcelaMesTrib">R$ 0,00</strong></div>
+        </div>
+    </section>
+
+    <section class="tax-step" aria-labelledby="etapa2Trib">
+        <h2 class="step-title" id="etapa2Trib"><span class="step-number">2</span> Selecione o regime previdenciário</h2>
+        <div class="tax-form-grid">
+            <div class="input-group">
+                <label class="field-label-main" for="regimePrevTrib">Regime previdenciário</label>
+                <select id="regimePrevTrib" onchange="atualizarRegimePrevidenciario()">
+                    <option value="impar" selected>IMPAR — Município de Araguaína</option>
+                    <option value="igeprev">IGEPREV-TO — Estado do Tocantins</option>
+                    <option value="outro">Outro RPPS / informar manualmente</option>
+                </select>
+                <div class="input-help">IMPAR e IGEPREV-TO carregam 14% como contribuição do segurado.</div>
+            </div>
+            <div class="input-group">
+                <label class="field-label-main" for="aliquotaPrevTrib">Contribuição do segurado (%)</label>
+                <input type="number" id="aliquotaPrevTrib" value="14" min="0" max="100" step="0.01" oninput="marcarAliquotaManual(); calcularTributacao()" aria-describedby="helpAliquotaTrib">
+                <div class="input-help" id="helpAliquotaTrib">Percentual descontado do crédito do servidor. Pode ser alterado para situações específicas.</div>
+            </div>
+            <div class="input-group">
+                <label class="field-label-main">Contribuição previdenciária calculada</label>
+                <div class="box-prazo" id="resPrevPagamento" style="background:#eef5f9;border-color:#afcadb;color:#204f6f;">R$ 0,00</div>
+                <div class="input-help">Base de contribuição × alíquota do segurado.</div>
+            </div>
+        </div>
+        <div class="plain-note" id="regimeInfoTrib">
+            <strong>IMPAR:</strong> a contribuição do segurado está configurada em 14%. O percentual patronal, quando existente, não é deduzido do crédito do servidor.
+        </div>
+    </section>
+
+    <section class="tax-step" aria-labelledby="etapa3Trib">
+        <h2 class="step-title" id="etapa3Trib"><span class="step-number">3</span> Informe IRRF e outros descontos, se houver</h2>
+        <div class="tax-form-grid">
+            <div class="input-group">
+                <label class="field-label-main">Base para IRRF após previdência</label>
+                <div class="box-prazo" id="resBaseIrTrib" style="background:#f5f6f7;border-color:#d6dadd;color:#33414b;">R$ 0,00</div>
+                <div class="input-help">Principal corrigido − contribuição previdenciária.</div>
+            </div>
+            <div class="input-group">
+                <label class="field-label-main" for="valorIrTrib">IRRF apurado (R$)</label>
+                <input type="text" inputmode="decimal" id="valorIrTrib" placeholder="0,00" oninput="mascaraMoeda(this); calcularTributacao()">
+                <div class="input-help">Informe o valor calculado pela contadoria. Se houver isenção, deixe 0,00.</div>
+            </div>
+            <div class="input-group">
+                <label class="field-label-main" for="outrosDescontosTrib">Outros descontos (R$)</label>
+                <input type="text" inputmode="decimal" id="outrosDescontosTrib" placeholder="0,00" oninput="mascaraMoeda(this); calcularTributacao()">
+                <div class="input-help">Opcional. Use somente quando houver desconto adicional determinado nos autos.</div>
+            </div>
+        </div>
+    </section>
+
+    <div id="taxWarning" class="tax-warning" role="alert" aria-live="assertive"></div>
+
+    <section aria-labelledby="resultadoTrib">
+        <h2 class="step-title" id="resultadoTrib"><span class="step-number">✓</span> Resultado para liberação</h2>
+        <div class="tax-result-flow" aria-live="polite">
+            <div class="flow-box">
+                <div class="kicker">Valor disponível</div>
+                <div class="amount" id="resValorLiberadoTrib">R$ 0,00</div>
+            </div>
+            <div class="flow-box deduction">
+                <div class="kicker">− Previdência</div>
+                <div class="amount" id="resPrevResumoTrib">R$ 0,00</div>
+            </div>
+            <div class="flow-box deduction">
+                <div class="kicker">− IRRF</div>
+                <div class="amount" id="resIrPagamento">R$ 0,00</div>
+            </div>
+            <div class="flow-box deduction">
+                <div class="kicker">− Outros</div>
+                <div class="amount" id="resOutrosResumoTrib">R$ 0,00</div>
+            </div>
+            <div class="flow-box final">
+                <div class="kicker">Líquido do credor</div>
+                <div class="amount" id="resLiquidoTrib">R$ 0,00</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="certidao-panel" aria-labelledby="tituloCertidaoTrib">
+        <div class="certidao-panel-header">
+            <div>
+                <h3 id="tituloCertidaoTrib">Texto pronto para a certidão</h3>
+                <p>O texto e os cálculos abaixo são atualizados automaticamente conforme os dados preenchidos.</p>
+            </div>
+            <div class="certidao-actions">
+                <button type="button" class="btn-copy-cert" onclick="copiarCertidaoTributacao(false)">📋 Copiar certidão completa</button>
+                <button type="button" class="btn-copy-cert alt" onclick="copiarCertidaoTributacao(true)">Copiar só os cálculos</button>
+            </div>
+        </div>
+        <div class="certidao-body">
+            <textarea id="textoCertidaoTrib" class="certidao-textarea" readonly aria-label="Texto pronto para copiar e colar na certidão do processo"></textarea>
+            <div id="statusCopiaCertidao" class="copy-status" aria-live="polite"></div>
+            <div class="subtle-note"><strong>Conferência:</strong> antes de juntar aos autos, verifique se o período, o regime previdenciário, a alíquota e o IRRF correspondem ao caso concreto.</div>
+        </div>
+    </section>
+
+    <div class="tax-table-wrap">
+        <table class="tax-table" aria-label="Memória de cálculo detalhada da tributação">
+            <thead><tr><th>Memória de cálculo</th><th>Resultado</th></tr></thead>
+            <tbody>
+                <tr><td>Valor disponível / Calc GRV</td><td id="tabCreditoTrib">R$ 0,00</td></tr>
+                <tr><td>Principal corrigido / base de contribuição</td><td id="tabBasePrevTrib">R$ 0,00</td></tr>
+                <tr><td>Juros/rendimentos excluídos</td><td id="tabJurosTrib">R$ 0,00</td></tr>
+                <tr><td>Período remuneratório</td><td id="tabMesesTrib">1 mês</td></tr>
+                <tr><td>Parcela média (principal ÷ meses)</td><td id="tabParcelaMesTrib">R$ 0,00</td></tr>
+                <tr><td>Regime previdenciário</td><td id="tabRegimeTrib">IMPAR</td></tr>
+                <tr><td>Alíquota do segurado</td><td id="tabAliquotaPrevTrib">14,00%</td></tr>
+                <tr><td>Contribuição previdenciária</td><td id="tabPrevTotalTrib">R$ 0,00</td></tr>
+                <tr><td>Base para IRRF (principal − previdência)</td><td id="tabBaseIrTrib">R$ 0,00</td></tr>
+                <tr><td>IRRF informado</td><td id="tabIrPagTrib">R$ 0,00</td></tr>
+                <tr><td>Outros descontos</td><td id="tabOutrosTrib">R$ 0,00</td></tr>
+                <tr><td><strong>Valor líquido para o credor</strong></td><td id="tabLiquidoTrib">R$ 0,00</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
 <!-- MÓDULO 3: DESTAQUE DE HONORÁRIOS CONTRATUAIS -->
-<div class="container" style="border-top-color: #00796b;">
+<div class="container" id="mod-honorarios" style="border-top-color: #00796b;">
     <h1 style="color: #00796b;">Destaque de Honorários Contratuais</h1>
     <p class="subtitle">Subdivisão do crédito da parte (percentual aplicado sobre o valor atualizado)</p>
 
@@ -296,7 +906,7 @@
 </div>
 
 <!-- MÓDULO 2: CONTAGEM DE PRAZO MATERIAL (RPV) -->
-<div class="container" style="border-top-color: #1565c0;">
+<div class="container" id="mod-prazo" style="border-top-color: #1565c0;">
     <h1 style="color: #1565c0;">Cálculo de Prazo (Intimação Fazenda Pública)</h1>
     <p class="subtitle">Contagem em dias corridos / prazo material (Conforme Ata 84 - SEI 5647516)</p>
 
@@ -361,7 +971,19 @@
         
         document.getElementById('valorAtualizadoParte').value = '';
         document.getElementById('percentualDestaque').value = '';
-        calcularDestaque(); 
+        calcularDestaque();
+
+        document.getElementById('creditoTrib').value = '';
+        document.getElementById('basePrevInformadaTrib').value = '';
+        document.getElementById('mesesTrib').value = '1';
+        document.getElementById('periodoTextoTrib').value = '';
+        document.getElementById('regimePrevTrib').value = 'impar';
+        document.getElementById('aliquotaPrevTrib').value = '14';
+        aliquotaFoiAlteradaManualmente = false;
+        document.getElementById('valorIrTrib').value = '';
+        document.getElementById('outrosDescontosTrib').value = '';
+        atualizarRegimePrevidenciario(false);
+        calcularTributacao(); 
         
         document.getElementById('alvaras-container').innerHTML = '';
         contadorIds = 0;
@@ -382,6 +1004,8 @@
         document.getElementById('dataInicial').value = `${ano}-${mes}-${dia}`;
         document.getElementById('qtdDias').value = '70'; 
         calcularPrazo();
+        atualizarRegimePrevidenciario(false);
+        calcularTributacao();
     }
 
     /* ========================================================
@@ -488,6 +1112,236 @@
                 }
             }
         });
+    }
+
+
+    /* ========================================================
+       LÓGICA DO MÓDULO 2: TRIBUTAÇÃO DO CRÉDITO
+       Fluxo guiado: valor disponível > base > regime > descontos > líquido
+       ======================================================== */
+    let aliquotaFoiAlteradaManualmente = false;
+
+    function definirCampoMoeda(id, valor) {
+        const campo = document.getElementById(id);
+        if (!campo) return;
+        if (!valor || valor <= 0) {
+            campo.value = '';
+            return;
+        }
+        campo.value = Math.round(valor * 100).toString();
+        mascaraMoeda(campo);
+    }
+
+    function limparTributacao() {
+        document.getElementById('creditoTrib').value = '';
+        document.getElementById('basePrevInformadaTrib').value = '';
+        document.getElementById('mesesTrib').value = '1';
+        document.getElementById('periodoTextoTrib').value = '';
+        document.getElementById('regimePrevTrib').value = 'impar';
+        document.getElementById('aliquotaPrevTrib').value = '14';
+        document.getElementById('valorIrTrib').value = '';
+        document.getElementById('outrosDescontosTrib').value = '';
+        aliquotaFoiAlteradaManualmente = false;
+        atualizarRegimePrevidenciario(false);
+        calcularTributacao();
+    }
+
+    function usarCreditoParteNaTributacao() {
+        const primeiraLinha = document.querySelector('.alvara-row');
+        if (!primeiraLinha) return;
+
+        const box = primeiraLinha.querySelector('.val-atualizado');
+        if (!box || box.innerText === 'TRAVADO') {
+            exibirAvisoTrib('Não foi possível importar o Crédito da Parte. Confira o rateio e o saldo da conta judicial.');
+            return;
+        }
+
+        const valor = extrairNumero(box.innerText.replace('R$', '').trim());
+        if (valor <= 0) {
+            exibirAvisoTrib('Calcule primeiro o “Crédito da Parte” no módulo de rateio.');
+            return;
+        }
+
+        definirCampoMoeda('creditoTrib', valor);
+        calcularTributacao();
+        document.getElementById('basePrevInformadaTrib').focus();
+    }
+
+    function exibirAvisoTrib(texto) {
+        const warning = document.getElementById('taxWarning');
+        warning.innerText = texto || '';
+        warning.classList.toggle('show', !!texto);
+    }
+
+    function marcarAliquotaManual() {
+        aliquotaFoiAlteradaManualmente = true;
+        atualizarChipRegime();
+    }
+
+    function nomeRegimeTrib(valor) {
+        if (valor === 'impar') return 'IMPAR';
+        if (valor === 'igeprev') return 'IGEPREV-TO';
+        return 'Outro RPPS';
+    }
+
+    function atualizarChipRegime() {
+        const regime = document.getElementById('regimePrevTrib').value;
+        const aliquota = parseFloat(document.getElementById('aliquotaPrevTrib').value) || 0;
+        const chip = document.getElementById('regimeChip');
+        chip.innerText = `Regime: ${nomeRegimeTrib(regime)} • ${aliquota.toFixed(2).replace('.', ',')}%${aliquotaFoiAlteradaManualmente ? ' (manual)' : ''}`;
+    }
+
+    function atualizarRegimePrevidenciario(recalcular = true) {
+        const regime = document.getElementById('regimePrevTrib').value;
+        const aliquota = document.getElementById('aliquotaPrevTrib');
+        const info = document.getElementById('regimeInfoTrib');
+
+        aliquotaFoiAlteradaManualmente = false;
+
+        if (regime === 'impar') {
+            aliquota.value = '14';
+            info.innerHTML = '<strong>IMPAR — Araguaína:</strong> contribuição do segurado configurada em 14%. Alíquota patronal não é descontada do crédito do servidor.';
+        } else if (regime === 'igeprev') {
+            aliquota.value = '14';
+            info.innerHTML = '<strong>IGEPREV-TO:</strong> contribuição do segurado configurada em 14%. As alíquotas patronais do Estado não reduzem o valor líquido do credor.';
+        } else {
+            aliquota.value = '';
+            info.innerHTML = '<strong>Outro RPPS:</strong> informe manualmente a alíquota do segurado indicada pela legislação ou pela informação do ente devedor nos autos.';
+            aliquota.focus();
+        }
+
+        atualizarChipRegime();
+        if (recalcular) calcularTributacao();
+    }
+
+    function montarCalculosCertidaoTrib(dados) {
+        const periodoDescricao = (document.getElementById('periodoTextoTrib')?.value || '').trim();
+        const periodoLinha = periodoDescricao
+            ? `${periodoDescricao} (${dados.meses} ${dados.meses === 1 ? 'mês' : 'meses'})`
+            : `${dados.meses} ${dados.meses === 1 ? 'mês' : 'meses'}`;
+
+        return [
+            'APURAÇÃO DE TRIBUTO E PREVIDÊNCIA',
+            '',
+            `Valor disponível / Calc GRV: ${formatarMoedaVisual(dados.credito)}`,
+            `Período remuneratório: ${periodoLinha}`,
+            `Parcela média do principal corrigido: ${formatarMoedaVisual(dados.parcelaMensal)}`,
+            `Juros de mora/rendimentos excluídos da base: ${formatarMoedaVisual(dados.juros)}`,
+            `Principal corrigido / base de contribuição previdenciária: ${formatarMoedaVisual(dados.basePrev)}`,
+            `Regime previdenciário: ${nomeRegimeTrib(dados.regime)}`,
+            `Alíquota de contribuição do segurado: ${dados.aliquotaPrev.toFixed(2).replace('.', ',')}%`,
+            `Contribuição previdenciária: ${formatarMoedaVisual(dados.previdencia)}`,
+            `Base para IRRF após previdência: ${formatarMoedaVisual(dados.baseIr)}`,
+            `IRRF: ${formatarMoedaVisual(dados.valorIr)}`,
+            `Outros descontos: ${formatarMoedaVisual(dados.outrosDescontos)}`,
+            '',
+            'MEMÓRIA RESUMIDA',
+            `Juros/rendimentos excluídos = ${formatarMoedaVisual(dados.credito)} − ${formatarMoedaVisual(dados.basePrev)} = ${formatarMoedaVisual(dados.juros)}`,
+            `Previdência = ${formatarMoedaVisual(dados.basePrev)} × ${dados.aliquotaPrev.toFixed(2).replace('.', ',')}% = ${formatarMoedaVisual(dados.previdencia)}`,
+            `Base para IRRF = ${formatarMoedaVisual(dados.basePrev)} − ${formatarMoedaVisual(dados.previdencia)} = ${formatarMoedaVisual(dados.baseIr)}`,
+            `Valor líquido = ${formatarMoedaVisual(dados.credito)} − ${formatarMoedaVisual(dados.previdencia)} − ${formatarMoedaVisual(dados.valorIr)} − ${formatarMoedaVisual(dados.outrosDescontos)} = ${formatarMoedaVisual(dados.liquido)}`,
+            '',
+            `VALOR LÍQUIDO DO CREDOR: ${formatarMoedaVisual(dados.liquido)}`
+        ].join('\n');
+    }
+
+    function atualizarTextoCertidaoTrib(dados) {
+        const campo = document.getElementById('textoCertidaoTrib');
+        if (!campo) return;
+        const introducao = 'Em obediência a retro Decisão, CERTIFICO que se trata de verba de Diferença Salarial. A base de cálculo tanto pro Imposto de Renda quanto para a incidência da contribuição previdenciária e Imposto de Renda é apenas o valor do crédito atualizado, dividido pelo período, excluindo-se os juros, conforme apreciação do tema 808 - repercussão geral julgado pelo STJ - RE855091, que fixou a seguinte tese: "Não incide imposto de renda sobre os juros de mora devidos pelo atraso no pagamento de remuneração por exercício de emprego, cargo ou função." Portanto, o crédito sofrerá os descontos legais, conforme planilha abaixo.';
+        const calculos = montarCalculosCertidaoTrib(dados);
+        campo.value = `${introducao}\n\n${calculos}`;
+        campo.dataset.calculos = calculos;
+    }
+
+    async function copiarCertidaoTributacao(apenasCalculos = false) {
+        const campo = document.getElementById('textoCertidaoTrib');
+        const status = document.getElementById('statusCopiaCertidao');
+        if (!campo) return;
+        const texto = apenasCalculos ? (campo.dataset.calculos || '') : campo.value;
+        if (!texto.trim()) return;
+
+        let copiado = false;
+        try {
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(texto);
+                copiado = true;
+            }
+        } catch (e) {}
+
+        if (!copiado) {
+            const temp = document.createElement('textarea');
+            temp.value = texto;
+            temp.setAttribute('readonly', '');
+            temp.style.position = 'fixed';
+            temp.style.opacity = '0';
+            document.body.appendChild(temp);
+            temp.select();
+            try { copiado = document.execCommand('copy'); } catch (e) { copiado = false; }
+            document.body.removeChild(temp);
+        }
+
+        status.classList.toggle('error', !copiado);
+        status.textContent = copiado
+            ? (apenasCalculos ? '✓ Cálculos copiados. Pronto para colar na certidão.' : '✓ Certidão completa copiada. Pronto para colar no processo.')
+            : 'Não foi possível copiar automaticamente. Selecione o texto no campo e copie manualmente.';
+
+        if (copiado) setTimeout(() => { if (status) status.textContent = ''; }, 3500);
+    }
+
+    function calcularTributacao() {
+        const credito = extrairNumero(document.getElementById('creditoTrib').value);
+        const basePrev = extrairNumero(document.getElementById('basePrevInformadaTrib').value);
+        const meses = Math.max(1, parseInt(document.getElementById('mesesTrib').value, 10) || 1);
+        let aliquotaPrev = parseFloat(document.getElementById('aliquotaPrevTrib').value);
+        if (!Number.isFinite(aliquotaPrev)) aliquotaPrev = 0;
+        aliquotaPrev = Math.min(100, Math.max(0, aliquotaPrev));
+        const valorIr = extrairNumero(document.getElementById('valorIrTrib').value);
+        const outrosDescontos = extrairNumero(document.getElementById('outrosDescontosTrib').value);
+        const regime = document.getElementById('regimePrevTrib').value;
+
+        const juros = credito - basePrev;
+        const parcelaMensal = basePrev > 0 ? basePrev / meses : 0;
+        const previdencia = basePrev * (aliquotaPrev / 100);
+        const baseIr = Math.max(basePrev - previdencia, 0);
+        const liquido = credito - previdencia - valorIr - outrosDescontos;
+
+        let avisos = [];
+        if (credito > 0 && basePrev <= 0) avisos.push('Informe o principal corrigido / base de contribuição para calcular a retenção previdenciária.');
+        if (basePrev > 0 && credito <= 0) avisos.push('Informe o valor disponível / Calc GRV para apurar o líquido do credor.');
+        if (credito > 0 && basePrev > credito) avisos.push('A base de contribuição está maior que o valor disponível. Isso gera juros/rendimentos negativos; confira se os dois valores pertencem ao mesmo crédito.');
+        if ((regime === 'impar' || regime === 'igeprev') && Math.abs(aliquotaPrev - 14) > 0.001) avisos.push(`A alíquota padrão deste regime está configurada em 14%. Você informou ${aliquotaPrev.toFixed(2).replace('.', ',')}%; mantenha somente se houver fundamento específico no processo.`);
+        if (liquido < 0) avisos.push('Os descontos superam o valor disponível. Confira os dados antes de utilizar o resultado.');
+        exibirAvisoTrib(avisos.join(' '));
+
+        document.getElementById('resJurosTrib').innerText = formatarMoedaVisual(juros);
+        document.getElementById('resParcelaMesTrib').innerText = formatarMoedaVisual(parcelaMensal);
+        document.getElementById('resPrevPagamento').innerText = formatarMoedaVisual(previdencia);
+        document.getElementById('resBaseIrTrib').innerText = formatarMoedaVisual(baseIr);
+        document.getElementById('resValorLiberadoTrib').innerText = formatarMoedaVisual(credito);
+        document.getElementById('resPrevResumoTrib').innerText = formatarMoedaVisual(previdencia);
+        document.getElementById('resIrPagamento').innerText = formatarMoedaVisual(valorIr);
+        document.getElementById('resOutrosResumoTrib').innerText = formatarMoedaVisual(outrosDescontos);
+        document.getElementById('resLiquidoTrib').innerText = formatarMoedaVisual(liquido);
+
+        document.getElementById('tabCreditoTrib').innerText = formatarMoedaVisual(credito);
+        document.getElementById('tabBasePrevTrib').innerText = formatarMoedaVisual(basePrev);
+        document.getElementById('tabJurosTrib').innerText = formatarMoedaVisual(juros);
+        document.getElementById('tabMesesTrib').innerText = `${meses} ${meses === 1 ? 'mês' : 'meses'}`;
+        document.getElementById('tabParcelaMesTrib').innerText = formatarMoedaVisual(parcelaMensal);
+        document.getElementById('tabRegimeTrib').innerText = nomeRegimeTrib(regime);
+        document.getElementById('tabAliquotaPrevTrib').innerText = aliquotaPrev.toFixed(2).replace('.', ',') + '%';
+        document.getElementById('tabPrevTotalTrib').innerText = formatarMoedaVisual(previdencia);
+        document.getElementById('tabBaseIrTrib').innerText = formatarMoedaVisual(baseIr);
+        document.getElementById('tabIrPagTrib').innerText = formatarMoedaVisual(valorIr);
+        document.getElementById('tabOutrosTrib').innerText = formatarMoedaVisual(outrosDescontos);
+        document.getElementById('tabLiquidoTrib').innerText = formatarMoedaVisual(liquido);
+
+        atualizarTextoCertidaoTrib({
+            credito, basePrev, meses, aliquotaPrev, valorIr, outrosDescontos,
+            regime, juros, parcelaMensal, previdencia, baseIr, liquido
+        });
+        atualizarChipRegime();
     }
 
     /* ========================================================
