@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadoras do Gabinete — Alvarás, Tributação, Certidão, Honorários e Prazos</title>
+    <title>Calculadoras Judiciais</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -109,6 +109,7 @@
             border-left-color: #e74c3c;
             background-color: #fdf2f1;
         }
+        .beneficiario-nome:required:placeholder-shown { border-color: #d8c5c2; }
         
         .btn {
             padding: 10px 15px;
@@ -493,6 +494,149 @@
         }
         .btn-tax.ghost:hover { background: #eef5f9; }
 
+
+        /* V6 — Tributação em fluxo único */
+        .single-tax-panel {
+            border: 1px solid #d7e0e6;
+            border-radius: 10px;
+            background: #fff;
+            padding: 18px;
+            margin-bottom: 18px;
+        }
+        .single-tax-panel-head, .section-heading-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+        .single-tax-panel-head h2, .section-heading-row h2 {
+            margin: 0;
+            color: #244f6c;
+            font-size: 1.04rem;
+        }
+        .single-tax-panel-head p, .section-heading-row p {
+            margin: 5px 0 0;
+            color: #65727b;
+            font-size: .84rem;
+            line-height: 1.4;
+        }
+        .fill-count {
+            flex: 0 0 auto;
+            background: #eef5f9;
+            border: 1px solid #c9dce8;
+            color: #244f6c;
+            border-radius: 999px;
+            padding: 7px 10px;
+            font-size: .76rem;
+            font-weight: 800;
+        }
+        .compact-tax-grid { gap: 14px 18px; }
+        .optional-field { background: #fbfcfd; padding: 12px; border-radius: 7px; border: 1px dashed #d7e0e6; }
+        .optional-hint {
+            display: inline-block;
+            margin-left: 6px;
+            font-size: .68rem;
+            color: #6c757d;
+            font-weight: 800;
+            text-transform: lowercase;
+        }
+        .auto-results-strip {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 10px;
+            margin-top: 16px;
+        }
+        .auto-results-strip > div {
+            border: 1px solid #dbe3e8;
+            background: #f8fafb;
+            border-radius: 8px;
+            padding: 12px;
+            min-width: 0;
+        }
+        .auto-results-strip span { display:block; color:#65727b; font-size:.74rem; margin-bottom:5px; }
+        .auto-results-strip strong { color:#20394d; font-size:1rem; }
+        .tax-organized-section { margin-top: 20px; }
+        .organized-tables-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+        .table-card {
+            border: 1px solid #d7e0e6;
+            border-radius: 9px;
+            background: #fff;
+            overflow: hidden;
+        }
+        .table-card-title {
+            background: #eef5f9;
+            color: #244f6c;
+            font-weight: 900;
+            padding: 11px 13px;
+            border-bottom: 1px solid #d7e0e6;
+            font-size: .9rem;
+        }
+        .clean-tax-table { width:100%; border-collapse: collapse; }
+        .clean-tax-table th, .clean-tax-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #edf1f3;
+            vertical-align: top;
+            font-size: .84rem;
+        }
+        .clean-tax-table tr:last-child th, .clean-tax-table tr:last-child td { border-bottom:0; }
+        .clean-tax-table th { text-align:left; color:#55636d; font-weight:650; width:68%; }
+        .clean-tax-table td { text-align:right; color:#1f3443; font-weight:850; white-space:nowrap; }
+        .destination-card {
+            margin-top: 14px;
+            border: 2px solid #2d6287;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #f8fbfd;
+        }
+        .destination-title {
+            padding: 11px 14px;
+            font-weight: 900;
+            color: #244f6c;
+            background: #eaf3f8;
+            border-bottom: 1px solid #c9dce8;
+        }
+        .destination-grid {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+        }
+        .destination-item {
+            padding: 13px 12px;
+            border-right: 1px solid #dbe5eb;
+            min-width:0;
+        }
+        .destination-item:last-child { border-right:0; }
+        .destination-item span { display:block; color:#65727b; font-size:.72rem; margin-bottom:5px; }
+        .destination-item strong { display:block; color:#20394d; font-size:1.02rem; overflow-wrap:anywhere; }
+        .destination-item.main { background:#edf8f0; }
+        .destination-item.main strong { color:#1f6b35; }
+        .destination-item.total { background:#f1f4f6; }
+        .destination-check {
+            padding: 9px 13px;
+            border-top: 1px solid #dbe5eb;
+            color:#5e6b74;
+            font-size:.78rem;
+            font-weight:700;
+        }
+        .destination-check.ok { color:#1f6b35; background:#edf8f0; }
+        .destination-check.error { color:#9b2c2c; background:#fff2f2; }
+        @media (max-width: 840px) {
+            .auto-results-strip, .organized-tables-grid { grid-template-columns: 1fr 1fr; }
+            .destination-grid { grid-template-columns: 1fr 1fr; }
+            .destination-item { border-bottom:1px solid #dbe5eb; }
+            .destination-item.total { grid-column:1 / -1; }
+        }
+        @media (max-width: 560px) {
+            .single-tax-panel-head, .section-heading-row { flex-direction:column; }
+            .auto-results-strip, .organized-tables-grid, .destination-grid { grid-template-columns: 1fr; }
+            .destination-item.total { grid-column:auto; }
+            .clean-tax-table th { width:60%; }
+        }
+
         /* Módulo de Tributação */
         .tax-note {
             background: #f8f5fb;
@@ -667,267 +811,1444 @@
             .container { padding: 20px 16px; }
         }
 
+
+        /* ========================================================
+           V7 — REDESIGN VISUAL / LAYOUT PROFISSIONAL
+           ======================================================== */
+        :root {
+            --ink: #162536;
+            --muted: #667485;
+            --line: #dfe6ec;
+            --soft: #f5f8fa;
+            --brand: #174f78;
+            --brand-2: #236b9b;
+            --brand-soft: #edf5fa;
+            --success: #1f7a46;
+            --success-soft: #edf8f1;
+            --warning: #9a6700;
+            --danger: #b42318;
+            --shadow: 0 8px 28px rgba(22, 37, 54, .08);
+            --radius: 14px;
+        }
+
+        html { scroll-behavior: smooth; }
+        body {
+            background: #f3f6f8;
+            color: var(--ink);
+            padding: 0 20px 44px;
+            font-size: 16px;
+        }
+
+        .app-header {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 22px 0 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+        .brand-block { min-width: 0; }
+        .brand-kicker {
+            margin: 0 0 3px;
+            color: var(--brand);
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            font-size: .72rem;
+            font-weight: 900;
+        }
+        .brand-title {
+            margin: 0;
+            color: var(--ink);
+            font-size: clamp(1.35rem, 2.2vw, 1.8rem);
+            line-height: 1.15;
+            font-weight: 850;
+            letter-spacing: -.02em;
+        }
+        .brand-subtitle {
+            margin: 5px 0 0;
+            color: var(--muted);
+            font-size: .9rem;
+        }
+        .top-actions { max-width: none; margin: 0; }
+        .btn-clear {
+            background: #fff;
+            color: #5f6d78;
+            border: 1px solid var(--line);
+            box-shadow: none;
+            border-radius: 9px;
+            padding: 10px 14px;
+            font-size: .84rem;
+        }
+        .btn-clear:hover { background: #f8fafb; color: var(--danger); border-color: #efc4bf; }
+
+        .module-nav {
+            position: sticky;
+            top: 0;
+            z-index: 30;
+            max-width: 1240px;
+            margin: 0 auto 20px;
+            padding: 8px;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 7px;
+            background: rgba(255,255,255,.94);
+            border: 1px solid rgba(216,225,232,.95);
+            border-radius: 12px;
+            box-shadow: 0 7px 20px rgba(25,43,60,.07);
+            backdrop-filter: blur(12px);
+        }
+        .module-nav a {
+            box-shadow: none;
+            border: 0;
+            background: transparent;
+            border-radius: 8px;
+            color: #526373;
+            font-size: .88rem;
+            padding: 11px 12px;
+        }
+        .module-nav a:hover, .module-nav a:focus {
+            background: var(--brand-soft);
+            color: var(--brand);
+            outline: none;
+        }
+        .module-nav a.tax-tab { background: var(--brand); color: #fff; }
+
+        .container {
+            max-width: 1240px;
+            padding: 28px;
+            border-radius: var(--radius);
+            border: 1px solid var(--line);
+            border-top: 1px solid var(--line) !important;
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+        }
+        .container > h1 {
+            text-align: left;
+            margin: 0;
+            font-size: 1.32rem;
+            letter-spacing: -.015em;
+        }
+        .container > .subtitle {
+            text-align: left;
+            margin: 6px 0 24px;
+            color: var(--muted);
+        }
+
+        label, .field-label-main { text-transform: none; letter-spacing: 0; }
+        input, select {
+            min-height: 48px;
+            border-radius: 9px;
+            border-color: #ccd7df;
+            color: var(--ink);
+            background: #fff;
+            font-size: 1rem;
+        }
+        input:hover, select:hover { border-color: #aebec9; }
+        input:focus, select:focus {
+            border-color: var(--brand-2);
+            box-shadow: 0 0 0 4px rgba(35,107,155,.12);
+        }
+
+        /* Tributação: cabeçalho */
+        #mod-tributacao {
+            padding: 0;
+            overflow: visible;
+            background: transparent;
+            border: 0;
+            box-shadow: none;
+        }
+        .tax-module-shell {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+        .tax-module-head {
+            padding: 24px 28px 20px;
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 18px;
+            background: linear-gradient(180deg, #ffffff 0%, #fbfdfe 100%);
+        }
+        .tax-module-head h1 {
+            margin: 0;
+            color: var(--ink);
+            font-size: 1.45rem;
+            letter-spacing: -.02em;
+        }
+        .tax-module-head p { margin: 6px 0 0; color: var(--muted); font-size: .9rem; }
+        .tax-module-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+        .btn-tax {
+            border-radius: 9px;
+            min-height: 42px;
+            padding: 9px 13px;
+            font-size: .84rem;
+            transition: .18s ease;
+        }
+        .btn-tax.secondary { background: var(--brand); }
+        .btn-tax.secondary:hover { background: #123f61; transform: translateY(-1px); }
+        .btn-tax.ghost { border-color: #cbd8e1; color: #536675; }
+        .btn-tax.ghost:hover { background: #f7f9fb; color: var(--danger); border-color: #efc4bf; }
+
+        .tax-guidance {
+            margin: 18px 28px 0;
+            padding: 12px 14px;
+            border: 1px solid #d7e6ef;
+            border-radius: 10px;
+            background: var(--brand-soft);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            color: #33576f;
+            font-size: .84rem;
+            line-height: 1.45;
+        }
+        .tax-guidance strong { color: #173f5c; }
+        .regime-chip {
+            background: #fff;
+            border-color: #bfd4e1;
+            color: var(--brand);
+            padding: 7px 11px;
+            box-shadow: 0 1px 2px rgba(22,37,54,.04);
+        }
+
+        .tax-workspace {
+            padding: 20px 28px 26px;
+            display: grid;
+            grid-template-columns: minmax(0, 1.38fr) minmax(320px, .82fr);
+            gap: 20px;
+            align-items: start;
+        }
+        .tax-entry-card, .tax-result-card, .tax-memory-card, .certidao-panel {
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: #fff;
+        }
+        .tax-entry-card { padding: 20px; }
+        .section-topline {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+        .section-topline h2 { margin: 0; font-size: 1.02rem; color: var(--ink); }
+        .section-topline p { margin: 4px 0 0; font-size: .8rem; color: var(--muted); }
+        .fill-count {
+            background: #f5f8fa;
+            border-color: var(--line);
+            color: #526675;
+            padding: 6px 9px;
+        }
+
+        .tax-form-grid.two {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 15px 16px;
+        }
+        .input-group { min-width: 0; }
+        .field-label-main {
+            color: #293c4d;
+            font-size: .82rem;
+            margin-bottom: 7px;
+            line-height: 1.3;
+        }
+        .required-hint {
+            display: inline-block;
+            margin-left: 6px;
+            padding: 2px 6px;
+            border-radius: 999px;
+            color: #7d5320;
+            background: #fff5df;
+            font-size: .62rem;
+            vertical-align: 1px;
+        }
+        .optional-field { padding: 0; border: 0; background: transparent; }
+        .optional-hint {
+            padding: 2px 6px;
+            border-radius: 999px;
+            background: #f0f3f5;
+            font-size: .62rem;
+            color: #687782;
+        }
+        .input-help { color: #7a8792; font-size: .72rem; margin-top: 5px; line-height: 1.35; }
+
+        .control-with-affix { position: relative; display: flex; align-items: center; }
+        .control-with-affix input { width: 100%; box-sizing: border-box; }
+        .control-prefix, .control-suffix {
+            position: absolute;
+            z-index: 2;
+            color: #6d7c87;
+            font-size: .9rem;
+            font-weight: 700;
+            pointer-events: none;
+        }
+        .control-prefix { left: 16px; top: 50%; transform: translateY(-50%); min-width: 28px; text-align: left; }
+        .control-suffix { right: 14px; top: 50%; transform: translateY(-50%); min-width: 18px; text-align: right; }
+        .control-with-affix.prefix input { padding-left: 56px; font-variant-numeric: tabular-nums; }
+        .control-with-affix.suffix input { padding-right: 42px; font-variant-numeric: tabular-nums; }
+
+        .auto-results-strip {
+            grid-template-columns: repeat(4, minmax(0,1fr));
+            gap: 8px;
+            margin-top: 18px;
+            padding-top: 16px;
+            border-top: 1px solid #edf1f4;
+        }
+        .auto-results-strip > div {
+            padding: 10px 11px;
+            border-radius: 9px;
+            background: #f7f9fb;
+            border-color: #e3e9ee;
+        }
+        .auto-results-strip span { font-size: .68rem; line-height: 1.25; }
+        .auto-results-strip strong { font-size: .94rem; }
+        .plain-note {
+            margin-top: 12px;
+            border: 0;
+            border-radius: 9px;
+            background: #f7f9fb;
+            color: #536674;
+            padding: 10px 12px;
+            font-size: .76rem;
+        }
+
+        /* Resultado lateral */
+        .tax-result-card {
+            position: sticky;
+            top: 82px;
+            overflow: hidden;
+            box-shadow: 0 7px 20px rgba(22,37,54,.06);
+        }
+        .result-card-head {
+            padding: 16px 17px 13px;
+            background: #f8fafb;
+            border-bottom: 1px solid var(--line);
+        }
+        .result-card-head span {
+            display: block;
+            color: var(--muted);
+            text-transform: uppercase;
+            font-size: .66rem;
+            letter-spacing: .08em;
+            font-weight: 850;
+        }
+        .result-card-head h2 { margin: 4px 0 0; font-size: 1rem; color: var(--ink); }
+        .liquid-highlight {
+            padding: 21px 18px 18px;
+            background: var(--success-soft);
+            border-bottom: 1px solid #d6eadc;
+        }
+        .liquid-highlight small { display: block; color: #567364; font-weight: 700; font-size: .74rem; }
+        .liquid-highlight strong {
+            display: block;
+            margin-top: 4px;
+            color: var(--success);
+            font-size: clamp(1.65rem, 3vw, 2.2rem);
+            letter-spacing: -.03em;
+        }
+        .result-breakdown { padding: 7px 16px 4px; }
+        .result-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 10px 2px;
+            border-bottom: 1px solid #edf1f4;
+            font-size: .82rem;
+        }
+        .result-row:last-child { border-bottom: 0; }
+        .result-row span { color: #657582; }
+        .result-row strong { color: #223a4c; white-space: nowrap; }
+        .result-row.total { margin-top: 2px; border-top: 1px solid var(--line); }
+        .result-row.total span, .result-row.total strong { font-weight: 900; color: var(--ink); }
+        .result-check-wrap { padding: 11px 16px 15px; }
+        .destination-check {
+            border: 1px solid #dfe7ec;
+            border-radius: 8px;
+            padding: 9px 10px;
+            font-size: .74rem;
+            border-top: 1px solid #dfe7ec;
+            background: #f8fafb;
+        }
+        .destination-check.ok { border-color: #cce5d4; background: var(--success-soft); }
+        .destination-check.error { border-color: #efc9c5; }
+        .tax-warning { margin: 0; border-radius: 9px; font-size: .78rem; }
+
+        /* Memória */
+        .tax-memory-section {
+            border-top: 1px solid var(--line);
+            padding: 24px 28px 28px;
+            background: #fbfcfd;
+        }
+        .tax-memory-section .section-heading-row { margin-bottom: 14px; }
+        .tax-memory-section .section-heading-row h2 { font-size: 1rem; color: var(--ink); }
+        .organized-tables-grid { gap: 12px; }
+        .table-card { border-radius: 10px; border-color: var(--line); }
+        .table-card-title {
+            background: #f7f9fb;
+            color: #31495c;
+            border-color: var(--line);
+            padding: 10px 12px;
+            font-size: .82rem;
+        }
+        .clean-tax-table th, .clean-tax-table td { padding: 9px 11px; font-size: .8rem; }
+        .clean-tax-table th { color: #687680; font-weight: 600; }
+        .clean-tax-table td { color: #223a4c; }
+
+        /* Certidão como documento final */
+        .certidao-panel {
+            margin: 0;
+            border: 0;
+            border-top: 1px solid var(--line);
+            border-radius: 0;
+            background: #f2f5f7;
+        }
+        .certidao-panel-header {
+            padding: 20px 28px 14px;
+            background: transparent;
+            border: 0;
+            align-items: center;
+        }
+        .certidao-panel-header h3 { color: var(--ink); font-size: 1rem; }
+        .certidao-panel-header p { color: var(--muted); }
+        .btn-copy-cert {
+            border-radius: 9px;
+            background: var(--brand);
+            padding: 10px 14px;
+            font-size: .82rem;
+        }
+        .btn-copy-cert:hover { background: #123f61; }
+        .btn-copy-cert.alt { color: var(--brand); border-color: #b9ccd9; }
+        .certidao-body { padding: 0 28px 26px; }
+        .document-preview {
+            max-width: 930px;
+            margin: 0 auto;
+            padding: 13px;
+            border-radius: 12px;
+            background: #e6ebef;
+        }
+        .certidao-textarea {
+            min-height: 500px;
+            border: 1px solid #d2d9df;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(22,37,54,.06);
+            font-size: .93rem;
+            line-height: 1.6;
+            padding: 26px 30px;
+        }
+        .copy-status { max-width: 930px; margin: 8px auto 0; }
+        .certidao-footnote { max-width: 930px; margin: 6px auto 0; }
+
+        /* Módulos auxiliares */
+        .global-inputs { border-radius: 10px; background: #f8fafb; border-color: var(--line); }
+        .alvara-row { border-radius: 10px; box-shadow: none; border-color: var(--line); }
+        .status-bar { border-radius: 9px; }
+        .destaque-box { border-radius: 10px; box-shadow: none; }
+
+        @media (max-width: 1000px) {
+            .tax-workspace { grid-template-columns: 1fr; }
+            .tax-result-card { position: static; }
+            .auto-results-strip { grid-template-columns: repeat(2, minmax(0,1fr)); }
+        }
+        @media (max-width: 760px) {
+            body { padding: 0 12px 28px; }
+            .app-header { padding-top: 16px; align-items: flex-start; }
+            .brand-subtitle { display: none; }
+            .btn-clear { padding: 9px 10px; font-size: .76rem; }
+            .module-nav {
+                top: 0;
+                grid-template-columns: repeat(4, max-content);
+                overflow-x: auto;
+                justify-content: start;
+                scrollbar-width: none;
+            }
+            .module-nav::-webkit-scrollbar { display: none; }
+            .module-nav a { white-space: nowrap; text-align: center; }
+            .container { padding: 20px 16px; }
+            #mod-tributacao { padding: 0; }
+            .tax-module-head, .tax-guidance, .tax-workspace, .tax-memory-section, .certidao-panel-header, .certidao-body {
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+            .tax-module-head { flex-direction: column; }
+            .tax-module-actions { width: 100%; justify-content: stretch; }
+            .tax-module-actions .btn-tax { flex: 1; }
+            .tax-guidance { margin-left: 16px; margin-right: 16px; align-items: flex-start; }
+            .tax-form-grid.two { grid-template-columns: 1fr; }
+            .organized-tables-grid { grid-template-columns: 1fr; }
+            .certidao-panel-header { align-items: stretch; }
+            .certidao-actions { display: grid; grid-template-columns: 1fr; }
+            .document-preview { padding: 7px; }
+            .certidao-textarea { min-height: 560px; padding: 20px 17px; font-size: .9rem; }
+        }
+        @media (max-width: 520px) {
+            .app-header { gap: 10px; }
+            .brand-title { font-size: 1.22rem; }
+            .brand-kicker { font-size: .64rem; }
+            .top-actions .btn-clear { font-size: 0; padding: 9px 11px; }
+            .top-actions .btn-clear::after { content: 'Limpar'; font-size: .75rem; }
+            .tax-guidance { flex-direction: column; }
+            .auto-results-strip { grid-template-columns: 1fr 1fr; }
+            .section-topline { flex-direction: column; }
+        }
+
     </style>
+
+<style id="v8-layout-diario">
+:root {
+    --bg: #f3f6f8;
+    --surface: #ffffff;
+    --surface-soft: #f8fafb;
+    --text: #17212b;
+    --muted: #687684;
+    --border: #dfe6eb;
+    --border-strong: #cbd6de;
+    --brand: #173f5f;
+    --brand-2: #225f88;
+    --brand-soft: #edf5fa;
+    --success: #177245;
+    --success-soft: #edf8f2;
+    --warning: #9a6700;
+    --warning-soft: #fff8e6;
+    --danger: #b42318;
+    --danger-soft: #fff1f0;
+    --teal: #0f766e;
+    --teal-soft: #ecf8f6;
+    --blue: #1d5d8b;
+    --blue-soft: #edf6fb;
+    --shadow: 0 12px 34px rgba(20, 38, 55, .08);
+    --shadow-soft: 0 5px 16px rgba(20, 38, 55, .05);
+    --radius: 18px;
+    --radius-sm: 12px;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 118px; }
+body {
+    margin: 0 !important;
+    padding: 0 0 56px !important;
+    background: var(--bg) !important;
+    color: var(--text) !important;
+    font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif !important;
+    line-height: 1.45;
+}
+button, input, select, textarea { font: inherit; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+input, select, textarea { text-rendering: geometricPrecision; }
+button { -webkit-tap-highlight-color: transparent; }
+
+.app-header {
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 22px max(24px, calc((100vw - 1220px) / 2)) 18px !important;
+    background: #fff !important;
+    border-bottom: 1px solid var(--border) !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    gap: 24px !important;
+    box-shadow: none !important;
+}
+.brand-block { min-width: 0; }
+.brand-kicker {
+    margin: 0 0 3px !important;
+    color: var(--brand-2) !important;
+    font-size: .74rem !important;
+    font-weight: 800 !important;
+    text-transform: uppercase !important;
+    letter-spacing: .08em !important;
+}
+.brand-title {
+    margin: 0 !important;
+    color: var(--text) !important;
+    text-align: left !important;
+    font-size: clamp(1.35rem, 2.2vw, 1.85rem) !important;
+    line-height: 1.1 !important;
+    letter-spacing: -.025em !important;
+}
+.brand-subtitle {
+    margin: 5px 0 0 !important;
+    color: var(--muted) !important;
+    font-size: .92rem !important;
+}
+.top-actions { max-width: none !important; margin: 0 !important; }
+.btn-clear {
+    min-height: 42px !important;
+    padding: 9px 14px !important;
+    border: 1px solid var(--border-strong) !important;
+    border-radius: 10px !important;
+    background: #fff !important;
+    color: #53616d !important;
+    font-size: .86rem !important;
+    font-weight: 700 !important;
+    box-shadow: none !important;
+}
+.btn-clear:hover { background: #f5f7f9 !important; color: var(--danger) !important; border-color: #e4b7b3 !important; }
+
+.module-nav {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 50 !important;
+    max-width: none !important;
+    margin: 0 0 26px !important;
+    padding: 10px max(24px, calc((100vw - 1220px) / 2)) !important;
+    display: flex !important;
+    gap: 8px !important;
+    background: rgba(255,255,255,.96) !important;
+    border-bottom: 1px solid var(--border) !important;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 14px rgba(20,38,55,.04) !important;
+}
+.module-nav a {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    padding: 10px 14px !important;
+    border: 1px solid transparent !important;
+    border-radius: 10px !important;
+    background: transparent !important;
+    color: #586875 !important;
+    font-size: .88rem !important;
+    font-weight: 750 !important;
+    text-align: center !important;
+    box-shadow: none !important;
+    transition: .18s ease !important;
+}
+.module-nav a:hover, .module-nav a:focus { background: var(--surface-soft) !important; color: var(--brand) !important; }
+.module-nav a.active, .module-nav a[aria-current="page"], .module-nav a.tax-tab.active {
+    background: var(--brand) !important;
+    color: #fff !important;
+    border-color: var(--brand) !important;
+}
+.module-nav a.tax-tab { background: transparent !important; color: #586875 !important; }
+.module-nav a.tax-tab.active { background: var(--brand) !important; color: #fff !important; }
+
+.container.module-card, #mod-rateio, #mod-tributacao, #mod-honorarios, #mod-prazo {
+    max-width: 1220px !important;
+    margin: 0 auto 28px !important;
+    padding: 0 !important;
+    background: var(--surface) !important;
+    border: 1px solid var(--border) !important;
+    border-top: 1px solid var(--border) !important;
+    border-radius: var(--radius) !important;
+    box-shadow: var(--shadow) !important;
+    overflow: visible !important;
+    scroll-margin-top: 112px;
+}
+
+.module-heading, .tax-module-head {
+    padding: 24px 26px 20px !important;
+    border-bottom: 1px solid var(--border) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 18px !important;
+    background: linear-gradient(180deg, #fff 0%, #fcfdfe 100%) !important;
+    border-radius: var(--radius) var(--radius) 0 0 !important;
+}
+.module-heading-main { display: flex; align-items: center; gap: 14px; min-width: 0; }
+.module-index {
+    width: 44px;
+    height: 44px;
+    flex: 0 0 44px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    background: var(--brand-soft);
+    color: var(--brand);
+    font-weight: 900;
+    font-size: .82rem;
+    letter-spacing: .03em;
+}
+.module-index.teal { background: var(--teal-soft); color: var(--teal); }
+.module-index.blue { background: var(--blue-soft); color: var(--blue); }
+.module-index.gold { background: #fff7e6; color: #8a5a00; }
+.module-heading-copy h1, .module-heading-copy h2, .tax-module-head h1 {
+    margin: 0 !important;
+    text-align: left !important;
+    color: var(--text) !important;
+    font-size: 1.28rem !important;
+    line-height: 1.2 !important;
+    letter-spacing: -.015em !important;
+}
+.module-heading-copy p, .tax-module-head p {
+    margin: 5px 0 0 !important;
+    color: var(--muted) !important;
+    font-size: .89rem !important;
+}
+.module-heading-actions, .tax-module-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+.module-body { padding: 24px 26px 26px; }
+.module-grid { display: grid; grid-template-columns: minmax(0, 1.75fr) minmax(300px, .8fr); gap: 22px; align-items: start; }
+.module-main { min-width: 0; }
+.module-side { position: sticky; top: 78px; }
+
+.input-panel {
+    padding: 18px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface-soft);
+    margin-bottom: 20px;
+}
+.input-panel-title, .subsection-title {
+    margin: 0 0 13px;
+    font-size: .84rem;
+    color: #4e5f6c;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .055em;
+}
+.global-inputs {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0,1fr)) !important;
+    gap: 14px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: 0 !important;
+}
+.input-group { min-width: 0; }
+label, .field-label-main {
+    margin-bottom: 7px !important;
+    color: #40505c !important;
+    font-size: .82rem !important;
+    font-weight: 760 !important;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+}
+input, select, textarea {
+    width: 100%;
+    min-height: 48px !important;
+    border: 1px solid var(--border-strong) !important;
+    border-radius: 10px !important;
+    background: #fff !important;
+    color: var(--text) !important;
+    padding: 10px 12px !important;
+    font-size: 1rem !important;
+    outline: none !important;
+    box-shadow: none !important;
+    transition: border-color .15s ease, box-shadow .15s ease, background .15s ease !important;
+}
+input:focus, select:focus, textarea:focus {
+    border-color: var(--brand-2) !important;
+    box-shadow: 0 0 0 3px rgba(34,95,136,.13) !important;
+}
+input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
+.input-help { color: #7a8894 !important; font-size: .77rem !important; line-height: 1.35 !important; margin-top: 5px !important; }
+
+.primary-action, .btn-add, .btn-tax, .btn-copy-cert {
+    min-height: 42px !important;
+    border-radius: 10px !important;
+    border: 1px solid transparent !important;
+    padding: 9px 14px !important;
+    background: var(--brand) !important;
+    color: #fff !important;
+    font-size: .86rem !important;
+    font-weight: 800 !important;
+    box-shadow: none !important;
+    cursor: pointer !important;
+    transition: .16s ease !important;
+}
+.primary-action:hover, .btn-add:hover, .btn-tax:hover, .btn-copy-cert:hover { background: #123550 !important; transform: translateY(-1px); }
+.secondary-action, .btn-tax.secondary, .btn-copy-cert.alt {
+    background: #fff !important;
+    color: var(--brand) !important;
+    border-color: #bfcdd7 !important;
+}
+.secondary-action:hover, .btn-tax.secondary:hover, .btn-copy-cert.alt:hover { background: var(--brand-soft) !important; }
+.btn-tax.ghost { background: #fff !important; color: #647480 !important; border-color: var(--border) !important; }
+
+.alvara-list-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 14px;
+    margin: 0 0 12px;
+}
+.alvara-list-head h3 { margin: 0; font-size: 1rem; color: var(--text); }
+.alvara-list-head p { margin: 3px 0 0; font-size: .79rem; color: var(--muted); }
+#alvaras-container { display: grid; gap: 10px; }
+.alvara-row {
+    display: grid !important;
+    grid-template-columns: minmax(210px, 1.6fr) minmax(135px,.85fr) minmax(105px,.6fr) minmax(160px,1fr) 38px !important;
+    gap: 10px !important;
+    align-items: end !important;
+    margin: 0 !important;
+    padding: 14px !important;
+    border: 1px solid var(--border) !important;
+    border-left: 1px solid var(--border) !important;
+    border-radius: 12px !important;
+    background: #fff !important;
+    box-shadow: none !important;
+}
+.alvara-row:hover { border-color: #c7d5de !important; background: #fcfdfe !important; }
+.alvara-row.erro-linha { border-color: #e5aaa5 !important; background: var(--danger-soft) !important; }
+.alvara-row .input-group { flex: none !important; }
+.result-box-prop, .result-box-destaque {
+    min-height: 48px !important;
+    height: auto !important;
+    padding: 10px 9px !important;
+    border-radius: 10px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: none !important;
+    font-size: .95rem !important;
+}
+.result-box-prop { background: #f5f7f9 !important; border: 1px solid var(--border) !important; color: #667683 !important; }
+.result-box-destaque { background: var(--success-soft) !important; border: 1px solid #b7dfc9 !important; color: var(--success) !important; font-size: 1.05rem !important; }
+.btn-remove {
+    width: 38px !important;
+    height: 38px !important;
+    min-height: 38px !important;
+    margin: 0 0 5px !important;
+    padding: 0 !important;
+    border-radius: 9px !important;
+    background: #fff !important;
+    color: #a64a43 !important;
+    border: 1px solid #e4c1be !important;
+    font-size: 1.2rem !important;
+    box-shadow: none !important;
+}
+.btn-remove:hover { background: var(--danger-soft) !important; color: var(--danger) !important; }
+.placeholder-btn { width: 38px !important; }
+
+.summary-card {
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: #fff;
+    overflow: hidden;
+    box-shadow: var(--shadow-soft);
+}
+.summary-card-head { padding: 16px 17px 13px; background: var(--surface-soft); border-bottom: 1px solid var(--border); }
+.summary-card-head span { display: block; color: var(--muted); font-size: .72rem; text-transform: uppercase; font-weight: 800; letter-spacing: .06em; }
+.summary-card-head h3 { margin: 3px 0 0; color: var(--text); font-size: 1rem; }
+.summary-rows { padding: 6px 16px; }
+.summary-row { display: flex; justify-content: space-between; gap: 18px; padding: 11px 0; border-bottom: 1px solid #edf1f4; font-size: .87rem; }
+.summary-row:last-child { border-bottom: 0; }
+.summary-row span { color: var(--muted); }
+.summary-row strong { color: var(--text); text-align: right; }
+.summary-row.emphasis strong { color: var(--brand); font-size: 1.06rem; }
+.status-bar {
+    margin: 8px 16px 16px !important;
+    padding: 12px !important;
+    border-radius: 10px !important;
+    background: var(--success-soft) !important;
+    border: 1px solid #b7dfc9 !important;
+    color: var(--success) !important;
+    display: block !important;
+    font-size: .82rem !important;
+}
+.status-bar > div:first-child { display: none !important; }
+.status-bar::before { content: "✓ Rateio dentro do saldo informado"; font-weight: 800; }
+.status-bar.erro { background: var(--danger-soft) !important; border-color: #ebbbb7 !important; color: var(--danger) !important; }
+.status-bar.erro::before { content: "⚠ Revise o rateio"; }
+.status-bar .erro-msg { margin-top: 4px; display: none; font-weight: 600; text-transform: none !important; line-height: 1.35; }
+.status-bar.erro .erro-msg { display: block; }
+
+/* Tributação alinhada ao restante do app */
+#mod-tributacao .tax-module-shell { padding: 0 !important; }
+#mod-tributacao .tax-module-head { margin: 0 !important; }
+#mod-tributacao .tax-guidance { margin: 20px 26px 0 !important; border-radius: 12px !important; border: 1px solid #d7e5ee !important; background: #f5f9fc !important; color: #435664 !important; }
+#mod-tributacao .tax-workspace { padding: 20px 26px 0 !important; grid-template-columns: minmax(0, 1.55fr) minmax(290px,.78fr) !important; gap: 20px !important; }
+#mod-tributacao .tax-entry-card, #mod-tributacao .tax-result-card { border-radius: 14px !important; border: 1px solid var(--border) !important; box-shadow: none !important; }
+#mod-tributacao .tax-entry-card { padding: 20px !important; background: #fff !important; }
+#mod-tributacao .tax-result-card { top: 78px !important; box-shadow: var(--shadow-soft) !important; }
+#mod-tributacao .section-topline { margin-bottom: 16px !important; }
+#mod-tributacao .section-topline h2, #mod-tributacao .tax-memory-section h2 { font-size: 1.05rem !important; }
+#mod-tributacao .compact-tax-grid { gap: 14px !important; }
+#mod-tributacao .control-with-affix input { min-height: 48px !important; }
+#mod-tributacao .auto-results-strip { border-radius: 12px !important; margin-top: 18px !important; }
+#mod-tributacao .tax-memory-section { margin: 20px 26px 0 !important; padding: 0 !important; }
+#mod-tributacao .organized-tables-grid { gap: 14px !important; }
+#mod-tributacao .table-card { border-radius: 12px !important; box-shadow: none !important; }
+#mod-tributacao .certidao-panel { margin: 20px 26px 26px !important; border-radius: 14px !important; overflow: hidden !important; }
+#mod-tributacao .certidao-textarea { min-height: 360px !important; border-radius: 10px !important; }
+#mod-tributacao .liquid-highlight strong { font-size: clamp(1.85rem, 3vw, 2.35rem) !important; }
+
+/* Honorários */
+.honorarios-workspace { display: grid; grid-template-columns: minmax(0,1.2fr) minmax(300px,.8fr); gap: 20px; align-items: stretch; }
+.honorarios-inputs { padding: 18px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface-soft); }
+.honorarios-inputs .global-inputs { height: 100%; align-content: start; }
+.destaque-resultados {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+    margin: 0 !important;
+}
+.destaque-box {
+    padding: 18px !important;
+    border-radius: 12px !important;
+    border: 1px solid var(--border) !important;
+    box-shadow: none !important;
+    text-align: left !important;
+    color: var(--text) !important;
+}
+.box-parte { background: var(--brand-soft) !important; border-color: #cadce8 !important; }
+.box-advogado { background: var(--teal-soft) !important; border-color: #c9e7e2 !important; }
+.destaque-box h4 { margin: 0 0 7px !important; padding: 0 !important; border: 0 !important; color: var(--muted) !important; font-size: .76rem !important; letter-spacing: .04em !important; }
+.destaque-box .destaque-valor { font-size: 1.55rem !important; line-height: 1.15; color: var(--text) !important; }
+
+/* Prazo */
+.prazo-workspace { display: grid; grid-template-columns: minmax(0,1.35fr) minmax(300px,.65fr); gap: 20px; align-items: stretch; }
+.prazo-inputs { padding: 18px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface-soft); }
+.prazo-inputs .global-inputs { grid-template-columns: repeat(2,minmax(0,1fr)) !important; }
+.prazo-result {
+    border: 1px solid #c6ddeb;
+    border-radius: 14px;
+    background: var(--blue-soft);
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.prazo-result span { color: #547286; font-size: .76rem; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; }
+.box-prazo {
+    height: auto !important;
+    min-height: 0 !important;
+    margin-top: 7px !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: 0 !important;
+    color: var(--brand) !important;
+    font-size: 2rem !important;
+    font-weight: 900 !important;
+    justify-content: flex-start !important;
+    text-align: left !important;
+}
+.info-prazo {
+    margin: 14px 0 0 !important;
+    padding: 11px 13px !important;
+    border-radius: 10px !important;
+    background: #f7f9fa !important;
+    border: 1px solid var(--border) !important;
+    color: #6b7883 !important;
+    text-align: left !important;
+    font-size: .79rem !important;
+}
+
+.control-with-affix { border-radius: 10px !important; }
+.control-prefix, .control-suffix { font-size: .88rem !important; }
+
+@media (max-width: 980px) {
+    .app-header { padding-left: 18px !important; padding-right: 18px !important; }
+    .module-nav { padding-left: 14px !important; padding-right: 14px !important; overflow-x: auto !important; }
+    .module-nav a { flex: 0 0 auto !important; min-width: 145px !important; }
+    .container.module-card, #mod-rateio, #mod-tributacao, #mod-honorarios, #mod-prazo { margin-left: 14px !important; margin-right: 14px !important; }
+    .module-grid, .honorarios-workspace, .prazo-workspace, #mod-tributacao .tax-workspace { grid-template-columns: 1fr !important; }
+    .module-side, #mod-tributacao .tax-result-card { position: static !important; }
+    .alvara-row { grid-template-columns: 1fr 1fr !important; }
+    .alvara-row .input-group:nth-child(1) { grid-column: 1 / -1; }
+    .alvara-row .input-group:nth-child(4) { grid-column: 1 / 2; }
+    .alvara-row .btn-remove, .alvara-row .placeholder-btn { grid-column: 2; justify-self: end; align-self: end; }
+}
+
+@media (max-width: 640px) {
+    body { padding-bottom: 32px !important; }
+    .app-header { align-items: flex-start !important; padding: 16px 14px 14px !important; gap: 12px !important; }
+    .brand-subtitle { display: none; }
+    .btn-clear { padding: 8px 10px !important; font-size: .78rem !important; }
+    .module-nav { margin-bottom: 16px !important; padding: 8px 10px !important; }
+    .module-nav a { min-width: 126px !important; padding: 9px 11px !important; font-size: .82rem !important; }
+    .container.module-card, #mod-rateio, #mod-tributacao, #mod-honorarios, #mod-prazo { margin: 0 10px 16px !important; border-radius: 14px !important; }
+    .module-heading, .tax-module-head { padding: 17px 16px !important; align-items: flex-start !important; flex-direction: column !important; }
+    .module-index { width: 38px; height: 38px; flex-basis: 38px; }
+    .module-heading-copy h1, .module-heading-copy h2, .tax-module-head h1 { font-size: 1.1rem !important; }
+    .module-body { padding: 16px !important; }
+    .global-inputs, .prazo-inputs .global-inputs { grid-template-columns: 1fr !important; }
+    .alvara-list-head { align-items: stretch; flex-direction: column; }
+    .alvara-list-head .primary-action { width: 100%; }
+    .alvara-row { grid-template-columns: 1fr !important; padding: 12px !important; }
+    .alvara-row .input-group, .alvara-row .input-group:nth-child(1), .alvara-row .input-group:nth-child(4), .alvara-row .btn-remove, .alvara-row .placeholder-btn { grid-column: 1 !important; }
+    .alvara-row .btn-remove { justify-self: end; margin-top: -2px !important; }
+    .placeholder-btn { display: none; }
+    #mod-tributacao .tax-guidance, #mod-tributacao .tax-workspace, #mod-tributacao .tax-memory-section, #mod-tributacao .certidao-panel { margin-left: 16px !important; margin-right: 16px !important; }
+    #mod-tributacao .tax-workspace { padding: 16px 0 0 !important; }
+    #mod-tributacao .tax-entry-card { padding: 16px !important; }
+    .honorarios-inputs, .prazo-inputs, .prazo-result { padding: 15px; }
+    .box-prazo { font-size: 1.7rem !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+</style>
+
+
+<style id="v10-campos-nitidos">
+/* V10 — correção visual dos campos monetários e de percentual */
+.control-with-affix {
+    position: relative !important;
+    display: grid !important;
+    align-items: stretch !important;
+    width: 100% !important;
+    min-height: 50px !important;
+    border: 1px solid #cbd6de !important;
+    border-radius: 10px !important;
+    background: #fff !important;
+    overflow: hidden !important;
+    box-shadow: none !important;
+}
+.control-with-affix.prefix {
+    grid-template-columns: 52px minmax(0, 1fr) !important;
+}
+.control-with-affix.suffix {
+    grid-template-columns: minmax(0, 1fr) 46px !important;
+}
+.control-with-affix:focus-within {
+    border-color: #225f88 !important;
+    box-shadow: 0 0 0 4px rgba(34, 95, 136, .12) !important;
+}
+.control-prefix,
+.control-suffix {
+    position: static !important;
+    inset: auto !important;
+    transform: none !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 0 !important;
+    padding: 0 12px !important;
+    color: #596b78 !important;
+    background: #f6f8fa !important;
+    font-size: .92rem !important;
+    font-weight: 800 !important;
+    pointer-events: none !important;
+    line-height: 1 !important;
+}
+.control-prefix {
+    border-right: 1px solid #dfe6eb !important;
+}
+.control-suffix {
+    border-left: 1px solid #dfe6eb !important;
+}
+.control-with-affix input {
+    min-width: 0 !important;
+    width: 100% !important;
+    min-height: 48px !important;
+    margin: 0 !important;
+    padding: 11px 14px !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    outline: 0 !important;
+    box-shadow: none !important;
+    background: #fff !important;
+    color: #17212b !important;
+    font-size: 1.05rem !important;
+    font-weight: 500 !important;
+    font-variant-numeric: tabular-nums !important;
+    letter-spacing: 0 !important;
+    -webkit-font-smoothing: antialiased !important;
+    text-rendering: optimizeLegibility !important;
+}
+.control-with-affix input:focus {
+    border: 0 !important;
+    outline: 0 !important;
+    box-shadow: none !important;
+}
+.field-label-main {
+    line-height: 1.35 !important;
+}
+.optional-hint {
+    display: inline-block !important;
+    margin-left: 6px !important;
+    padding: 2px 7px !important;
+    border-radius: 999px !important;
+    background: #eef2f5 !important;
+    color: #647482 !important;
+    font-size: .64rem !important;
+    font-weight: 800 !important;
+    vertical-align: 1px !important;
+}
+</style>
+
+
+<style id="v11-rateio-sem-trava">
+/* V11 — rateio sem trava: divergências são apenas informadas */
+.status-bar {
+    gap: 14px !important;
+}
+.status-bar .erro-msg {
+    display: inline !important;
+    text-transform: none !important;
+    font-size: .82rem !important;
+    font-weight: 700 !important;
+    text-align: right !important;
+}
+.status-bar.aviso {
+    background: #fff8e6 !important;
+    color: #7a5600 !important;
+    border-color: #e9d49a !important;
+}
+.status-bar.ok {
+    background: #edf8f2 !important;
+    color: #17663d !important;
+    border-color: #c9e3d4 !important;
+}
+.status-bar.erro {
+    background: #fff1f0 !important;
+    color: #9f251d !important;
+    border-color: #e9b8b4 !important;
+}
+.status-bar.erro .erro-msg,
+.status-bar.aviso .erro-msg,
+.status-bar.ok .erro-msg {
+    display: inline !important;
+}
+</style>
+
 </head>
 <body>
 
-<div class="top-actions">
-    <button class="btn-clear" onclick="limparTudo()">🗑️ Limpar Todos os Cálculos</button>
-</div>
+<header class="app-header">
+    <div class="brand-block">
+        <p class="brand-kicker">Ferramentas do cartório</p>
+        <h1 class="brand-title">Calculadoras do Cartório</h1>
+        <p class="brand-subtitle">Uma tela única para calcular, conferir e seguir para o próximo ato.</p>
+    </div>
+    <div class="top-actions">
+        <button class="btn-clear" onclick="limparTudo()" title="Limpa todos os módulos">Limpar tudo</button>
+    </div>
+</header>
 
 <nav class="module-nav" aria-label="Atalhos da calculadora">
-    <a href="#mod-rateio">1. Rateio de Alvarás</a>
-    <a href="#mod-tributacao">2. Tributação</a>
-    <a href="#mod-honorarios">3. Honorários</a>
-    <a href="#mod-prazo">4. Prazo</a>
+    <a href="#mod-rateio" data-section="mod-rateio">01 · Rateio</a>
+    <a href="#mod-tributacao" data-section="mod-tributacao">02 · Tributação</a>
+    <a href="#mod-honorarios" data-section="mod-honorarios">03 · Honorários</a>
+    <a href="#mod-prazo" data-section="mod-prazo">04 · Prazo</a>
 </nav>
 
 <!-- MÓDULO 1: RATEIO DE ALVARÁS -->
-<div class="container" id="mod-rateio">
-    <h1>Cálculo de Rateio para Expedição de Alvarás</h1>
-    <p class="subtitle">Ferramenta de atualização proporcional de valores bloqueados/depositados</p>
-
-    <div class="global-inputs">
-        <div class="input-group">
-            <label for="valorBase">Valor Base do Cálculo (R$)</label>
-            <input type="text" inputmode="numeric" id="valorBase" placeholder="0,00" oninput="mascaraMoeda(this); calcularAlvaras()" style="font-size: 1.1em; padding: 12px;">
-        </div>
-        <div class="input-group">
-            <label for="saldoConta">Saldo Atual na Conta Judicial (R$)</label>
-            <input type="text" inputmode="numeric" id="saldoConta" placeholder="0,00" oninput="mascaraMoeda(this); calcularAlvaras()" style="font-size: 1.1em; padding: 12px;">
+<section class="container module-card" id="mod-rateio">
+    <div class="module-heading">
+        <div class="module-heading-main">
+            <div class="module-index">01</div>
+            <div class="module-heading-copy">
+                <h2>Rateio para expedição de alvarás</h2>
+                <p>Atualize proporcionalmente cada crédito a partir do saldo atual da conta judicial.</p>
+            </div>
         </div>
     </div>
 
-    <h2 style="font-size: 1.1em; color: #2c3e50; border-bottom: 2px solid #e9ecef; padding-bottom: 8px; margin-bottom: 20px; text-transform: uppercase;">Valores a Expedir</h2>
-    
-    <div id="alvaras-container"></div>
-    
-    <!-- Barra de Status e Trava de Segurança -->
-    <div class="status-bar" id="barraStatus">
-        <div>Total Final dos Alvarás: <span id="spanTotalFinalAlvaras">R$ 0,00</span></div>
-        <div class="erro-msg">⚠️ ERRO: A soma dos alvarás ultrapassa o Saldo da Conta Judicial!</div>
+    <div class="module-body">
+        <div class="module-grid">
+            <div class="module-main">
+                <div class="input-panel">
+                    <div class="input-panel-title">Valores de referência</div>
+                    <div class="global-inputs">
+                        <div class="input-group">
+                            <label for="valorBase">Valor base do cálculo</label>
+                            <input type="text" inputmode="numeric" id="valorBase" placeholder="0,00" oninput="mascaraMoeda(this); calcularAlvaras()">
+                            <div class="input-help">Valor total que serviu de base para a divisão original.</div>
+                        </div>
+                        <div class="input-group">
+                            <label for="saldoConta">Saldo atual da conta judicial</label>
+                            <input type="text" inputmode="numeric" id="saldoConta" placeholder="0,00" oninput="mascaraMoeda(this); calcularAlvaras()">
+                            <div class="input-help">Saldo efetivamente disponível para expedição.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alvara-list-head">
+                    <div>
+                        <h3>Valores a expedir</h3>
+                        <p>Informe o valor original de cada beneficiário. A proporção e o valor final são automáticos.</p>
+                    </div>
+                    <button class="primary-action" onclick="adicionarAlvara('', false)">+ Adicionar alvará</button>
+                </div>
+                <div id="alvaras-container"></div>
+            </div>
+
+            <aside class="module-side" aria-label="Resumo do rateio">
+                <div class="summary-card">
+                    <div class="summary-card-head">
+                        <span>Conferência</span>
+                        <h3>Resumo do rateio</h3>
+                    </div>
+                    <div class="summary-rows">
+                        <div class="summary-row"><span>Valor base</span><strong id="resValorBaseRateio">R$ 0,00</strong></div>
+                        <div class="summary-row"><span>Saldo da conta</span><strong id="resSaldoContaRateio">R$ 0,00</strong></div>
+                        <div class="summary-row emphasis"><span>Total dos alvarás</span><strong id="spanTotalFinalAlvaras">R$ 0,00</strong></div>
+                        <div class="summary-row"><span>Saldo após o rateio</span><strong id="resSaldoRestanteRateio">R$ 0,00</strong></div>
+                    </div>
+                    <div class="status-bar" id="barraStatus">
+                        <div>Total Final dos Alvarás: <span>R$ 0,00</span></div>
+                        <div class="erro-msg">A soma dos alvarás ultrapassa o saldo da conta judicial.</div>
+                    </div>
+                </div>
+            </aside>
+        </div>
     </div>
-
-    <button class="btn btn-add" onclick="adicionarAlvara('', false)">+ Adicionar outro Alvará</button>
-</div>
-
+</section>
 
 <!-- MÓDULO 2: TRIBUTAÇÃO DO CRÉDITO -->
-<div class="container" id="mod-tributacao" style="border-top-color: #2d6287;">
-    <h1 style="color: #244f6c;">Tributação do Crédito</h1>
-    <p class="subtitle">Preenchimento guiado para contribuição previdenciária, IRRF e valor líquido</p>
-
-    <div class="tax-callout">
-        <div>
-            <strong>Como preencher:</strong> informe primeiro o valor disponível na conta/GRV e o principal corrigido sem juros. Depois selecione o regime previdenciário e confira os descontos.
-            <div class="subtle-note">Juros e rendimentos ficam separados da base de contribuição. Alíquotas patronais não reduzem o crédito do servidor.</div>
+<section class="container module-card" id="mod-tributacao">
+    <div class="tax-module-shell">
+        <div class="tax-module-head">
+            <div class="module-heading-main">
+                <div class="module-index gold">02</div>
+                <div>
+                    <h1>Tributação do crédito</h1>
+                    <p>Preencha os dados essenciais, confira o resultado e copie a certidão pronta.</p>
+                </div>
+            </div>
+            <div class="tax-module-actions">
+                <button type="button" class="btn-tax secondary" onclick="usarCreditoParteNaTributacao()">Usar crédito do rateio</button>
+                <button type="button" class="btn-tax ghost" onclick="limparTributacao()">Limpar tributação</button>
+            </div>
         </div>
-        <span class="regime-chip" id="regimeChip">Regime: IMPAR • 14%</span>
+
+        <div class="tax-guidance">
+            <div><strong>Fluxo simplificado:</strong> informe o valor disponível, o principal remuneratório sem juros e o regime previdenciário. Se desejar, informe também as competências para demonstrar a parcela média mensal. Os demais valores são calculados automaticamente.</div>
+            <span class="regime-chip" id="regimeChip">IMPAR • 14%</span>
+        </div>
+
+        <div class="tax-workspace">
+            <section class="tax-entry-card" aria-labelledby="dadosTrib">
+                <div class="section-topline">
+                    <div>
+                        <h2 id="dadosTrib">Dados do crédito</h2>
+                        <p>Preencha de cima para baixo. Campos opcionais só precisam ser usados quando houver desconto.</p>
+                    </div>
+                    <span class="fill-count" id="fillCountTrib">0 de 4 essenciais preenchidos</span>
+                </div>
+
+                <div class="tax-form-grid two compact-tax-grid">
+                    <div class="input-group">
+                        <label class="field-label-main" for="creditoTrib">Valor atualizado disponível / Calc GRV<span class="required-hint">obrigatório</span></label>
+                        <div class="control-with-affix prefix">
+                            <span class="control-prefix">R$</span>
+                            <input type="text" inputmode="decimal" id="creditoTrib" placeholder="617,41" oninput="mascaraMoeda(this); calcularTributacao()" aria-describedby="helpCreditoTrib">
+                        </div>
+                        <div class="input-help" id="helpCreditoTrib">Valor bruto disponível antes dos descontos.</div>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="field-label-main" for="basePrevInformadaTrib">Principal remuneratório atualizado, sem juros<span class="required-hint">obrigatório</span></label>
+                        <div class="control-with-affix prefix">
+                            <span class="control-prefix">R$</span>
+                            <input type="text" inputmode="decimal" id="basePrevInformadaTrib" placeholder="419,18" oninput="mascaraMoeda(this); calcularTributacao()" aria-describedby="helpBaseTrib">
+                        </div>
+                        <div class="input-help" id="helpBaseTrib">Principal corrigido que servirá de base para a previdência.</div>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="field-label-main" for="mesesTrib">Número de competências / meses <span class="optional-hint">opcional</span></label>
+                        <input type="number" id="mesesTrib" placeholder="7" min="1" step="1" oninput="calcularTributacao()" aria-describedby="helpMesesTrib">
+                        <div class="input-help" id="helpMesesTrib">Opcional. Preencha apenas se desejar demonstrar a parcela média mensal. Ex.: março a setembro = 7 competências.</div>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="field-label-main" for="regimePrevTrib">Regime previdenciário<span class="required-hint">obrigatório</span></label>
+                        <select id="regimePrevTrib" onchange="atualizarRegimePrevidenciario()">
+                            <option value="impar" selected>IMPAR — Município de Araguaína</option>
+                            <option value="igeprev">IGEPREV-TO — Estado do Tocantins</option>
+                            <option value="outro">Outro RPPS</option>
+                        </select>
+                        <div class="input-help">IMPAR e IGEPREV-TO preenchem automaticamente 14%.</div>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="field-label-main" for="aliquotaPrevTrib">Alíquota do segurado<span class="required-hint">obrigatório</span></label>
+                        <div class="control-with-affix suffix">
+                            <input type="number" id="aliquotaPrevTrib" value="14" min="0" max="100" step="0.01" oninput="marcarAliquotaManual(); calcularTributacao()">
+                            <span class="control-suffix">%</span>
+                        </div>
+                        <div class="input-help">Percentual efetivamente descontado do servidor.</div>
+                    </div>
+
+                    <div class="input-group optional-field">
+                        <label class="field-label-main" for="valorIrTrib">IRRF apurado <span class="optional-hint">se houver</span></label>
+                        <div class="control-with-affix prefix">
+                            <span class="control-prefix">R$</span>
+                            <input type="text" inputmode="decimal" id="valorIrTrib" placeholder="0,00" oninput="mascaraMoeda(this); calcularTributacao()">
+                        </div>
+                        <div class="input-help">Se não houver retenção, deixe em branco.</div>
+                    </div>
+
+                    <div class="input-group optional-field">
+                        <label class="field-label-main" for="outrosDescontosTrib">Outros descontos <span class="optional-hint">se houver</span></label>
+                        <div class="control-with-affix prefix">
+                            <span class="control-prefix">R$</span>
+                            <input type="text" inputmode="decimal" id="outrosDescontosTrib" placeholder="0,00" oninput="mascaraMoeda(this); calcularTributacao()">
+                        </div>
+                        <div class="input-help">Utilize apenas quando houver outro desconto determinado.</div>
+                    </div>
+                </div>
+
+                <div class="auto-results-strip" aria-live="polite">
+                    <div><span>Juros/acréscimos excluídos</span><strong id="resJurosTrib">R$ 0,00</strong></div>
+                    <div><span>Parcela média mensal</span><strong id="resParcelaMesTrib">R$ 0,00</strong></div>
+                    <div><span>Previdência calculada</span><strong id="resPrevPagamento">R$ 0,00</strong></div>
+                    <div><span>Base após previdência</span><strong id="resBaseIrTrib">R$ 0,00</strong></div>
+                </div>
+
+                <div class="plain-note" id="regimeInfoTrib"><strong>IMPAR — Araguaína:</strong> contribuição do segurado configurada em 14%. Alíquota patronal não é descontada do crédito do servidor.</div>
+                <div id="taxWarning" class="tax-warning" role="alert" aria-live="assertive"></div>
+            </section>
+
+            <aside class="tax-result-card" aria-label="Resultado do cálculo">
+                <div class="result-card-head">
+                    <span>Conferência imediata</span>
+                    <h2>Resultado do cálculo</h2>
+                </div>
+                <div class="liquid-highlight">
+                    <small>Valor líquido do credor</small>
+                    <strong id="resLiquidoTrib">R$ 0,00</strong>
+                </div>
+                <div class="result-breakdown">
+                    <div class="result-row"><span>Valor disponível</span><strong id="resValorLiberadoTrib">R$ 0,00</strong></div>
+                    <div class="result-row"><span>Previdência / RPPS</span><strong id="resPrevResumoTrib">R$ 0,00</strong></div>
+                    <div class="result-row"><span>IRRF</span><strong id="resIrPagamento">R$ 0,00</strong></div>
+                    <div class="result-row"><span>Outros descontos</span><strong id="resOutrosResumoTrib">R$ 0,00</strong></div>
+                    <div class="result-row total"><span>Total destinado</span><strong id="resultadoTotalDestinadoVisual">R$ 0,00</strong></div>
+                </div>
+                <div class="result-check-wrap">
+                    <div class="destination-check" id="destinoCheckTrib">A soma das destinações será conferida automaticamente.</div>
+                </div>
+            </aside>
+        </div>
+
+        <section class="tax-memory-section" aria-labelledby="resumoTribTitulo">
+            <div class="section-heading-row">
+                <div>
+                    <h2 id="resumoTribTitulo">Memória do cálculo</h2>
+                    <p>Valores organizados para conferência rápida antes da expedição.</p>
+                </div>
+            </div>
+
+            <div class="organized-tables-grid">
+                <div class="table-card">
+                    <div class="table-card-title">Composição do crédito</div>
+                    <table class="clean-tax-table">
+                        <tbody>
+                            <tr><th>Valor atualizado disponível</th><td id="tabCreditoTrib">R$ 0,00</td></tr>
+                            <tr><th>Principal remuneratório atualizado</th><td id="tabBasePrevTrib">R$ 0,00</td></tr>
+                            <tr><th>Juros/acréscimos excluídos da base</th><td id="tabJurosTrib">R$ 0,00</td></tr>
+                            <tr><th>Número de competências</th><td id="tabMesesTrib">—</td></tr>
+                            <tr><th>Parcela média do principal</th><td id="tabParcelaMesTrib">R$ 0,00</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="table-card">
+                    <div class="table-card-title">Descontos legais</div>
+                    <table class="clean-tax-table">
+                        <tbody>
+                            <tr><th>Regime previdenciário</th><td id="tabRegimeTrib">IMPAR</td></tr>
+                            <tr><th>Alíquota do segurado</th><td id="tabAliquotaPrevTrib">14,00%</td></tr>
+                            <tr><th>Contribuição previdenciária</th><td id="tabPrevTotalTrib">R$ 0,00</td></tr>
+                            <tr><th>Base após previdência</th><td id="tabBaseIrTrib">R$ 0,00</td></tr>
+                            <tr><th>IRRF</th><td id="tabIrPagTrib">R$ 0,00</td></tr>
+                            <tr><th>Outros descontos</th><td id="tabOutrosTrib">R$ 0,00</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section class="certidao-panel" aria-labelledby="tituloCertidaoTrib">
+            <div class="certidao-panel-header">
+                <div>
+                    <h3 id="tituloCertidaoTrib">Certidão pronta</h3>
+                    <p>Texto jurídico revisado e quadro de cálculo gerado automaticamente.</p>
+                </div>
+                <div class="certidao-actions">
+                    <button type="button" class="btn-copy-cert" onclick="copiarCertidaoTributacao(false)">Copiar certidão completa</button>
+                    <button type="button" class="btn-copy-cert alt" onclick="copiarCertidaoTributacao(true)">Copiar apenas os cálculos</button>
+                </div>
+            </div>
+            <div class="certidao-body">
+                <div class="document-preview">
+                    <textarea id="textoCertidaoTrib" class="certidao-textarea" readonly aria-label="Texto pronto para copiar e colar na certidão do processo"></textarea>
+                </div>
+                <div id="statusCopiaCertidao" class="copy-status" aria-live="polite"></div>
+                <div class="subtle-note certidao-footnote"><strong>Antes de juntar:</strong> confira os valores informados, a alíquota previdenciária e eventual IRRF.</div>
+            </div>
+        </section>
     </div>
-
-    <div class="tax-actions">
-        <button type="button" class="btn-tax secondary" onclick="usarCreditoParteNaTributacao()">Usar “Crédito da Parte” do rateio</button>
-        <button type="button" class="btn-tax ghost" onclick="limparTributacao()">Limpar somente tributação</button>
-    </div>
-
-    <section class="tax-step" aria-labelledby="etapa1Trib">
-        <h2 class="step-title" id="etapa1Trib"><span class="step-number">1</span> Informe os valores do processo</h2>
-        <div class="tax-form-grid two">
-            <div class="input-group">
-                <label class="field-label-main" for="creditoTrib">Valor disponível / Calc GRV (R$)<span class="required-hint">obrigatório</span></label>
-                <input type="text" inputmode="decimal" id="creditoTrib" placeholder="Ex.: 617,41" oninput="mascaraMoeda(this); calcularTributacao()" aria-describedby="helpCreditoTrib">
-                <div class="input-help" id="helpCreditoTrib">É o saldo bruto que será liberado ao final, antes dos descontos legais.</div>
-            </div>
-            <div class="input-group">
-                <label class="field-label-main" for="basePrevInformadaTrib">Principal corrigido / base de contribuição (R$)<span class="required-hint">obrigatório</span></label>
-                <input type="text" inputmode="decimal" id="basePrevInformadaTrib" placeholder="Ex.: 419,18" oninput="mascaraMoeda(this); calcularTributacao()" aria-describedby="helpBaseTrib">
-                <div class="input-help" id="helpBaseTrib">Use o principal corrigido da memória de cálculo, sem juros de mora/rendimentos.</div>
-            </div>
-            <div class="input-group">
-                <label class="field-label-main" for="mesesTrib">Período remuneratório (meses)<span class="required-hint">obrigatório</span></label>
-                <input type="number" id="mesesTrib" value="1" min="1" step="1" oninput="calcularTributacao()" aria-describedby="helpMesesTrib">
-                <div class="input-help" id="helpMesesTrib">Quantidade de competências usadas para a verba remuneratória. Ex.: mar/2020 a set/2020 = 7 meses.</div>
-            </div>
-            <div class="input-group">
-                <label class="field-label-main" for="periodoTextoTrib">Descrição do período <span style="font-size:.72rem;color:#6c757d;font-weight:700;">opcional</span></label>
-                <input type="text" id="periodoTextoTrib" placeholder="Ex.: mar/2020 a set/2020" oninput="calcularTributacao()" aria-describedby="helpPeriodoTextoTrib">
-                <div class="input-help" id="helpPeriodoTextoTrib">Aparece no texto pronto da certidão. Não altera o cálculo.</div>
-            </div>
-        </div>
-
-        <div class="formula-panel" aria-live="polite">
-            <div class="formula-line"><span>Juros/rendimentos excluídos da base</span><strong id="resJurosTrib">R$ 0,00</strong></div>
-            <div class="formula-line"><span>Parcela média do principal corrigido</span><strong id="resParcelaMesTrib">R$ 0,00</strong></div>
-        </div>
-    </section>
-
-    <section class="tax-step" aria-labelledby="etapa2Trib">
-        <h2 class="step-title" id="etapa2Trib"><span class="step-number">2</span> Selecione o regime previdenciário</h2>
-        <div class="tax-form-grid">
-            <div class="input-group">
-                <label class="field-label-main" for="regimePrevTrib">Regime previdenciário</label>
-                <select id="regimePrevTrib" onchange="atualizarRegimePrevidenciario()">
-                    <option value="impar" selected>IMPAR — Município de Araguaína</option>
-                    <option value="igeprev">IGEPREV-TO — Estado do Tocantins</option>
-                    <option value="outro">Outro RPPS / informar manualmente</option>
-                </select>
-                <div class="input-help">IMPAR e IGEPREV-TO carregam 14% como contribuição do segurado.</div>
-            </div>
-            <div class="input-group">
-                <label class="field-label-main" for="aliquotaPrevTrib">Contribuição do segurado (%)</label>
-                <input type="number" id="aliquotaPrevTrib" value="14" min="0" max="100" step="0.01" oninput="marcarAliquotaManual(); calcularTributacao()" aria-describedby="helpAliquotaTrib">
-                <div class="input-help" id="helpAliquotaTrib">Percentual descontado do crédito do servidor. Pode ser alterado para situações específicas.</div>
-            </div>
-            <div class="input-group">
-                <label class="field-label-main">Contribuição previdenciária calculada</label>
-                <div class="box-prazo" id="resPrevPagamento" style="background:#eef5f9;border-color:#afcadb;color:#204f6f;">R$ 0,00</div>
-                <div class="input-help">Base de contribuição × alíquota do segurado.</div>
-            </div>
-        </div>
-        <div class="plain-note" id="regimeInfoTrib">
-            <strong>IMPAR:</strong> a contribuição do segurado está configurada em 14%. O percentual patronal, quando existente, não é deduzido do crédito do servidor.
-        </div>
-    </section>
-
-    <section class="tax-step" aria-labelledby="etapa3Trib">
-        <h2 class="step-title" id="etapa3Trib"><span class="step-number">3</span> Informe IRRF e outros descontos, se houver</h2>
-        <div class="tax-form-grid">
-            <div class="input-group">
-                <label class="field-label-main">Base para IRRF após previdência</label>
-                <div class="box-prazo" id="resBaseIrTrib" style="background:#f5f6f7;border-color:#d6dadd;color:#33414b;">R$ 0,00</div>
-                <div class="input-help">Principal corrigido − contribuição previdenciária.</div>
-            </div>
-            <div class="input-group">
-                <label class="field-label-main" for="valorIrTrib">IRRF apurado (R$)</label>
-                <input type="text" inputmode="decimal" id="valorIrTrib" placeholder="0,00" oninput="mascaraMoeda(this); calcularTributacao()">
-                <div class="input-help">Informe o valor calculado pela contadoria. Se houver isenção, deixe 0,00.</div>
-            </div>
-            <div class="input-group">
-                <label class="field-label-main" for="outrosDescontosTrib">Outros descontos (R$)</label>
-                <input type="text" inputmode="decimal" id="outrosDescontosTrib" placeholder="0,00" oninput="mascaraMoeda(this); calcularTributacao()">
-                <div class="input-help">Opcional. Use somente quando houver desconto adicional determinado nos autos.</div>
-            </div>
-        </div>
-    </section>
-
-    <div id="taxWarning" class="tax-warning" role="alert" aria-live="assertive"></div>
-
-    <section aria-labelledby="resultadoTrib">
-        <h2 class="step-title" id="resultadoTrib"><span class="step-number">✓</span> Resultado para liberação</h2>
-        <div class="tax-result-flow" aria-live="polite">
-            <div class="flow-box">
-                <div class="kicker">Valor disponível</div>
-                <div class="amount" id="resValorLiberadoTrib">R$ 0,00</div>
-            </div>
-            <div class="flow-box deduction">
-                <div class="kicker">− Previdência</div>
-                <div class="amount" id="resPrevResumoTrib">R$ 0,00</div>
-            </div>
-            <div class="flow-box deduction">
-                <div class="kicker">− IRRF</div>
-                <div class="amount" id="resIrPagamento">R$ 0,00</div>
-            </div>
-            <div class="flow-box deduction">
-                <div class="kicker">− Outros</div>
-                <div class="amount" id="resOutrosResumoTrib">R$ 0,00</div>
-            </div>
-            <div class="flow-box final">
-                <div class="kicker">Líquido do credor</div>
-                <div class="amount" id="resLiquidoTrib">R$ 0,00</div>
-            </div>
-        </div>
-    </section>
-
-    <section class="certidao-panel" aria-labelledby="tituloCertidaoTrib">
-        <div class="certidao-panel-header">
-            <div>
-                <h3 id="tituloCertidaoTrib">Texto pronto para a certidão</h3>
-                <p>O texto e os cálculos abaixo são atualizados automaticamente conforme os dados preenchidos.</p>
-            </div>
-            <div class="certidao-actions">
-                <button type="button" class="btn-copy-cert" onclick="copiarCertidaoTributacao(false)">📋 Copiar certidão completa</button>
-                <button type="button" class="btn-copy-cert alt" onclick="copiarCertidaoTributacao(true)">Copiar só os cálculos</button>
-            </div>
-        </div>
-        <div class="certidao-body">
-            <textarea id="textoCertidaoTrib" class="certidao-textarea" readonly aria-label="Texto pronto para copiar e colar na certidão do processo"></textarea>
-            <div id="statusCopiaCertidao" class="copy-status" aria-live="polite"></div>
-            <div class="subtle-note"><strong>Conferência:</strong> antes de juntar aos autos, verifique se o período, o regime previdenciário, a alíquota e o IRRF correspondem ao caso concreto.</div>
-        </div>
-    </section>
-
-    <div class="tax-table-wrap">
-        <table class="tax-table" aria-label="Memória de cálculo detalhada da tributação">
-            <thead><tr><th>Memória de cálculo</th><th>Resultado</th></tr></thead>
-            <tbody>
-                <tr><td>Valor disponível / Calc GRV</td><td id="tabCreditoTrib">R$ 0,00</td></tr>
-                <tr><td>Principal corrigido / base de contribuição</td><td id="tabBasePrevTrib">R$ 0,00</td></tr>
-                <tr><td>Juros/rendimentos excluídos</td><td id="tabJurosTrib">R$ 0,00</td></tr>
-                <tr><td>Período remuneratório</td><td id="tabMesesTrib">1 mês</td></tr>
-                <tr><td>Parcela média (principal ÷ meses)</td><td id="tabParcelaMesTrib">R$ 0,00</td></tr>
-                <tr><td>Regime previdenciário</td><td id="tabRegimeTrib">IMPAR</td></tr>
-                <tr><td>Alíquota do segurado</td><td id="tabAliquotaPrevTrib">14,00%</td></tr>
-                <tr><td>Contribuição previdenciária</td><td id="tabPrevTotalTrib">R$ 0,00</td></tr>
-                <tr><td>Base para IRRF (principal − previdência)</td><td id="tabBaseIrTrib">R$ 0,00</td></tr>
-                <tr><td>IRRF informado</td><td id="tabIrPagTrib">R$ 0,00</td></tr>
-                <tr><td>Outros descontos</td><td id="tabOutrosTrib">R$ 0,00</td></tr>
-                <tr><td><strong>Valor líquido para o credor</strong></td><td id="tabLiquidoTrib">R$ 0,00</td></tr>
-            </tbody>
-        </table>
-    </div>
-</div>
+</section>
 
 <!-- MÓDULO 3: DESTAQUE DE HONORÁRIOS CONTRATUAIS -->
-<div class="container" id="mod-honorarios" style="border-top-color: #00796b;">
-    <h1 style="color: #00796b;">Destaque de Honorários Contratuais</h1>
-    <p class="subtitle">Subdivisão do crédito da parte (percentual aplicado sobre o valor atualizado)</p>
-
-    <div class="global-inputs">
-        <div class="input-group">
-            <label for="valorAtualizadoParte">Valor Atualizado da Parte (R$)</label>
-            <input type="text" inputmode="numeric" id="valorAtualizadoParte" placeholder="0,00" oninput="mascaraMoeda(this); calcularDestaque()">
-        </div>
-        <div class="input-group">
-            <label for="percentualDestaque">Percentual a Destacar (%)</label>
-            <input type="number" id="percentualDestaque" placeholder="Ex: 30" step="0.01" max="100" oninput="calcularDestaque()">
+<section class="container module-card" id="mod-honorarios">
+    <div class="module-heading">
+        <div class="module-heading-main">
+            <div class="module-index teal">03</div>
+            <div class="module-heading-copy">
+                <h2>Destaque de honorários contratuais</h2>
+                <p>Separe o valor da parte e o destaque do advogado com cálculo imediato.</p>
+            </div>
         </div>
     </div>
+    <div class="module-body">
+        <div class="honorarios-workspace">
+            <div class="honorarios-inputs">
+                <div class="input-panel-title">Dados para o destaque</div>
+                <div class="global-inputs">
+                    <div class="input-group">
+                        <label for="valorAtualizadoParte">Valor atualizado da parte</label>
+                        <input type="text" inputmode="numeric" id="valorAtualizadoParte" placeholder="0,00" oninput="mascaraMoeda(this); calcularDestaque()">
+                        <div class="input-help">Informe o crédito sobre o qual incidirá o percentual contratual.</div>
+                    </div>
+                    <div class="input-group">
+                        <label for="percentualDestaque">Percentual a destacar</label>
+                        <input type="number" id="percentualDestaque" placeholder="Ex.: 30" step="0.01" max="100" min="0" oninput="calcularDestaque()">
+                        <div class="input-help">O resultado é dividido automaticamente entre parte e advogado.</div>
+                    </div>
+                </div>
+            </div>
 
-    <div class="destaque-resultados">
-        <div class="destaque-box box-parte">
-            <h4>Alvará - Parte (Líquido)</h4>
-            <div class="destaque-valor" id="resParteLiquido">R$ 0,00</div>
-        </div>
-        <div class="destaque-box box-advogado">
-            <h4>Alvará - Advogado (Destaque)</h4>
-            <div class="destaque-valor" id="resHonorariosDestaque">R$ 0,00</div>
+            <div class="destaque-resultados" aria-live="polite">
+                <div class="destaque-box box-parte">
+                    <h4>Alvará da parte · líquido</h4>
+                    <div class="destaque-valor" id="resParteLiquido">R$ 0,00</div>
+                </div>
+                <div class="destaque-box box-advogado">
+                    <h4>Alvará do advogado · destaque</h4>
+                    <div class="destaque-valor" id="resHonorariosDestaque">R$ 0,00</div>
+                </div>
+            </div>
         </div>
     </div>
-</div>
+</section>
 
-<!-- MÓDULO 2: CONTAGEM DE PRAZO MATERIAL (RPV) -->
-<div class="container" id="mod-prazo" style="border-top-color: #1565c0;">
-    <h1 style="color: #1565c0;">Cálculo de Prazo (Intimação Fazenda Pública)</h1>
-    <p class="subtitle">Contagem em dias corridos / prazo material (Conforme Ata 84 - SEI 5647516)</p>
-
-    <div class="global-inputs">
-        <div class="input-group">
-            <label for="dataInicial">Data Inicial</label>
-            <input type="date" id="dataInicial" oninput="calcularPrazo()">
-        </div>
-        <div class="input-group">
-            <label for="qtdDias">Quantidade de Dias</label>
-            <input type="number" id="qtdDias" value="70" oninput="calcularPrazo()">
-        </div>
-        <div class="input-group">
-            <label>Data Final (Vencimento)</label>
-            <div class="box-prazo" id="dataFinal">-</div>
+<!-- MÓDULO 4: CONTAGEM DE PRAZO MATERIAL -->
+<section class="container module-card" id="mod-prazo">
+    <div class="module-heading">
+        <div class="module-heading-main">
+            <div class="module-index blue">04</div>
+            <div class="module-heading-copy">
+                <h2>Cálculo de prazo da Fazenda Pública</h2>
+                <p>Contagem em dias corridos, com ajuste automático quando o vencimento cair no fim de semana.</p>
+            </div>
         </div>
     </div>
-    <p class="info-prazo">
-        <strong>Nota:</strong> O sistema adiciona os dias de forma corrida. Se a data final cair em um Sábado ou Domingo, ela é automaticamente transferida para a próxima Segunda-feira.
-    </p>
-</div>
+    <div class="module-body">
+        <div class="prazo-workspace">
+            <div class="prazo-inputs">
+                <div class="input-panel-title">Dados do prazo</div>
+                <div class="global-inputs">
+                    <div class="input-group">
+                        <label for="dataInicial">Data inicial</label>
+                        <input type="date" id="dataInicial" oninput="calcularPrazo()">
+                    </div>
+                    <div class="input-group">
+                        <label for="qtdDias">Quantidade de dias</label>
+                        <input type="number" id="qtdDias" value="70" min="0" oninput="calcularPrazo()">
+                    </div>
+                </div>
+                <p class="info-prazo"><strong>Regra usada:</strong> os dias são somados de forma corrida. Se o vencimento cair em sábado ou domingo, o sistema transfere para a segunda-feira seguinte.</p>
+            </div>
+            <div class="prazo-result" aria-live="polite">
+                <span>Data final do prazo</span>
+                <div class="box-prazo" id="dataFinal">-</div>
+            </div>
+        </div>
+    </div>
+</section>
 
 <script>
     let contadorIds = 0;
@@ -975,8 +2296,7 @@
 
         document.getElementById('creditoTrib').value = '';
         document.getElementById('basePrevInformadaTrib').value = '';
-        document.getElementById('mesesTrib').value = '1';
-        document.getElementById('periodoTextoTrib').value = '';
+        document.getElementById('mesesTrib').value = '';
         document.getElementById('regimePrevTrib').value = 'impar';
         document.getElementById('aliquotaPrevTrib').value = '14';
         aliquotaFoiAlteradaManualmente = false;
@@ -1020,23 +2340,23 @@
         
         const botaoRemover = fixo 
             ? `<div class="placeholder-btn"></div>` 
-            : `<button class="btn btn-remove" onclick="removerAlvara(${id})" title="Remover linha">X</button>`;
+            : `<button class="btn btn-remove" onclick="removerAlvara(${id})" title="Remover alvará" aria-label="Remover alvará">×</button>`;
 
         div.innerHTML = `
-            <div class="input-group" style="flex: 2;">
-                <label>Referência / Beneficiário</label>
-                <input type="text" placeholder="Ex: Honorários Periciais" value="${descricaoPadrao}" ${fixo ? 'readonly style="background-color: #f1f3f5; color: #495057;"' : ''}>
+            <div class="input-group">
+                <label>Nome do beneficiário / referência${fixo ? '' : '<span class="required-hint">obrigatório</span>'}</label>
+                <input type="text" class="beneficiario-nome" placeholder="Ex.: Honorários periciais" value="${descricaoPadrao}" ${fixo ? 'readonly' : 'required'} oninput="calcularAlvaras()">
             </div>
-            <div class="input-group" style="flex: 1.2;">
-                <label>V. Original (R$)</label>
+            <div class="input-group">
+                <label>Valor original</label>
                 <input type="text" inputmode="numeric" class="val-original" placeholder="0,00" oninput="mascaraMoeda(this); calcularAlvaras()">
             </div>
-            <div class="input-group" style="flex: 0.8;">
-                <label style="color:#868e96;">Proporção</label>
+            <div class="input-group">
+                <label>Proporção</label>
                 <div class="result-box-prop prop-resultado">0,00%</div>
             </div>
-            <div class="input-group" style="flex: 1.8;">
-                <label style="color:#1b5e20; font-size: 0.95em;">Valor Final do Alvará</label>
+            <div class="input-group">
+                <label>Valor final do alvará</label>
                 <div class="result-box-destaque val-atualizado">R$ 0,00</div>
             </div>
             ${botaoRemover}
@@ -1053,71 +2373,131 @@
     function calcularAlvaras() {
         const valorBase = extrairNumero(document.getElementById('valorBase').value);
         const saldoConta = extrairNumero(document.getElementById('saldoConta').value);
+
+        // Trabalha em centavos inteiros para evitar inconsistências de ponto flutuante.
+        const valorBaseCentavos = Math.round(valorBase * 100);
+        const saldoContaCentavos = Math.round(saldoConta * 100);
+
         const linhas = document.querySelectorAll('.alvara-row');
         const barraStatus = document.getElementById('barraStatus');
-        
-        // 1º Passo: Calcula os valores provisórios de cada linha para somar o montante final
+        const erroMsgEl = barraStatus ? barraStatus.querySelector('.erro-msg') : null;
+
         let valoresCalculados = [];
-        let somaTotalFinalAlvaras = 0;
+        let somaTotalFinalCentavos = 0;
+        let nomesPendentes = 0;
 
         linhas.forEach(linha => {
-            const valOriginal = extrairNumero(linha.querySelector('.val-original').value);
-            let valorAtualizado = 0;
-            let proporcao = 0;
+            const campoNome = linha.querySelector('.beneficiario-nome');
+            const nomePreenchido = !campoNome || !!campoNome.value.trim();
 
-            if (valorBase > 0 && valOriginal > 0) {
-                proporcao = valOriginal / valorBase;
-                valorAtualizado = saldoConta * proporcao;
+            const valOriginal = extrairNumero(linha.querySelector('.val-original').value);
+            const valOriginalCentavos = Math.round(valOriginal * 100);
+
+            let proporcao = 0;
+            let valorAtualizadoCentavos = 0;
+
+            if (valorBaseCentavos > 0 && valOriginalCentavos > 0) {
+                proporcao = valOriginalCentavos / valorBaseCentavos;
+
+                // Arredonda cada resultado diretamente para centavos.
+                valorAtualizadoCentavos = Math.round(
+                    (saldoContaCentavos * valOriginalCentavos) / valorBaseCentavos
+                );
             }
 
-            somaTotalFinalAlvaras += valorAtualizado;
-            valoresCalculados.push({ linha, valOriginal, proporcao, valorAtualizado });
+            if (campoNome && !campoNome.hasAttribute('readonly') && !nomePreenchido) {
+                nomesPendentes++;
+            }
+
+            somaTotalFinalCentavos += valorAtualizadoCentavos;
+
+            valoresCalculados.push({
+                linha,
+                campoNome,
+                valOriginalCentavos,
+                proporcao,
+                valorAtualizadoCentavos
+            });
         });
 
-        document.getElementById('spanTotalFinalAlvaras').innerText = formatarMoedaVisual(somaTotalFinalAlvaras);
+        const somaTotalFinalAlvaras = somaTotalFinalCentavos / 100;
+        const saldoRestanteCentavos = saldoContaCentavos - somaTotalFinalCentavos;
 
-        // TRAVA DE SEGURANÇA: Se a soma dos valores finais dos alvarás ultrapassar o saldo atual da conta
-        const erroTravado = (somaTotalFinalAlvaras > saldoConta) && (saldoConta > 0);
+        document.getElementById('spanTotalFinalAlvaras').innerText =
+            formatarMoedaVisual(somaTotalFinalAlvaras);
 
-        if (erroTravado) {
-            barraStatus.classList.add('erro');
-        } else {
-            barraStatus.classList.remove('erro');
-        }
+        const resumoBase = document.getElementById('resValorBaseRateio');
+        const resumoSaldo = document.getElementById('resSaldoContaRateio');
+        const resumoRestante = document.getElementById('resSaldoRestanteRateio');
 
-        // 2º Passo: Renderiza os valores ou aplica o bloqueio de erro se passar do saldo atual
+        if (resumoBase) resumoBase.innerText = formatarMoedaVisual(valorBaseCentavos / 100);
+        if (resumoSaldo) resumoSaldo.innerText = formatarMoedaVisual(saldoContaCentavos / 100);
+        if (resumoRestante) resumoRestante.innerText = formatarMoedaVisual(saldoRestanteCentavos / 100);
+
+        // Renderiza sempre os valores. Não há mais bloqueio/trava por divergência.
         valoresCalculados.forEach(item => {
             const propBox = item.linha.querySelector('.prop-resultado');
             const atualizadoBox = item.linha.querySelector('.val-atualizado');
 
-            if (erroTravado) {
-                item.linha.classList.add('erro-linha');
-                propBox.innerText = 'ERRO';
-                atualizadoBox.innerText = 'TRAVADO';
-                atualizadoBox.style.color = '#c0392b';
-                atualizadoBox.style.borderColor = '#e74c3c';
-                atualizadoBox.style.backgroundColor = '#fadbd8';
-            } else {
-                item.linha.classList.remove('erro-linha');
-                atualizadoBox.style.color = '#1b5e20';
-                atualizadoBox.style.borderColor = '#4caf50';
-                atualizadoBox.style.backgroundColor = '#e8f5e9';
+            const nomeLinhaOk =
+                !item.campoNome ||
+                item.campoNome.hasAttribute('readonly') ||
+                !!item.campoNome.value.trim();
 
-                if (valorBase > 0 && item.valOriginal > 0) {
-                    propBox.innerText = (item.proporcao * 100).toFixed(2).replace('.', ',') + '%';
-                    atualizadoBox.innerText = formatarMoedaVisual(item.valorAtualizado);
-                } else {
-                    propBox.innerText = '0,00%';
-                    atualizadoBox.innerText = 'R$ 0,00';
-                }
+            item.linha.classList.toggle('erro-linha', !nomeLinhaOk);
+
+            atualizadoBox.style.color = '#1b5e20';
+            atualizadoBox.style.borderColor = '#4caf50';
+            atualizadoBox.style.backgroundColor = '#e8f5e9';
+
+            if (valorBaseCentavos > 0 && item.valOriginalCentavos > 0) {
+                propBox.innerText =
+                    (item.proporcao * 100).toFixed(2).replace('.', ',') + '%';
+
+                atualizadoBox.innerText =
+                    formatarMoedaVisual(item.valorAtualizadoCentavos / 100);
+            } else {
+                propBox.innerText = '0,00%';
+                atualizadoBox.innerText = 'R$ 0,00';
             }
         });
+
+        // Apenas informa eventual divergência; nunca impede o cálculo.
+        const diferencaCentavos = somaTotalFinalCentavos - saldoContaCentavos;
+        const haDivergencia = saldoContaCentavos > 0 && diferencaCentavos !== 0;
+        const haNomePendente = nomesPendentes > 0;
+
+        if (barraStatus) {
+            barraStatus.classList.remove('erro', 'aviso', 'ok');
+
+            if (haNomePendente) {
+                barraStatus.classList.add('erro');
+                if (erroMsgEl) {
+                    erroMsgEl.textContent =
+                        'Preencha o nome do beneficiário/referência em todos os alvarás.';
+                }
+            } else if (haDivergencia) {
+                barraStatus.classList.add('aviso');
+                if (erroMsgEl) {
+                    const sinal = diferencaCentavos > 0 ? 'acima' : 'abaixo';
+                    erroMsgEl.textContent =
+                        `A soma dos alvarás ficou ${formatarMoedaVisual(Math.abs(diferencaCentavos) / 100)} ${sinal} do saldo da conta. Confira o rateio.`;
+                }
+            } else if (saldoContaCentavos > 0 && valorBaseCentavos > 0) {
+                barraStatus.classList.add('ok');
+                if (erroMsgEl) {
+                    erroMsgEl.textContent = 'Rateio conferido: a soma dos alvarás coincide com o saldo da conta.';
+                }
+            } else if (erroMsgEl) {
+                erroMsgEl.textContent = 'Preencha os valores para conferir o rateio.';
+            }
+        }
     }
 
 
     /* ========================================================
        LÓGICA DO MÓDULO 2: TRIBUTAÇÃO DO CRÉDITO
-       Fluxo guiado: valor disponível > base > regime > descontos > líquido
+       Fluxo único e simplificado
        ======================================================== */
     let aliquotaFoiAlteradaManualmente = false;
 
@@ -1135,8 +2515,7 @@
     function limparTributacao() {
         document.getElementById('creditoTrib').value = '';
         document.getElementById('basePrevInformadaTrib').value = '';
-        document.getElementById('mesesTrib').value = '1';
-        document.getElementById('periodoTextoTrib').value = '';
+        document.getElementById('mesesTrib').value = '';
         document.getElementById('regimePrevTrib').value = 'impar';
         document.getElementById('aliquotaPrevTrib').value = '14';
         document.getElementById('valorIrTrib').value = '';
@@ -1144,24 +2523,22 @@
         aliquotaFoiAlteradaManualmente = false;
         atualizarRegimePrevidenciario(false);
         calcularTributacao();
+        document.getElementById('creditoTrib').focus();
     }
 
     function usarCreditoParteNaTributacao() {
         const primeiraLinha = document.querySelector('.alvara-row');
         if (!primeiraLinha) return;
-
         const box = primeiraLinha.querySelector('.val-atualizado');
         if (!box || box.innerText === 'TRAVADO') {
             exibirAvisoTrib('Não foi possível importar o Crédito da Parte. Confira o rateio e o saldo da conta judicial.');
             return;
         }
-
         const valor = extrairNumero(box.innerText.replace('R$', '').trim());
         if (valor <= 0) {
             exibirAvisoTrib('Calcule primeiro o “Crédito da Parte” no módulo de rateio.');
             return;
         }
-
         definirCampoMoeda('creditoTrib', valor);
         calcularTributacao();
         document.getElementById('basePrevInformadaTrib').focus();
@@ -1185,17 +2562,19 @@
     }
 
     function atualizarChipRegime() {
-        const regime = document.getElementById('regimePrevTrib').value;
-        const aliquota = parseFloat(document.getElementById('aliquotaPrevTrib').value) || 0;
+        const regimeEl = document.getElementById('regimePrevTrib');
+        const aliquotaEl = document.getElementById('aliquotaPrevTrib');
         const chip = document.getElementById('regimeChip');
-        chip.innerText = `Regime: ${nomeRegimeTrib(regime)} • ${aliquota.toFixed(2).replace('.', ',')}%${aliquotaFoiAlteradaManualmente ? ' (manual)' : ''}`;
+        if (!regimeEl || !aliquotaEl || !chip) return;
+        const regime = regimeEl.value;
+        const aliquota = parseFloat(aliquotaEl.value) || 0;
+        chip.innerText = `${nomeRegimeTrib(regime)} • ${aliquota.toFixed(2).replace('.', ',')}%${aliquotaFoiAlteradaManualmente ? ' (ajustada)' : ''}`;
     }
 
     function atualizarRegimePrevidenciario(recalcular = true) {
         const regime = document.getElementById('regimePrevTrib').value;
         const aliquota = document.getElementById('aliquotaPrevTrib');
         const info = document.getElementById('regimeInfoTrib');
-
         aliquotaFoiAlteradaManualmente = false;
 
         if (regime === 'impar') {
@@ -1203,52 +2582,59 @@
             info.innerHTML = '<strong>IMPAR — Araguaína:</strong> contribuição do segurado configurada em 14%. Alíquota patronal não é descontada do crédito do servidor.';
         } else if (regime === 'igeprev') {
             aliquota.value = '14';
-            info.innerHTML = '<strong>IGEPREV-TO:</strong> contribuição do segurado configurada em 14%. As alíquotas patronais do Estado não reduzem o valor líquido do credor.';
+            info.innerHTML = '<strong>IGEPREV-TO:</strong> contribuição do segurado configurada em 14%. Alíquotas patronais não reduzem o valor líquido do credor.';
         } else {
             aliquota.value = '';
-            info.innerHTML = '<strong>Outro RPPS:</strong> informe manualmente a alíquota do segurado indicada pela legislação ou pela informação do ente devedor nos autos.';
-            aliquota.focus();
+            info.innerHTML = '<strong>Outro RPPS:</strong> informe a alíquota do segurado aplicável ao caso.';
+            setTimeout(() => aliquota.focus(), 0);
         }
-
         atualizarChipRegime();
         if (recalcular) calcularTributacao();
     }
 
-    function montarCalculosCertidaoTrib(dados) {
-        const periodoDescricao = (document.getElementById('periodoTextoTrib')?.value || '').trim();
-        const periodoLinha = periodoDescricao
-            ? `${periodoDescricao} (${dados.meses} ${dados.meses === 1 ? 'mês' : 'meses'})`
-            : `${dados.meses} ${dados.meses === 1 ? 'mês' : 'meses'}`;
+    function linhaPontilhada(rotulo, valor) {
+        const largura = 49;
+        const pontos = '.'.repeat(Math.max(2, largura - rotulo.length));
+        return `${rotulo} ${pontos} ${valor}`;
+    }
 
+    function montarCalculosCertidaoTrib(dados) {
+        const periodo = dados.mesesValido ? `${dados.meses} ${dados.meses === 1 ? 'competência' : 'competências'}` : 'não informado';
+        const parcelaMediaTexto = dados.mesesValido ? formatarMoedaVisual(dados.parcelaMensal) : 'não informada';
         return [
-            'APURAÇÃO DE TRIBUTO E PREVIDÊNCIA',
+            'APURAÇÃO DOS DESCONTOS LEGAIS',
             '',
-            `Valor disponível / Calc GRV: ${formatarMoedaVisual(dados.credito)}`,
-            `Período remuneratório: ${periodoLinha}`,
-            `Parcela média do principal corrigido: ${formatarMoedaVisual(dados.parcelaMensal)}`,
-            `Juros de mora/rendimentos excluídos da base: ${formatarMoedaVisual(dados.juros)}`,
-            `Principal corrigido / base de contribuição previdenciária: ${formatarMoedaVisual(dados.basePrev)}`,
-            `Regime previdenciário: ${nomeRegimeTrib(dados.regime)}`,
-            `Alíquota de contribuição do segurado: ${dados.aliquotaPrev.toFixed(2).replace('.', ',')}%`,
-            `Contribuição previdenciária: ${formatarMoedaVisual(dados.previdencia)}`,
-            `Base para IRRF após previdência: ${formatarMoedaVisual(dados.baseIr)}`,
-            `IRRF: ${formatarMoedaVisual(dados.valorIr)}`,
-            `Outros descontos: ${formatarMoedaVisual(dados.outrosDescontos)}`,
+            linhaPontilhada('Valor atualizado disponível', formatarMoedaVisual(dados.credito)),
+            linhaPontilhada('Principal remuneratório atualizado', formatarMoedaVisual(dados.basePrev)),
+            linhaPontilhada('Juros/acréscimos excluídos da base', formatarMoedaVisual(dados.juros)),
+            linhaPontilhada('Período remuneratório', periodo),
+            linhaPontilhada('Parcela média do principal', parcelaMediaTexto),
             '',
-            'MEMÓRIA RESUMIDA',
-            `Juros/rendimentos excluídos = ${formatarMoedaVisual(dados.credito)} − ${formatarMoedaVisual(dados.basePrev)} = ${formatarMoedaVisual(dados.juros)}`,
-            `Previdência = ${formatarMoedaVisual(dados.basePrev)} × ${dados.aliquotaPrev.toFixed(2).replace('.', ',')}% = ${formatarMoedaVisual(dados.previdencia)}`,
-            `Base para IRRF = ${formatarMoedaVisual(dados.basePrev)} − ${formatarMoedaVisual(dados.previdencia)} = ${formatarMoedaVisual(dados.baseIr)}`,
-            `Valor líquido = ${formatarMoedaVisual(dados.credito)} − ${formatarMoedaVisual(dados.previdencia)} − ${formatarMoedaVisual(dados.valorIr)} − ${formatarMoedaVisual(dados.outrosDescontos)} = ${formatarMoedaVisual(dados.liquido)}`,
+            'PREVIDÊNCIA',
+            linhaPontilhada('Regime previdenciário', nomeRegimeTrib(dados.regime)),
+            linhaPontilhada('Alíquota do segurado', `${dados.aliquotaPrev.toFixed(2).replace('.', ',')}%`),
+            linhaPontilhada('Contribuição previdenciária', formatarMoedaVisual(dados.previdencia)),
             '',
-            `VALOR LÍQUIDO DO CREDOR: ${formatarMoedaVisual(dados.liquido)}`
+            'IMPOSTO DE RENDA E OUTROS DESCONTOS',
+            linhaPontilhada('Base remuneratória após previdência', formatarMoedaVisual(dados.baseIr)),
+            linhaPontilhada('IRRF', formatarMoedaVisual(dados.valorIr)),
+            linhaPontilhada('Outros descontos', formatarMoedaVisual(dados.outrosDescontos)),
+            '',
+            linhaPontilhada('VALOR LÍQUIDO DO CREDOR', formatarMoedaVisual(dados.liquido)),
+            '',
+            'CONFERÊNCIA DA DESTINAÇÃO',
+            linhaPontilhada('Credor', formatarMoedaVisual(dados.liquido)),
+            linhaPontilhada('Previdência / RPPS', formatarMoedaVisual(dados.previdencia)),
+            linhaPontilhada('IRRF', formatarMoedaVisual(dados.valorIr)),
+            linhaPontilhada('Outros descontos', formatarMoedaVisual(dados.outrosDescontos)),
+            linhaPontilhada('TOTAL', formatarMoedaVisual(dados.credito))
         ].join('\n');
     }
 
     function atualizarTextoCertidaoTrib(dados) {
         const campo = document.getElementById('textoCertidaoTrib');
         if (!campo) return;
-        const introducao = 'Em obediência a retro Decisão, CERTIFICO que se trata de verba de Diferença Salarial. A base de cálculo tanto pro Imposto de Renda quanto para a incidência da contribuição previdenciária e Imposto de Renda é apenas o valor do crédito atualizado, dividido pelo período, excluindo-se os juros, conforme apreciação do tema 808 - repercussão geral julgado pelo STJ - RE855091, que fixou a seguinte tese: "Não incide imposto de renda sobre os juros de mora devidos pelo atraso no pagamento de remuneração por exercício de emprego, cargo ou função." Portanto, o crédito sofrerá os descontos legais, conforme planilha abaixo.';
+        const introducao = 'Em obediência à decisão retro, CERTIFICO que o crédito possui natureza de diferença salarial, decorrente de verba remuneratória. Para fins de apuração dos descontos legais, considera-se o principal remuneratório atualizado informado no cálculo, com segregação dos juros de mora. Quanto ao imposto de renda, observa-se o entendimento firmado pelo Supremo Tribunal Federal no Tema 808 da repercussão geral (RE 855.091), cuja tese é: “Não incide imposto de renda sobre os juros de mora devidos pelo atraso no pagamento de remuneração por exercício de emprego, cargo ou função.” Para fins desta apuração, a contribuição previdenciária é calculada sobre o principal remuneratório atualizado, de acordo com o regime previdenciário e a alíquota informados. Quando informado, o principal é dividido pelo número de competências indicado para demonstração da parcela média mensal. Assim, apuram-se os valores abaixo:';
         const calculos = montarCalculosCertidaoTrib(dados);
         campo.value = `${introducao}\n\n${calculos}`;
         campo.dataset.calculos = calculos;
@@ -1268,7 +2654,6 @@
                 copiado = true;
             }
         } catch (e) {}
-
         if (!copiado) {
             const temp = document.createElement('textarea');
             temp.value = texto;
@@ -1280,19 +2665,19 @@
             try { copiado = document.execCommand('copy'); } catch (e) { copiado = false; }
             document.body.removeChild(temp);
         }
-
         status.classList.toggle('error', !copiado);
         status.textContent = copiado
-            ? (apenasCalculos ? '✓ Cálculos copiados. Pronto para colar na certidão.' : '✓ Certidão completa copiada. Pronto para colar no processo.')
-            : 'Não foi possível copiar automaticamente. Selecione o texto no campo e copie manualmente.';
-
+            ? (apenasCalculos ? '✓ Quadro de cálculos copiado.' : '✓ Certidão completa copiada. Pronta para colar no processo.')
+            : 'Não foi possível copiar automaticamente. Selecione o texto e copie manualmente.';
         if (copiado) setTimeout(() => { if (status) status.textContent = ''; }, 3500);
     }
 
     function calcularTributacao() {
         const credito = extrairNumero(document.getElementById('creditoTrib').value);
         const basePrev = extrairNumero(document.getElementById('basePrevInformadaTrib').value);
-        const meses = Math.max(1, parseInt(document.getElementById('mesesTrib').value, 10) || 1);
+        const mesesRaw = parseInt(document.getElementById('mesesTrib').value, 10);
+        const mesesValido = Number.isInteger(mesesRaw) && mesesRaw > 0;
+        const meses = mesesValido ? mesesRaw : 0;
         let aliquotaPrev = parseFloat(document.getElementById('aliquotaPrevTrib').value);
         if (!Number.isFinite(aliquotaPrev)) aliquotaPrev = 0;
         aliquotaPrev = Math.min(100, Math.max(0, aliquotaPrev));
@@ -1301,24 +2686,31 @@
         const regime = document.getElementById('regimePrevTrib').value;
 
         const juros = credito - basePrev;
-        const parcelaMensal = basePrev > 0 ? basePrev / meses : 0;
+        const parcelaMensal = (basePrev > 0 && mesesValido) ? basePrev / meses : 0;
         const previdencia = basePrev * (aliquotaPrev / 100);
         const baseIr = Math.max(basePrev - previdencia, 0);
         const liquido = credito - previdencia - valorIr - outrosDescontos;
 
+        const essenciais = [credito > 0, basePrev > 0, !!regime, aliquotaPrev > 0];
+        const preenchidos = essenciais.filter(Boolean).length;
+        const fillCount = document.getElementById('fillCountTrib');
+        if (fillCount) fillCount.textContent = `${preenchidos} de 4 essenciais preenchidos`;
+
         let avisos = [];
-        if (credito > 0 && basePrev <= 0) avisos.push('Informe o principal corrigido / base de contribuição para calcular a retenção previdenciária.');
-        if (basePrev > 0 && credito <= 0) avisos.push('Informe o valor disponível / Calc GRV para apurar o líquido do credor.');
-        if (credito > 0 && basePrev > credito) avisos.push('A base de contribuição está maior que o valor disponível. Isso gera juros/rendimentos negativos; confira se os dois valores pertencem ao mesmo crédito.');
-        if ((regime === 'impar' || regime === 'igeprev') && Math.abs(aliquotaPrev - 14) > 0.001) avisos.push(`A alíquota padrão deste regime está configurada em 14%. Você informou ${aliquotaPrev.toFixed(2).replace('.', ',')}%; mantenha somente se houver fundamento específico no processo.`);
+        if (credito > 0 && basePrev <= 0) avisos.push('Informe o principal remuneratório atualizado, sem juros.');
+        if (basePrev > 0 && credito <= 0) avisos.push('Informe o valor atualizado disponível / Calc GRV.');
+                if (credito > 0 && basePrev > credito) avisos.push('O principal remuneratório está maior que o valor disponível. Confira os valores.');
+        if ((regime === 'impar' || regime === 'igeprev') && Math.abs(aliquotaPrev - 14) > 0.001) avisos.push(`A alíquota padrão deste regime está configurada em 14%. Foi informado ${aliquotaPrev.toFixed(2).replace('.', ',')}%.`);
         if (liquido < 0) avisos.push('Os descontos superam o valor disponível. Confira os dados antes de utilizar o resultado.');
         exibirAvisoTrib(avisos.join(' '));
 
         document.getElementById('resJurosTrib').innerText = formatarMoedaVisual(juros);
-        document.getElementById('resParcelaMesTrib').innerText = formatarMoedaVisual(parcelaMensal);
+        document.getElementById('resParcelaMesTrib').innerText = mesesValido ? formatarMoedaVisual(parcelaMensal) : 'Não informada';
         document.getElementById('resPrevPagamento').innerText = formatarMoedaVisual(previdencia);
         document.getElementById('resBaseIrTrib').innerText = formatarMoedaVisual(baseIr);
         document.getElementById('resValorLiberadoTrib').innerText = formatarMoedaVisual(credito);
+        const totalDestinadoVisual = document.getElementById('resultadoTotalDestinadoVisual');
+        if (totalDestinadoVisual) totalDestinadoVisual.innerText = formatarMoedaVisual(liquido + previdencia + valorIr + outrosDescontos);
         document.getElementById('resPrevResumoTrib').innerText = formatarMoedaVisual(previdencia);
         document.getElementById('resIrPagamento').innerText = formatarMoedaVisual(valorIr);
         document.getElementById('resOutrosResumoTrib').innerText = formatarMoedaVisual(outrosDescontos);
@@ -1327,18 +2719,33 @@
         document.getElementById('tabCreditoTrib').innerText = formatarMoedaVisual(credito);
         document.getElementById('tabBasePrevTrib').innerText = formatarMoedaVisual(basePrev);
         document.getElementById('tabJurosTrib').innerText = formatarMoedaVisual(juros);
-        document.getElementById('tabMesesTrib').innerText = `${meses} ${meses === 1 ? 'mês' : 'meses'}`;
-        document.getElementById('tabParcelaMesTrib').innerText = formatarMoedaVisual(parcelaMensal);
+        document.getElementById('tabMesesTrib').innerText = mesesValido ? `${meses} ${meses === 1 ? 'competência' : 'competências'}` : '—';
+        document.getElementById('tabParcelaMesTrib').innerText = mesesValido ? formatarMoedaVisual(parcelaMensal) : 'Não informada';
         document.getElementById('tabRegimeTrib').innerText = nomeRegimeTrib(regime);
         document.getElementById('tabAliquotaPrevTrib').innerText = aliquotaPrev.toFixed(2).replace('.', ',') + '%';
         document.getElementById('tabPrevTotalTrib').innerText = formatarMoedaVisual(previdencia);
         document.getElementById('tabBaseIrTrib').innerText = formatarMoedaVisual(baseIr);
         document.getElementById('tabIrPagTrib').innerText = formatarMoedaVisual(valorIr);
         document.getElementById('tabOutrosTrib').innerText = formatarMoedaVisual(outrosDescontos);
-        document.getElementById('tabLiquidoTrib').innerText = formatarMoedaVisual(liquido);
+
+        const totalDestinos = Math.max(liquido, 0) + previdencia + valorIr + outrosDescontos;
+        const diferenca = Math.abs(totalDestinos - credito);
+        const check = document.getElementById('destinoCheckTrib');
+        if (check) {
+            check.classList.remove('ok', 'error');
+            if (credito <= 0) {
+                check.textContent = 'A soma das destinações será conferida automaticamente.';
+            } else if (liquido < 0 || diferenca > 0.02) {
+                check.classList.add('error');
+                check.textContent = '⚠️ A destinação não fecha com o valor disponível. Confira os descontos.';
+            } else {
+                check.classList.add('ok');
+                check.textContent = '✓ Conferência fechada: credor + descontos = valor disponível.';
+            }
+        }
 
         atualizarTextoCertidaoTrib({
-            credito, basePrev, meses, aliquotaPrev, valorIr, outrosDescontos,
+            credito, basePrev, meses, mesesValido, aliquotaPrev, valorIr, outrosDescontos,
             regime, juros, parcelaMensal, previdencia, baseIr, liquido
         });
         atualizarChipRegime();
@@ -1399,6 +2806,40 @@
         
         resultBox.innerText = `${diaFinal}/${mesFinal}/${anoFinal}`;
     }
+
+    /* ========================================================
+       NAVEGAÇÃO: destaca o módulo em uso
+       ======================================================== */
+    document.addEventListener('DOMContentLoaded', function() {
+        const links = Array.from(document.querySelectorAll('.module-nav a[data-section]'));
+        const sections = links
+            .map(link => document.getElementById(link.dataset.section))
+            .filter(Boolean);
+
+        function ativarLink(id) {
+            links.forEach(link => {
+                const ativo = link.dataset.section === id;
+                link.classList.toggle('active', ativo);
+                if (ativo) link.setAttribute('aria-current', 'page');
+                else link.removeAttribute('aria-current');
+            });
+        }
+
+        if (sections.length) ativarLink(sections[0].id);
+
+        if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver((entries) => {
+                const visiveis = entries
+                    .filter(entry => entry.isIntersecting)
+                    .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+                if (visiveis.length) ativarLink(visiveis[0].target.id);
+            }, { rootMargin: '-18% 0px -62% 0px', threshold: [0.05, 0.2, 0.5] });
+            sections.forEach(section => observer.observe(section));
+        }
+
+        links.forEach(link => link.addEventListener('click', () => ativarLink(link.dataset.section)));
+    });
+
 </script>
 
 </body>
