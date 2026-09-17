@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadoras Judiciais</title>
+    <title>Calculadoras Judiciais — V8</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -1900,29 +1900,243 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
 }
 </style>
 
+
+<style id="v12-modulos-separados">
+.app-view[hidden] { display: none !important; }
+
+.home-view {
+    max-width: 1220px;
+    margin: 0 auto 28px;
+}
+.home-hero {
+    padding: 8px 2px 18px;
+}
+.home-kicker {
+    display: inline-block;
+    margin-bottom: 6px;
+    color: var(--brand-2, #225f88);
+    font-size: .74rem;
+    font-weight: 850;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+}
+.home-hero h2 {
+    margin: 0;
+    color: var(--text, #17212b);
+    font-size: clamp(1.55rem, 3vw, 2.25rem);
+    line-height: 1.08;
+    letter-spacing: -.035em;
+}
+.home-hero p {
+    max-width: 760px;
+    margin: 10px 0 0;
+    color: var(--muted, #687684);
+    font-size: .96rem;
+    line-height: 1.55;
+}
+.tool-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+.tool-card {
+    position: relative;
+    min-height: 220px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    border: 1px solid var(--border, #dfe6eb);
+    border-radius: 18px;
+    background: #fff;
+    color: var(--text, #17212b);
+    box-shadow: var(--shadow-soft, 0 5px 16px rgba(20,38,55,.05));
+    cursor: pointer;
+    transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+.tool-card:hover,
+.tool-card:focus-visible {
+    transform: translateY(-2px);
+    border-color: #b8cbd8;
+    box-shadow: 0 14px 32px rgba(20,38,55,.10);
+    outline: none;
+}
+.tool-number {
+    width: 38px;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 18px;
+    border-radius: 11px;
+    background: var(--brand-soft, #edf5fa);
+    color: var(--brand, #173f5f);
+    font-size: .8rem;
+    font-weight: 900;
+}
+.tool-card.tributacao .tool-number { background: #fff6df; color: #8b5a00; }
+.tool-card.honorarios .tool-number { background: #ecf8f6; color: #0f766e; }
+.tool-card.prazo .tool-number { background: #edf6fb; color: #1d5d8b; }
+.tool-title {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 1.22rem;
+    font-weight: 850;
+    letter-spacing: -.02em;
+}
+.tool-copy {
+    display: block;
+    max-width: 470px;
+    color: var(--muted, #687684);
+    font-size: .9rem;
+    line-height: 1.48;
+}
+.tool-action {
+    display: inline-block;
+    margin-top: auto;
+    padding-top: 20px;
+    color: var(--brand-2, #225f88);
+    font-size: .88rem;
+    font-weight: 850;
+}
+.tool-badge {
+    position: absolute;
+    top: 22px;
+    right: 22px;
+    padding: 5px 9px;
+    border-radius: 999px;
+    background: #f1f4f6;
+    color: #74818b;
+    font-size: .66rem;
+    font-weight: 800;
+}
+.tool-badge.ready { background: #edf8f2; color: #17663d; }
+.tool-badge.in-use { background: #edf5fa; color: #174f78; }
+
+.home-tip {
+    margin-top: 18px;
+    padding: 13px 15px;
+    border: 1px solid #dbe6ed;
+    border-radius: 12px;
+    background: #f8fbfd;
+    color: #536674;
+    font-size: .84rem;
+    line-height: 1.5;
+}
+.home-tip strong { color: #244f6c; }
+
+.integration-btn:disabled {
+    opacity: .45 !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+}
+.module-heading-actions {
+    justify-content: flex-end;
+}
+.secondary-action {
+    min-height: 40px;
+    padding: 9px 12px;
+    border: 1px solid #cbd8e1;
+    border-radius: 9px;
+    background: #fff;
+    color: #315d7b;
+    font-size: .8rem;
+    font-weight: 800;
+    cursor: pointer;
+}
+.secondary-action:hover:not(:disabled) { background: #eef5f9; }
+
+@media (max-width: 760px) {
+    .tool-grid { grid-template-columns: 1fr; }
+    .tool-card { min-height: 195px; padding: 20px; }
+    .home-view { margin-left: 14px; margin-right: 14px; }
+    .module-heading { align-items: flex-start !important; }
+    .module-heading-actions {
+        width: 100%;
+        justify-content: stretch;
+    }
+    .module-heading-actions .secondary-action { flex: 1; }
+}
+@media (max-width: 520px) {
+    .tool-badge {
+        position: static;
+        margin-top: 12px;
+    }
+    .tool-action { padding-top: 14px; }
+}
+</style>
+
 </head>
 <body>
 
 <header class="app-header">
     <div class="brand-block">
-        <p class="brand-kicker">Ferramentas do cartório</p>
+        <p class="brand-kicker">Ferramentas do Cartório</p>
         <h1 class="brand-title">Calculadoras do Cartório</h1>
-        <p class="brand-subtitle">Uma tela única para calcular, conferir e seguir para o próximo ato.</p>
+        <p class="brand-subtitle">Escolha a ferramenta que precisa agora. Os outros módulos ficam preservados e fora da tela.</p>
     </div>
     <div class="top-actions">
         <button class="btn-clear" onclick="limparTudo()" title="Limpa todos os módulos">Limpar tudo</button>
     </div>
 </header>
 
-<nav class="module-nav" aria-label="Atalhos da calculadora">
-    <a href="#mod-rateio" data-section="mod-rateio">01 · Rateio</a>
-    <a href="#mod-tributacao" data-section="mod-tributacao">02 · Tributação</a>
-    <a href="#mod-honorarios" data-section="mod-honorarios">03 · Honorários</a>
-    <a href="#mod-prazo" data-section="mod-prazo">04 · Prazo</a>
+<nav class="module-nav" aria-label="Ferramentas da calculadora">
+    <a href="#inicio" data-view="home" class="active" aria-current="page">Início</a>
+    <a href="#mod-rateio" data-view="mod-rateio">01 · Rateio</a>
+    <a href="#mod-tributacao" data-view="mod-tributacao">02 · Tributação</a>
+    <a href="#mod-honorarios" data-view="mod-honorarios">03 · Honorários</a>
+    <a href="#mod-prazo" data-view="mod-prazo">04 · Prazo</a>
 </nav>
 
+<main id="homeView" class="home-view app-view" aria-labelledby="homeTitle">
+    <section class="home-hero">
+        <span class="home-kicker">Acesso rápido</span>
+        <h2 id="homeTitle">O que você precisa calcular?</h2>
+        <p>Abra somente a ferramenta necessária. Ao trocar de módulo, os dados já preenchidos permanecem preservados.</p>
+    </section>
+
+    <section class="tool-grid" aria-label="Ferramentas disponíveis">
+        <button type="button" class="tool-card rateio" onclick="abrirModulo('mod-rateio')">
+            <span class="tool-number">01</span>
+            <span class="tool-title">Rateio de alvarás</span>
+            <span class="tool-copy">Atualize proporcionalmente os créditos a partir do saldo da conta judicial.</span>
+            <span class="tool-action">Abrir rateio →</span>
+            <span class="tool-badge" id="badgeRateio">Sem cálculo</span>
+        </button>
+
+        <button type="button" class="tool-card tributacao" onclick="abrirModulo('mod-tributacao')">
+            <span class="tool-number">02</span>
+            <span class="tool-title">Tributação</span>
+            <span class="tool-copy">Calcule previdência, IRRF, valor líquido e gere a certidão pronta.</span>
+            <span class="tool-action">Abrir tributação →</span>
+            <span class="tool-badge" id="badgeTributacao">Sem cálculo</span>
+        </button>
+
+        <button type="button" class="tool-card honorarios" onclick="abrirModulo('mod-honorarios')">
+            <span class="tool-number">03</span>
+            <span class="tool-title">Honorários</span>
+            <span class="tool-copy">Separe o valor da parte e o destaque contratual do advogado.</span>
+            <span class="tool-action">Abrir honorários →</span>
+            <span class="tool-badge" id="badgeHonorarios">Sem cálculo</span>
+        </button>
+
+        <button type="button" class="tool-card prazo" onclick="abrirModulo('mod-prazo')">
+            <span class="tool-number">04</span>
+            <span class="tool-title">Prazo</span>
+            <span class="tool-copy">Calcule a data final com ajuste automático para sábado e domingo.</span>
+            <span class="tool-action">Abrir prazo →</span>
+            <span class="tool-badge ready" id="badgePrazo">Pronto para usar</span>
+        </button>
+    </section>
+
+    <section class="home-tip">
+        <strong>Integração opcional:</strong> quando existir um resultado aproveitável em outro módulo, a calculadora libera um botão para reutilizar esse valor. Nada é preenchido automaticamente.
+    </section>
+</main>
+
 <!-- MÓDULO 1: RATEIO DE ALVARÁS -->
-<section class="container module-card" id="mod-rateio">
+<section class="container module-card app-view" id="mod-rateio" hidden>
     <div class="module-heading">
         <div class="module-heading-main">
             <div class="module-index">01</div>
@@ -1985,7 +2199,7 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
 </section>
 
 <!-- MÓDULO 2: TRIBUTAÇÃO DO CRÉDITO -->
-<section class="container module-card" id="mod-tributacao">
+<section class="container module-card app-view" id="mod-tributacao" hidden>
     <div class="tax-module-shell">
         <div class="tax-module-head">
             <div class="module-heading-main">
@@ -1996,7 +2210,7 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
                 </div>
             </div>
             <div class="tax-module-actions">
-                <button type="button" class="btn-tax secondary" onclick="usarCreditoParteNaTributacao()">Usar crédito do rateio</button>
+                <button type="button" class="btn-tax secondary integration-btn" id="btnUsarRateioTrib" onclick="usarCreditoParteNaTributacao()" disabled>Usar crédito do rateio</button>
                 <button type="button" class="btn-tax ghost" onclick="limparTributacao()">Limpar tributação</button>
             </div>
         </div>
@@ -2173,7 +2387,7 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
 </section>
 
 <!-- MÓDULO 3: DESTAQUE DE HONORÁRIOS CONTRATUAIS -->
-<section class="container module-card" id="mod-honorarios">
+<section class="container module-card app-view" id="mod-honorarios" hidden>
     <div class="module-heading">
         <div class="module-heading-main">
             <div class="module-index teal">03</div>
@@ -2181,6 +2395,10 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
                 <h2>Destaque de honorários contratuais</h2>
                 <p>Separe o valor da parte e o destaque do advogado com cálculo imediato.</p>
             </div>
+        </div>
+        <div class="module-heading-actions">
+            <button type="button" class="secondary-action integration-btn" id="btnRateioHonorarios" onclick="usarRateioNosHonorarios()" disabled>Usar crédito do rateio</button>
+            <button type="button" class="secondary-action integration-btn" id="btnTribHonorarios" onclick="usarLiquidoTributacaoNosHonorarios()" disabled>Usar líquido da tributação</button>
         </div>
     </div>
     <div class="module-body">
@@ -2216,12 +2434,12 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
 </section>
 
 <!-- MÓDULO 4: CONTAGEM DE PRAZO MATERIAL -->
-<section class="container module-card" id="mod-prazo">
+<section class="container module-card app-view" id="mod-prazo" hidden>
     <div class="module-heading">
         <div class="module-heading-main">
             <div class="module-index blue">04</div>
             <div class="module-heading-copy">
-                <h2>Cálculo de prazo da Fazenda Pública</h2>
+                <h2>Cálculo de prazo RPV</h2>
                 <p>Contagem em dias corridos, com ajuste automático quando o vencimento cair no fim de semana.</p>
             </div>
         </div>
@@ -2255,6 +2473,7 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
 
     window.onload = function() {
         iniciarValoresPadrao();
+        atualizarDisponibilidadeIntegracoes();
     };
 
     /* ========================================================
@@ -2309,7 +2528,8 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
         contadorIds = 0;
         
         iniciarValoresPadrao();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        atualizarDisponibilidadeIntegracoes();
+        abrirModulo('home', false);
     }
 
     function iniciarValoresPadrao() {
@@ -2492,6 +2712,8 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
                 erroMsgEl.textContent = 'Preencha os valores para conferir o rateio.';
             }
         }
+
+        atualizarDisponibilidadeIntegracoes();
     }
 
 
@@ -2526,15 +2748,22 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
         document.getElementById('creditoTrib').focus();
     }
 
-    function usarCreditoParteNaTributacao() {
+    function obterCreditoParteRateio() {
         const primeiraLinha = document.querySelector('.alvara-row');
-        if (!primeiraLinha) return;
+        if (!primeiraLinha) return 0;
         const box = primeiraLinha.querySelector('.val-atualizado');
-        if (!box || box.innerText === 'TRAVADO') {
-            exibirAvisoTrib('Não foi possível importar o Crédito da Parte. Confira o rateio e o saldo da conta judicial.');
-            return;
-        }
-        const valor = extrairNumero(box.innerText.replace('R$', '').trim());
+        if (!box) return 0;
+        return extrairNumero(box.innerText.replace('R$', '').trim());
+    }
+
+    function obterLiquidoTributacao() {
+        const el = document.getElementById('resLiquidoTrib');
+        if (!el) return 0;
+        return extrairNumero(el.innerText.replace('R$', '').trim());
+    }
+
+    function usarCreditoParteNaTributacao() {
+        const valor = obterCreditoParteRateio();
         if (valor <= 0) {
             exibirAvisoTrib('Calcule primeiro o “Crédito da Parte” no módulo de rateio.');
             return;
@@ -2542,6 +2771,75 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
         definirCampoMoeda('creditoTrib', valor);
         calcularTributacao();
         document.getElementById('basePrevInformadaTrib').focus();
+    }
+
+    function usarRateioNosHonorarios() {
+        const valor = obterCreditoParteRateio();
+        if (valor <= 0) return;
+        definirCampoMoeda('valorAtualizadoParte', valor);
+        calcularDestaque();
+        document.getElementById('percentualDestaque').focus();
+    }
+
+    function usarLiquidoTributacaoNosHonorarios() {
+        const valor = obterLiquidoTributacao();
+        if (valor <= 0) return;
+        definirCampoMoeda('valorAtualizadoParte', valor);
+        calcularDestaque();
+        document.getElementById('percentualDestaque').focus();
+    }
+
+    function atualizarDisponibilidadeIntegracoes() {
+        const creditoRateio = obterCreditoParteRateio();
+        const liquidoTrib = obterLiquidoTributacao();
+
+        const btnTrib = document.getElementById('btnUsarRateioTrib');
+        const btnRateioHon = document.getElementById('btnRateioHonorarios');
+        const btnTribHon = document.getElementById('btnTribHonorarios');
+
+        if (btnTrib) {
+            btnTrib.disabled = creditoRateio <= 0;
+            btnTrib.textContent = creditoRateio > 0
+                ? `Usar crédito do rateio · ${formatarMoedaVisual(creditoRateio)}`
+                : 'Usar crédito do rateio';
+        }
+
+        if (btnRateioHon) {
+            btnRateioHon.disabled = creditoRateio <= 0;
+            btnRateioHon.textContent = creditoRateio > 0
+                ? `Usar rateio · ${formatarMoedaVisual(creditoRateio)}`
+                : 'Usar crédito do rateio';
+        }
+
+        if (btnTribHon) {
+            btnTribHon.disabled = liquidoTrib <= 0;
+            btnTribHon.textContent = liquidoTrib > 0
+                ? `Usar líquido · ${formatarMoedaVisual(liquidoTrib)}`
+                : 'Usar líquido da tributação';
+        }
+
+        const badgeRateio = document.getElementById('badgeRateio');
+        const badgeTrib = document.getElementById('badgeTributacao');
+        const badgeHon = document.getElementById('badgeHonorarios');
+
+        if (badgeRateio) {
+            badgeRateio.textContent = creditoRateio > 0 ? 'Cálculo disponível' : 'Sem cálculo';
+            badgeRateio.classList.toggle('in-use', creditoRateio > 0);
+        }
+        if (badgeTrib) {
+            badgeTrib.textContent = liquidoTrib > 0 ? 'Cálculo disponível' : 'Sem cálculo';
+            badgeTrib.classList.toggle('in-use', liquidoTrib > 0);
+        }
+
+        const valorHon = extrairNumero(
+            (document.getElementById('resHonorariosDestaque')?.innerText || '')
+                .replace('R$', '')
+                .trim()
+        );
+        if (badgeHon) {
+            badgeHon.textContent = valorHon > 0 ? 'Cálculo disponível' : 'Sem cálculo';
+            badgeHon.classList.toggle('in-use', valorHon > 0);
+        }
     }
 
     function exibirAvisoTrib(texto) {
@@ -2749,6 +3047,7 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
             regime, juros, parcelaMensal, previdencia, baseIr, liquido
         });
         atualizarChipRegime();
+        atualizarDisponibilidadeIntegracoes();
     }
 
     /* ========================================================
@@ -2773,6 +3072,7 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
             document.getElementById('resParteLiquido').innerText = formatarMoedaVisual(valorTotalParte);
             document.getElementById('resHonorariosDestaque').innerText = 'R$ 0,00';
         }
+        atualizarDisponibilidadeIntegracoes();
     }
 
     /* ========================================================
@@ -2808,38 +3108,57 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
     }
 
     /* ========================================================
-       NAVEGAÇÃO: destaca o módulo em uso
+       NAVEGAÇÃO: um módulo por vez
        ======================================================== */
+    function abrirModulo(viewId, atualizarHash = true) {
+        const home = document.getElementById('homeView');
+        const modulos = ['mod-rateio', 'mod-tributacao', 'mod-honorarios', 'mod-prazo'];
+
+        if (home) home.hidden = viewId !== 'home';
+
+        modulos.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.hidden = id !== viewId;
+        });
+
+        document.querySelectorAll('.module-nav a[data-view]').forEach(link => {
+            const ativo = link.dataset.view === viewId;
+            link.classList.toggle('active', ativo);
+            if (ativo) link.setAttribute('aria-current', 'page');
+            else link.removeAttribute('aria-current');
+        });
+
+        if (atualizarHash) {
+            const novoHash = viewId === 'home' ? '#inicio' : `#${viewId}`;
+            if (history.replaceState) history.replaceState(null, '', novoHash);
+            else location.hash = novoHash;
+        }
+
+        atualizarDisponibilidadeIntegracoes();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function viewPeloHash() {
+        const hash = (location.hash || '').replace('#', '');
+        if (['mod-rateio', 'mod-tributacao', 'mod-honorarios', 'mod-prazo'].includes(hash)) return hash;
+        return 'home';
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
-        const links = Array.from(document.querySelectorAll('.module-nav a[data-section]'));
-        const sections = links
-            .map(link => document.getElementById(link.dataset.section))
-            .filter(Boolean);
-
-        function ativarLink(id) {
-            links.forEach(link => {
-                const ativo = link.dataset.section === id;
-                link.classList.toggle('active', ativo);
-                if (ativo) link.setAttribute('aria-current', 'page');
-                else link.removeAttribute('aria-current');
+        document.querySelectorAll('.module-nav a[data-view]').forEach(link => {
+            link.addEventListener('click', function(event) {
+                event.preventDefault();
+                abrirModulo(link.dataset.view);
             });
-        }
+        });
 
-        if (sections.length) ativarLink(sections[0].id);
-
-        if ('IntersectionObserver' in window) {
-            const observer = new IntersectionObserver((entries) => {
-                const visiveis = entries
-                    .filter(entry => entry.isIntersecting)
-                    .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-                if (visiveis.length) ativarLink(visiveis[0].target.id);
-            }, { rootMargin: '-18% 0px -62% 0px', threshold: [0.05, 0.2, 0.5] });
-            sections.forEach(section => observer.observe(section));
-        }
-
-        links.forEach(link => link.addEventListener('click', () => ativarLink(link.dataset.section)));
+        abrirModulo(viewPeloHash(), false);
+        atualizarDisponibilidadeIntegracoes();
     });
 
+    window.addEventListener('hashchange', function() {
+        abrirModulo(viewPeloHash(), false);
+    });
 </script>
 
 </body>
