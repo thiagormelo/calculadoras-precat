@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadoras Judiciais — V8</title>
+    <title>Calculadoras do Cartório — V8</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -2067,6 +2067,54 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
 }
 </style>
 
+
+<style id="v13-periodo-parcelas">
+.periodo-parcelas-group {
+    grid-column: 1 / -1;
+}
+.periodo-parcelas-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(130px, .55fr);
+    gap: 12px;
+    align-items: end;
+}
+.periodo-subcampo {
+    min-width: 0;
+}
+.periodo-label {
+    display: block;
+    margin: 0 0 6px;
+    color: #667684;
+    font-size: .72rem;
+    font-weight: 750;
+}
+.periodo-subcampo input {
+    width: 100%;
+    min-height: 48px;
+    box-sizing: border-box;
+}
+.competencias-subcampo input {
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+}
+@media (max-width: 700px) {
+    .periodo-parcelas-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    .competencias-subcampo {
+        grid-column: 1 / -1;
+    }
+}
+@media (max-width: 480px) {
+    .periodo-parcelas-grid {
+        grid-template-columns: 1fr;
+    }
+    .competencias-subcampo {
+        grid-column: auto;
+    }
+}
+</style>
+
 </head>
 <body>
 
@@ -2249,10 +2297,23 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
                         <div class="input-help" id="helpBaseTrib">Principal corrigido que servirá de base para a previdência.</div>
                     </div>
 
-                    <div class="input-group">
-                        <label class="field-label-main" for="mesesTrib">Número de competências / meses <span class="optional-hint">opcional</span></label>
-                        <input type="number" id="mesesTrib" placeholder="7" min="1" step="1" oninput="calcularTributacao()" aria-describedby="helpMesesTrib">
-                        <div class="input-help" id="helpMesesTrib">Opcional. Preencha apenas se desejar demonstrar a parcela média mensal. Ex.: março a setembro = 7 competências.</div>
+                    <div class="input-group periodo-parcelas-group">
+                        <label class="field-label-main">Período das parcelas <span class="optional-hint">opcional</span></label>
+                        <div class="periodo-parcelas-grid">
+                            <div class="periodo-subcampo">
+                                <span class="periodo-label">Parcela inicial</span>
+                                <input type="month" id="competenciaInicialTrib" onchange="atualizarPeriodoTrib()" aria-label="Mês e ano da parcela inicial">
+                            </div>
+                            <div class="periodo-subcampo">
+                                <span class="periodo-label">Parcela final</span>
+                                <input type="month" id="competenciaFinalTrib" onchange="atualizarPeriodoTrib()" aria-label="Mês e ano da parcela final">
+                            </div>
+                            <div class="periodo-subcampo competencias-subcampo">
+                                <span class="periodo-label">Competências</span>
+                                <input type="number" id="mesesTrib" placeholder="7" min="1" step="1" oninput="calcularTributacao()" aria-describedby="helpMesesTrib">
+                            </div>
+                        </div>
+                        <div class="input-help" id="helpMesesTrib">Informe os meses/anos das parcelas. Se preencher o início e o fim, o número de competências será calculado automaticamente. O período continua opcional.</div>
                     </div>
 
                     <div class="input-group">
@@ -2342,6 +2403,7 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
                             <tr><th>Valor atualizado disponível</th><td id="tabCreditoTrib">R$ 0,00</td></tr>
                             <tr><th>Principal remuneratório atualizado</th><td id="tabBasePrevTrib">R$ 0,00</td></tr>
                             <tr><th>Juros/acréscimos excluídos da base</th><td id="tabJurosTrib">R$ 0,00</td></tr>
+                            <tr><th>Período das parcelas</th><td id="tabPeriodoTrib">—</td></tr>
                             <tr><th>Número de competências</th><td id="tabMesesTrib">—</td></tr>
                             <tr><th>Parcela média do principal</th><td id="tabParcelaMesTrib">R$ 0,00</td></tr>
                         </tbody>
@@ -2515,6 +2577,8 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
 
         document.getElementById('creditoTrib').value = '';
         document.getElementById('basePrevInformadaTrib').value = '';
+        document.getElementById('competenciaInicialTrib').value = '';
+        document.getElementById('competenciaFinalTrib').value = '';
         document.getElementById('mesesTrib').value = '';
         document.getElementById('regimePrevTrib').value = 'impar';
         document.getElementById('aliquotaPrevTrib').value = '14';
@@ -2737,6 +2801,8 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
     function limparTributacao() {
         document.getElementById('creditoTrib').value = '';
         document.getElementById('basePrevInformadaTrib').value = '';
+        document.getElementById('competenciaInicialTrib').value = '';
+        document.getElementById('competenciaFinalTrib').value = '';
         document.getElementById('mesesTrib').value = '';
         document.getElementById('regimePrevTrib').value = 'impar';
         document.getElementById('aliquotaPrevTrib').value = '14';
@@ -2890,6 +2956,51 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
         if (recalcular) calcularTributacao();
     }
 
+    function formatarCompetenciaTrib(valor) {
+        if (!valor || !/^\d{4}-\d{2}$/.test(valor)) return '';
+        const [ano, mes] = valor.split('-').map(Number);
+        const meses = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+        if (mes < 1 || mes > 12) return '';
+        return `${meses[mes - 1]}/${ano}`;
+    }
+
+    function calcularCompetenciasEntreTrib(inicio, fim) {
+        if (!inicio || !fim || !/^\d{4}-\d{2}$/.test(inicio) || !/^\d{4}-\d{2}$/.test(fim)) return 0;
+        const [anoI, mesI] = inicio.split('-').map(Number);
+        const [anoF, mesF] = fim.split('-').map(Number);
+        const total = (anoF - anoI) * 12 + (mesF - mesI) + 1;
+        return total > 0 ? total : 0;
+    }
+
+    function atualizarPeriodoTrib() {
+        const inicio = document.getElementById('competenciaInicialTrib').value;
+        const fim = document.getElementById('competenciaFinalTrib').value;
+        const campoMeses = document.getElementById('mesesTrib');
+        const total = calcularCompetenciasEntreTrib(inicio, fim);
+
+        if (inicio && fim) {
+            campoMeses.value = total > 0 ? String(total) : '';
+        }
+
+        calcularTributacao();
+    }
+
+    function montarPeriodoTextoTrib(inicio, fim, meses, mesesValido) {
+        const inicial = formatarCompetenciaTrib(inicio);
+        const final = formatarCompetenciaTrib(fim);
+
+        if (inicial && final) {
+            const competencias = mesesValido
+                ? ` — ${meses} ${meses === 1 ? 'competência' : 'competências'}`
+                : '';
+            return `${inicial} a ${final}${competencias}`;
+        }
+        if (inicial) return `a partir de ${inicial}`;
+        if (final) return `até ${final}`;
+        if (mesesValido) return `${meses} ${meses === 1 ? 'competência' : 'competências'}`;
+        return 'não informado';
+    }
+
     function linhaPontilhada(rotulo, valor) {
         const largura = 49;
         const pontos = '.'.repeat(Math.max(2, largura - rotulo.length));
@@ -2897,7 +3008,12 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
     }
 
     function montarCalculosCertidaoTrib(dados) {
-        const periodo = dados.mesesValido ? `${dados.meses} ${dados.meses === 1 ? 'competência' : 'competências'}` : 'não informado';
+        const periodo = montarPeriodoTextoTrib(
+            dados.competenciaInicial,
+            dados.competenciaFinal,
+            dados.meses,
+            dados.mesesValido
+        );
         const parcelaMediaTexto = dados.mesesValido ? formatarMoedaVisual(dados.parcelaMensal) : 'não informada';
         return [
             'APURAÇÃO DOS DESCONTOS LEGAIS',
@@ -2973,6 +3089,8 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
     function calcularTributacao() {
         const credito = extrairNumero(document.getElementById('creditoTrib').value);
         const basePrev = extrairNumero(document.getElementById('basePrevInformadaTrib').value);
+        const competenciaInicial = document.getElementById('competenciaInicialTrib').value;
+        const competenciaFinal = document.getElementById('competenciaFinalTrib').value;
         const mesesRaw = parseInt(document.getElementById('mesesTrib').value, 10);
         const mesesValido = Number.isInteger(mesesRaw) && mesesRaw > 0;
         const meses = mesesValido ? mesesRaw : 0;
@@ -2995,6 +3113,9 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
         if (fillCount) fillCount.textContent = `${preenchidos} de 4 essenciais preenchidos`;
 
         let avisos = [];
+        if (competenciaInicial && competenciaFinal && calcularCompetenciasEntreTrib(competenciaInicial, competenciaFinal) <= 0) {
+            avisos.push('A parcela final não pode ser anterior à parcela inicial.');
+        }
         if (credito > 0 && basePrev <= 0) avisos.push('Informe o principal remuneratório atualizado, sem juros.');
         if (basePrev > 0 && credito <= 0) avisos.push('Informe o valor atualizado disponível / Calc GRV.');
                 if (credito > 0 && basePrev > credito) avisos.push('O principal remuneratório está maior que o valor disponível. Confira os valores.');
@@ -3017,6 +3138,9 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
         document.getElementById('tabCreditoTrib').innerText = formatarMoedaVisual(credito);
         document.getElementById('tabBasePrevTrib').innerText = formatarMoedaVisual(basePrev);
         document.getElementById('tabJurosTrib').innerText = formatarMoedaVisual(juros);
+        document.getElementById('tabPeriodoTrib').innerText =
+            montarPeriodoTextoTrib(competenciaInicial, competenciaFinal, meses, mesesValido)
+                .replace('não informado', '—');
         document.getElementById('tabMesesTrib').innerText = mesesValido ? `${meses} ${meses === 1 ? 'competência' : 'competências'}` : '—';
         document.getElementById('tabParcelaMesTrib').innerText = mesesValido ? formatarMoedaVisual(parcelaMensal) : 'Não informada';
         document.getElementById('tabRegimeTrib').innerText = nomeRegimeTrib(regime);
@@ -3043,7 +3167,8 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
         }
 
         atualizarTextoCertidaoTrib({
-            credito, basePrev, meses, mesesValido, aliquotaPrev, valorIr, outrosDescontos,
+            credito, basePrev, meses, mesesValido, competenciaInicial, competenciaFinal,
+            aliquotaPrev, valorIr, outrosDescontos,
             regime, juros, parcelaMensal, previdencia, baseIr, liquido
         });
         atualizarChipRegime();
