@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadoras Judiciais</title>
+    <title>Calculadoras do Cartório</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -2115,12 +2115,40 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
 }
 </style>
 
+
+<style id="v14-base-automatica">
+.auto-hint {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: #edf5fa;
+    color: #225f88;
+    font-size: .64rem;
+    font-weight: 850;
+    vertical-align: 1px;
+}
+.auto-base-field {
+    background: #f4f7f9 !important;
+    color: #173f5f !important;
+    font-weight: 850 !important;
+    cursor: default !important;
+    font-variant-numeric: tabular-nums;
+}
+#resPrevResumoTrib,
+#resPrevPagamento,
+#tabPrevTotalTrib {
+    color: #b42318 !important;
+    font-weight: 900 !important;
+}
+</style>
+
 </head>
 <body>
 
 <header class="app-header">
     <div class="brand-block">
-        <p class="brand-kicker">Ferramentas do Cartório</p>
+        <p class="brand-kicker">Ferramentas do cartório</p>
         <h1 class="brand-title">Calculadoras do Cartório</h1>
         <p class="brand-subtitle">Escolha a ferramenta que precisa agora. Os outros módulos ficam preservados e fora da tela.</p>
     </div>
@@ -2202,9 +2230,9 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
                     <div class="input-panel-title">Valores de referência</div>
                     <div class="global-inputs">
                         <div class="input-group">
-                            <label for="valorBase">Valor base do cálculo</label>
-                            <input type="text" inputmode="numeric" id="valorBase" placeholder="0,00" oninput="mascaraMoeda(this); calcularAlvaras()">
-                            <div class="input-help">Valor total que serviu de base para a divisão original.</div>
+                            <label for="valorBase">Valor base do cálculo <span class="auto-hint">automático</span></label>
+                            <input type="text" id="valorBase" placeholder="0,00" readonly class="readonly-info auto-base-field" aria-describedby="helpValorBase">
+                            <div class="input-help" id="helpValorBase">Soma automática dos valores originais de <strong>Crédito da Parte + Honorários Sucumbenciais</strong>.</div>
                         </div>
                         <div class="input-group">
                             <label for="saldoConta">Saldo atual da conta judicial</label>
@@ -2217,7 +2245,7 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
                 <div class="alvara-list-head">
                     <div>
                         <h3>Valores a expedir</h3>
-                        <p>Informe o valor original de cada beneficiário. A proporção e o valor final são automáticos.</p>
+                        <p>Informe os valores originais. O valor base, a proporção e o valor final são calculados automaticamente.</p>
                     </div>
                     <button class="primary-action" onclick="adicionarAlvara('', false)">+ Adicionar alvará</button>
                 </div>
@@ -2501,7 +2529,7 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
         <div class="module-heading-main">
             <div class="module-index blue">04</div>
             <div class="module-heading-copy">
-                <h2>Cálculo de prazo RPV</h2>
+                <h2>Cálculo de prazo da Fazenda Pública</h2>
                 <p>Contagem em dias corridos, com ajuste automático quando o vencimento cair no fim de semana.</p>
             </div>
         </div>
@@ -2621,6 +2649,10 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
         const div = document.createElement('div');
         div.className = 'alvara-row';
         div.id = `alvara-${id}`;
+        div.dataset.fixo = fixo ? 'true' : 'false';
+        div.dataset.compoeBase = fixo && (descricaoPadrao === 'Crédito da Parte' || descricaoPadrao === 'Honorários Sucumbenciais')
+            ? 'true'
+            : 'false';
         
         const botaoRemover = fixo 
             ? `<div class="placeholder-btn"></div>` 
@@ -2655,20 +2687,37 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
     }
 
     function calcularAlvaras() {
-        const valorBase = extrairNumero(document.getElementById('valorBase').value);
         const saldoConta = extrairNumero(document.getElementById('saldoConta').value);
-
-        // Trabalha em centavos inteiros para evitar inconsistências de ponto flutuante.
-        const valorBaseCentavos = Math.round(valorBase * 100);
         const saldoContaCentavos = Math.round(saldoConta * 100);
 
         const linhas = document.querySelectorAll('.alvara-row');
         const barraStatus = document.getElementById('barraStatus');
         const erroMsgEl = barraStatus ? barraStatus.querySelector('.erro-msg') : null;
+        const campoValorBase = document.getElementById('valorBase');
 
         let valoresCalculados = [];
         let somaTotalFinalCentavos = 0;
         let nomesPendentes = 0;
+
+        // A base do cálculo é exclusivamente a soma dos valores originais
+        // do Crédito da Parte e dos Honorários Sucumbenciais.
+        let valorBaseCentavos = 0;
+        linhas.forEach(linha => {
+            if (linha.dataset.compoeBase === 'true') {
+                const campoValor = linha.querySelector('.val-original');
+                const valorOriginal = extrairNumero(campoValor ? campoValor.value : '');
+                valorBaseCentavos += Math.round(valorOriginal * 100);
+            }
+        });
+
+        if (campoValorBase) {
+            campoValorBase.value = valorBaseCentavos > 0
+                ? (valorBaseCentavos / 100).toLocaleString('pt-BR', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                })
+                : '';
+        }
 
         linhas.forEach(linha => {
             const campoNome = linha.querySelector('.beneficiario-nome');
@@ -2683,7 +2732,7 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
             if (valorBaseCentavos > 0 && valOriginalCentavos > 0) {
                 proporcao = valOriginalCentavos / valorBaseCentavos;
 
-                // Arredonda cada resultado diretamente para centavos.
+                // O resultado é arredondado diretamente em centavos.
                 valorAtualizadoCentavos = Math.round(
                     (saldoContaCentavos * valOriginalCentavos) / valorBaseCentavos
                 );
@@ -2718,7 +2767,7 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
         if (resumoSaldo) resumoSaldo.innerText = formatarMoedaVisual(saldoContaCentavos / 100);
         if (resumoRestante) resumoRestante.innerText = formatarMoedaVisual(saldoRestanteCentavos / 100);
 
-        // Renderiza sempre os valores. Não há mais bloqueio/trava por divergência.
+        // Não há bloqueio: eventual divergência é apenas sinalizada.
         valoresCalculados.forEach(item => {
             const propBox = item.linha.querySelector('.prop-resultado');
             const atualizadoBox = item.linha.querySelector('.val-atualizado');
@@ -2746,10 +2795,11 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
             }
         });
 
-        // Apenas informa eventual divergência; nunca impede o cálculo.
         const diferencaCentavos = somaTotalFinalCentavos - saldoContaCentavos;
         const haDivergencia = saldoContaCentavos > 0 && diferencaCentavos !== 0;
         const haNomePendente = nomesPendentes > 0;
+        const baseIncompleta = valorBaseCentavos <= 0 &&
+            Array.from(linhas).some(linha => linha.dataset.compoeBase === 'true');
 
         if (barraStatus) {
             barraStatus.classList.remove('erro', 'aviso', 'ok');
@@ -2759,6 +2809,12 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
                 if (erroMsgEl) {
                     erroMsgEl.textContent =
                         'Preencha o nome do beneficiário/referência em todos os alvarás.';
+                }
+            } else if (baseIncompleta && saldoContaCentavos > 0) {
+                barraStatus.classList.add('aviso');
+                if (erroMsgEl) {
+                    erroMsgEl.textContent =
+                        'Informe os valores originais do Crédito da Parte e/ou dos Honorários Sucumbenciais para formar a base do cálculo.';
                 }
             } else if (haDivergencia) {
                 barraStatus.classList.add('aviso');
@@ -2770,10 +2826,12 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
             } else if (saldoContaCentavos > 0 && valorBaseCentavos > 0) {
                 barraStatus.classList.add('ok');
                 if (erroMsgEl) {
-                    erroMsgEl.textContent = 'Rateio conferido: a soma dos alvarás coincide com o saldo da conta.';
+                    erroMsgEl.textContent =
+                        'Rateio conferido: a soma dos alvarás coincide com o saldo da conta.';
                 }
             } else if (erroMsgEl) {
-                erroMsgEl.textContent = 'Preencha os valores para conferir o rateio.';
+                erroMsgEl.textContent =
+                    'Preencha os valores originais e o saldo da conta para conferir o rateio.';
             }
         }
 
