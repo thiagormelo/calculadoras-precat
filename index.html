@@ -2232,7 +2232,7 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
                         <div class="input-group">
                             <label for="valorBase">Valor base do cálculo <span class="auto-hint">automático</span></label>
                             <input type="text" id="valorBase" placeholder="0,00" readonly class="readonly-info auto-base-field" aria-describedby="helpValorBase">
-                            <div class="input-help" id="helpValorBase">Soma automática dos valores originais de <strong>Crédito da Parte + Honorários Sucumbenciais</strong>.</div>
+                            <div class="input-help" id="helpValorBase">Soma automática dos valores originais de <strong>todos os alvarás</strong> informados.</div>
                         </div>
                         <div class="input-group">
                             <label for="saldoConta">Saldo atual da conta judicial</label>
@@ -2699,15 +2699,14 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
         let somaTotalFinalCentavos = 0;
         let nomesPendentes = 0;
 
-        // A base do cálculo é exclusivamente a soma dos valores originais
-        // do Crédito da Parte e dos Honorários Sucumbenciais.
+        // A base do cálculo é a soma dos valores originais de TODOS os
+        // alvarás informados, de modo que a soma dos valores finais
+        // corresponda exatamente ao saldo atual da conta judicial.
         let valorBaseCentavos = 0;
         linhas.forEach(linha => {
-            if (linha.dataset.compoeBase === 'true') {
-                const campoValor = linha.querySelector('.val-original');
-                const valorOriginal = extrairNumero(campoValor ? campoValor.value : '');
-                valorBaseCentavos += Math.round(valorOriginal * 100);
-            }
+            const campoValor = linha.querySelector('.val-original');
+            const valorOriginal = extrairNumero(campoValor ? campoValor.value : '');
+            valorBaseCentavos += Math.round(valorOriginal * 100);
         });
 
         if (campoValorBase) {
@@ -2728,29 +2727,48 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
 
             let proporcao = 0;
             let valorAtualizadoCentavos = 0;
+            let restoArredondamento = 0;
 
             if (valorBaseCentavos > 0 && valOriginalCentavos > 0) {
                 proporcao = valOriginalCentavos / valorBaseCentavos;
 
-                // O resultado é arredondado diretamente em centavos.
-                valorAtualizadoCentavos = Math.round(
-                    (saldoContaCentavos * valOriginalCentavos) / valorBaseCentavos
-                );
+                // Valor exato em centavos; o arredondamento é feito abaixo
+                // pelo método dos maiores restos, para não sobrar nem faltar
+                // centavo em relação ao saldo da conta.
+                const exato = (saldoContaCentavos * valOriginalCentavos) / valorBaseCentavos;
+                valorAtualizadoCentavos = Math.floor(exato);
+                restoArredondamento = exato - valorAtualizadoCentavos;
             }
 
             if (campoNome && !campoNome.hasAttribute('readonly') && !nomePreenchido) {
                 nomesPendentes++;
             }
 
-            somaTotalFinalCentavos += valorAtualizadoCentavos;
-
             valoresCalculados.push({
                 linha,
                 campoNome,
                 valOriginalCentavos,
                 proporcao,
-                valorAtualizadoCentavos
+                valorAtualizadoCentavos,
+                restoArredondamento
             });
+        });
+
+        // Distribui os centavos residuais às linhas com maiores restos.
+        if (valorBaseCentavos > 0 && saldoContaCentavos > 0) {
+            let residuo = saldoContaCentavos -
+                valoresCalculados.reduce((soma, item) => soma + item.valorAtualizadoCentavos, 0);
+            const ordenados = valoresCalculados
+                .filter(item => item.valOriginalCentavos > 0)
+                .sort((a, b) => b.restoArredondamento - a.restoArredondamento);
+            for (let i = 0; residuo > 0 && ordenados.length > 0; i = (i + 1) % ordenados.length) {
+                ordenados[i].valorAtualizadoCentavos++;
+                residuo--;
+            }
+        }
+
+        valoresCalculados.forEach(item => {
+            somaTotalFinalCentavos += item.valorAtualizadoCentavos;
         });
 
         const somaTotalFinalAlvaras = somaTotalFinalCentavos / 100;
@@ -2798,8 +2816,7 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
         const diferencaCentavos = somaTotalFinalCentavos - saldoContaCentavos;
         const haDivergencia = saldoContaCentavos > 0 && diferencaCentavos !== 0;
         const haNomePendente = nomesPendentes > 0;
-        const baseIncompleta = valorBaseCentavos <= 0 &&
-            Array.from(linhas).some(linha => linha.dataset.compoeBase === 'true');
+        const baseIncompleta = valorBaseCentavos <= 0 && linhas.length > 0;
 
         if (barraStatus) {
             barraStatus.classList.remove('erro', 'aviso', 'ok');
@@ -2814,7 +2831,7 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
                 barraStatus.classList.add('aviso');
                 if (erroMsgEl) {
                     erroMsgEl.textContent =
-                        'Informe os valores originais do Crédito da Parte e/ou dos Honorários Sucumbenciais para formar a base do cálculo.';
+                        'Informe os valores originais dos alvarás para formar a base do cálculo.';
                 }
             } else if (haDivergencia) {
                 barraStatus.classList.add('aviso');
