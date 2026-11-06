@@ -2143,6 +2143,94 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
 }
 </style>
 
+<style id="v15-acessibilidade">
+/* V15 — acessibilidade: contraste, foco visível, tamanhos mínimos de fonte
+   e sinalização de erros que não depende apenas da cor. */
+:root {
+    --muted: #55636f;
+}
+
+/* Tamanho mínimo para textos auxiliares (antes entre 0,62 e 0,77rem). */
+.required-hint, .optional-hint, .auto-hint, .tool-badge, .brand-kicker, .home-kicker,
+.periodo-label, .fill-count, .flow-box .kicker, .result-card-head span,
+.summary-card-head span, .destination-check, .plain-note, .info-prazo, .input-help,
+.auto-results-strip span, .destination-item span, .tax-card .tax-label, .tax-table th,
+.liquid-highlight small, .prazo-result span, .destaque-box h4, .alvara-list-head p {
+    font-size: max(.8rem, 12.5px) !important;
+}
+.input-help { color: #4f5d68 !important; }
+.result-box-prop { color: #46535e !important; }
+.summary-row span { color: #4f5d68; }
+input::placeholder { color: #6b7782; opacity: 1; }
+
+/* Foco visível para quem navega pelo teclado. */
+a:focus-visible, button:focus-visible, select:focus-visible, textarea:focus-visible,
+[tabindex]:focus-visible, summary:focus-visible {
+    outline: 3px solid #1d5d8b !important;
+    outline-offset: 2px !important;
+}
+input:focus-visible {
+    outline: 2px solid #1d5d8b !important;
+    outline-offset: 1px !important;
+}
+
+/* Status do rateio: ícone + texto, não só cor. */
+.status-bar::before { content: "ℹ " !important; }
+.status-bar.ok::before { content: "✓ " !important; }
+.status-bar.aviso::before { content: "⚠ " !important; }
+.status-bar.erro::before { content: "✕ " !important; }
+
+/* Linha com erro: borda mais grossa e mensagem escrita. */
+.alvara-row.erro-linha {
+    border: 2px solid #b42318 !important;
+}
+.alvara-row .linha-erro-msg {
+    grid-column: 1 / -1;
+    margin: 0;
+    color: #9f251d;
+    font-weight: 700;
+    font-size: .85rem;
+}
+.alvara-row .linha-erro-msg[hidden] { display: none; }
+.beneficiario-nome[aria-invalid="true"] { border-color: #b42318 !important; }
+.alvara-row output { font-variant-numeric: tabular-nums; }
+.btn-remove { width: 44px !important; height: 44px !important; min-height: 44px !important; }
+@media (min-width: 981px) {
+    .alvara-row { grid-template-columns: minmax(210px, 1.6fr) minmax(135px,.85fr) minmax(105px,.6fr) minmax(160px,1fr) 44px !important; }
+}
+
+/* Avisos de conferência e botão de cópia. */
+.avisos-rateio {
+    margin: 0 16px 12px;
+    padding: 10px 12px;
+    list-style: none;
+    border: 1px solid #e9d49a;
+    border-radius: 10px;
+    background: #fff8e6;
+    color: #6b4b00;
+    font-size: .85rem;
+    font-weight: 600;
+    line-height: 1.4;
+}
+.avisos-rateio[hidden] { display: none; }
+.avisos-rateio li + li { margin-top: 8px; }
+.copiar-rateio { margin: 0 16px 16px; }
+.btn-copiar-rateio { width: 100%; min-height: 44px; }
+.btn-copiar-rateio:disabled { opacity: .55; cursor: not-allowed; }
+.copiar-rateio .copy-status { margin: 6px 0 0; font-size: .85rem; }
+#mod-rateio .global-inputs .input-group:nth-child(3) { grid-column: 1 / -1; }
+.summary-row[hidden] { display: none !important; }
+.alvara-list-head .primary-action { white-space: nowrap; }
+.module-nav a { white-space: nowrap !important; }
+@media (max-width: 520px) {
+    .top-actions .btn-clear::after { content: none !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+}
+</style>
+
 </head>
 <body>
 
@@ -2239,17 +2327,22 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
                             <input type="text" inputmode="numeric" id="saldoConta" placeholder="0,00" oninput="mascaraMoeda(this); calcularAlvaras()">
                             <div class="input-help">Saldo efetivamente disponível para expedição.</div>
                         </div>
+                        <div class="input-group">
+                            <label for="totalDecisao">Total da decisão <span class="optional-hint">opcional</span></label>
+                            <input type="text" inputmode="numeric" id="totalDecisao" placeholder="0,00" aria-describedby="helpTotalDecisao" oninput="mascaraMoeda(this); calcularAlvaras()">
+                            <div class="input-help" id="helpTotalDecisao">Valor que a decisão manda distribuir. Serve só para conferir se os valores originais foram lançados corretamente.</div>
+                        </div>
                     </div>
                 </div>
 
                 <div class="alvara-list-head">
                     <div>
                         <h3>Valores a expedir</h3>
-                        <p>Informe os valores originais. O valor base, a proporção e o valor final são calculados automaticamente.</p>
+                        <p>Lance <strong>um alvará por beneficiário</strong>, com o valor indicado na decisão. Não lance um total e também as partes dele. O valor base, a proporção e o valor final são calculados automaticamente.</p>
                     </div>
-                    <button class="primary-action" onclick="adicionarAlvara('', false)">+ Adicionar alvará</button>
+                    <button type="button" class="primary-action" onclick="adicionarAlvaraEFocar()">+ Adicionar alvará</button>
                 </div>
-                <div id="alvaras-container"></div>
+                <div id="alvaras-container" role="list" aria-label="Alvarás a expedir"></div>
             </div>
 
             <aside class="module-side" aria-label="Resumo do rateio">
@@ -2259,6 +2352,7 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
                         <h3>Resumo do rateio</h3>
                     </div>
                     <div class="summary-rows">
+                        <div class="summary-row" id="linhaResumoTotalDecisao" hidden><span>Total da decisão</span><strong id="resTotalDecisaoRateio">R$ 0,00</strong></div>
                         <div class="summary-row"><span>Valor base</span><strong id="resValorBaseRateio">R$ 0,00</strong></div>
                         <div class="summary-row"><span>Saldo da conta</span><strong id="resSaldoContaRateio">R$ 0,00</strong></div>
                         <div class="summary-row emphasis"><span>Total dos alvarás</span><strong id="spanTotalFinalAlvaras">R$ 0,00</strong></div>
@@ -2266,7 +2360,12 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
                     </div>
                     <div class="status-bar" id="barraStatus">
                         <div>Total Final dos Alvarás: <span>R$ 0,00</span></div>
-                        <div class="erro-msg">A soma dos alvarás ultrapassa o saldo da conta judicial.</div>
+                        <div class="erro-msg" role="status" aria-live="polite" aria-atomic="true">Preencha os valores originais e o saldo da conta para conferir o rateio.</div>
+                    </div>
+                    <ul class="avisos-rateio" id="avisosRateio" aria-live="polite" hidden></ul>
+                    <div class="copiar-rateio">
+                        <button type="button" class="secondary-action btn-copiar-rateio" id="btnCopiarRateio" onclick="copiarResultadoRateio()" disabled>Copiar resultado</button>
+                        <div id="statusCopiaRateio" class="copy-status" role="status" aria-live="polite"></div>
                     </div>
                 </div>
             </aside>
@@ -2598,6 +2697,7 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
     function limparTudo() {
         document.getElementById('valorBase').value = '';
         document.getElementById('saldoConta').value = '';
+        document.getElementById('totalDecisao').value = '';
         
         document.getElementById('valorAtualizadoParte').value = '';
         document.getElementById('percentualDestaque').value = '';
@@ -2625,8 +2725,8 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
     }
 
     function iniciarValoresPadrao() {
-        adicionarAlvara('Crédito da Parte', true);
-        adicionarAlvara('Honorários Sucumbenciais', true);
+        adicionarAlvara('Crédito da Parte');
+        adicionarAlvara('Honorários Sucumbenciais');
         
         const hoje = new Date();
         const ano = hoje.getFullYear();
@@ -2643,52 +2743,126 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
     /* ========================================================
        LÓGICA DO MÓDULO 1: ALVARÁS
        ======================================================== */
-    function adicionarAlvara(descricaoPadrao = '', fixo = false) {
+    function escaparHtml(texto) {
+        return String(texto)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    }
+
+    function adicionarAlvara(descricaoPadrao = '') {
         contadorIds++;
         const id = contadorIds;
         const div = document.createElement('div');
         div.className = 'alvara-row';
         div.id = `alvara-${id}`;
-        div.dataset.fixo = fixo ? 'true' : 'false';
-        div.dataset.compoeBase = fixo && (descricaoPadrao === 'Crédito da Parte' || descricaoPadrao === 'Honorários Sucumbenciais')
-            ? 'true'
-            : 'false';
-        
-        const botaoRemover = fixo 
-            ? `<div class="placeholder-btn"></div>` 
-            : `<button class="btn btn-remove" onclick="removerAlvara(${id})" title="Remover alvará" aria-label="Remover alvará">×</button>`;
+        div.setAttribute('role', 'listitem');
 
+        // Todos os nomes são editáveis: as linhas iniciais apenas trazem
+        // uma sugestão de nome, que pode ser trocada pelo beneficiário real.
         div.innerHTML = `
             <div class="input-group">
-                <label>Nome do beneficiário / referência${fixo ? '' : '<span class="required-hint">obrigatório</span>'}</label>
-                <input type="text" class="beneficiario-nome" placeholder="Ex.: Honorários periciais" value="${descricaoPadrao}" ${fixo ? 'readonly' : 'required'} oninput="calcularAlvaras()">
+                <label for="alvara-nome-${id}">Nome do beneficiário / referência<span class="required-hint">obrigatório</span></label>
+                <input type="text" id="alvara-nome-${id}" class="beneficiario-nome" placeholder="Ex.: Fulano de Tal" value="${escaparHtml(descricaoPadrao)}" required aria-describedby="alvara-erro-${id}" oninput="calcularAlvaras()" onblur="marcarNomeVisitado(this)">
             </div>
             <div class="input-group">
-                <label>Valor original</label>
-                <input type="text" inputmode="numeric" class="val-original" placeholder="0,00" oninput="mascaraMoeda(this); calcularAlvaras()">
+                <label for="alvara-valor-${id}">Valor original</label>
+                <input type="text" inputmode="numeric" id="alvara-valor-${id}" class="val-original" placeholder="0,00" oninput="mascaraMoeda(this); calcularAlvaras()">
             </div>
             <div class="input-group">
-                <label>Proporção</label>
-                <div class="result-box-prop prop-resultado">0,00%</div>
+                <label for="alvara-prop-${id}">Proporção</label>
+                <output id="alvara-prop-${id}" class="result-box-prop prop-resultado">0,00%</output>
             </div>
             <div class="input-group">
-                <label>Valor final do alvará</label>
-                <div class="result-box-destaque val-atualizado">R$ 0,00</div>
+                <label for="alvara-final-${id}">Valor final do alvará</label>
+                <output id="alvara-final-${id}" class="result-box-destaque val-atualizado">R$ 0,00</output>
             </div>
-            ${botaoRemover}
+            <button type="button" class="btn btn-remove" onclick="removerAlvara(${id})" title="Remover alvará" aria-label="Remover alvará">×</button>
+            <p class="linha-erro-msg" id="alvara-erro-${id}" hidden><span aria-hidden="true">⚠</span> Informe o nome do beneficiário deste alvará.</p>
         `;
         document.getElementById('alvaras-container').appendChild(div);
         calcularAlvaras();
+        return div;
+    }
+
+    function adicionarAlvaraEFocar() {
+        const linha = adicionarAlvara('');
+        const campo = linha.querySelector('.beneficiario-nome');
+        if (campo) campo.focus();
     }
 
     function removerAlvara(id) {
-        document.getElementById(`alvara-${id}`).remove();
+        const linha = document.getElementById(`alvara-${id}`);
+        if (!linha) return;
+        const proxima = linha.nextElementSibling || linha.previousElementSibling;
+        linha.remove();
+
+        // Sempre mantém ao menos uma linha na lista.
+        if (!document.querySelector('.alvara-row')) {
+            adicionarAlvaraEFocar();
+            return;
+        }
         calcularAlvaras();
+        const foco = proxima ? proxima.querySelector('.beneficiario-nome') : null;
+        if (foco) foco.focus();
+    }
+
+    function marcarNomeVisitado(campo) {
+        const linha = campo.closest('.alvara-row');
+        if (linha) linha.dataset.nomeVisitado = 'true';
+        calcularAlvaras();
+    }
+
+    function nomeDaLinha(item, indice) {
+        const nome = item.campoNome ? item.campoNome.value.trim() : '';
+        return nome || `Alvará ${indice + 1}`;
+    }
+
+    function rotuloRemocao(item, indice) {
+        const nome = item.campoNome ? item.campoNome.value.trim() : '';
+        return nome ? `Remover alvará de ${nome}` : `Remover alvará ${indice + 1}`;
+    }
+
+    // Procura uma linha cujo valor seja igual à soma de duas ou mais
+    // outras linhas (sinal de que um total e suas partes foram lançados).
+    function encontrarLancamentosDuplicados(itens) {
+        const positivos = itens
+            .map((item, indice) => ({ item, indice }))
+            .filter(x => x.item.valOriginalCentavos > 0);
+        if (positivos.length < 3 || positivos.length > 14) return [];
+
+        const achados = [];
+        positivos.forEach(alvo => {
+            const outros = positivos.filter(x => x !== alvo);
+            const total = 1 << outros.length;
+            let melhor = null;
+            for (let mask = 1; mask < total; mask++) {
+                let qtd = 0;
+                let soma = 0;
+                for (let i = 0; i < outros.length; i++) {
+                    if (mask & (1 << i)) {
+                        qtd++;
+                        soma += outros[i].item.valOriginalCentavos;
+                    }
+                }
+                if (qtd >= 2 && soma === alvo.item.valOriginalCentavos &&
+                    (!melhor || qtd < melhor.length)) {
+                    melhor = outros.filter((_, i) => mask & (1 << i));
+                }
+            }
+            if (melhor) achados.push({ alvo, partes: melhor });
+        });
+        return achados;
     }
 
     function calcularAlvaras() {
         const saldoConta = extrairNumero(document.getElementById('saldoConta').value);
         const saldoContaCentavos = Math.round(saldoConta * 100);
+        const campoTotalDecisao = document.getElementById('totalDecisao');
+        const totalDecisaoCentavos = Math.round(
+            extrairNumero(campoTotalDecisao ? campoTotalDecisao.value : '') * 100
+        );
 
         const linhas = document.querySelectorAll('.alvara-row');
         const barraStatus = document.getElementById('barraStatus');
@@ -2740,13 +2914,16 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
                 restoArredondamento = exato - valorAtualizadoCentavos;
             }
 
-            if (campoNome && !campoNome.hasAttribute('readonly') && !nomePreenchido) {
-                nomesPendentes++;
-            }
+            // O nome só é cobrado quando a linha já tem valor ou quando o
+            // usuário passou pelo campo e o deixou em branco.
+            const nomeComErro = !nomePreenchido &&
+                (valOriginalCentavos > 0 || linha.dataset.nomeVisitado === 'true');
+            if (nomeComErro) nomesPendentes++;
 
             valoresCalculados.push({
                 linha,
                 campoNome,
+                nomeComErro,
                 valOriginalCentavos,
                 proporcao,
                 valorAtualizadoCentavos,
@@ -2780,26 +2957,33 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
         const resumoBase = document.getElementById('resValorBaseRateio');
         const resumoSaldo = document.getElementById('resSaldoContaRateio');
         const resumoRestante = document.getElementById('resSaldoRestanteRateio');
+        const linhaResumoDecisao = document.getElementById('linhaResumoTotalDecisao');
+        const resumoDecisao = document.getElementById('resTotalDecisaoRateio');
 
         if (resumoBase) resumoBase.innerText = formatarMoedaVisual(valorBaseCentavos / 100);
         if (resumoSaldo) resumoSaldo.innerText = formatarMoedaVisual(saldoContaCentavos / 100);
         if (resumoRestante) resumoRestante.innerText = formatarMoedaVisual(saldoRestanteCentavos / 100);
+        if (linhaResumoDecisao) linhaResumoDecisao.hidden = totalDecisaoCentavos <= 0;
+        if (resumoDecisao) resumoDecisao.innerText = formatarMoedaVisual(totalDecisaoCentavos / 100);
 
         // Não há bloqueio: eventual divergência é apenas sinalizada.
-        valoresCalculados.forEach(item => {
+        valoresCalculados.forEach((item, indice) => {
             const propBox = item.linha.querySelector('.prop-resultado');
             const atualizadoBox = item.linha.querySelector('.val-atualizado');
+            const erroLinha = item.linha.querySelector('.linha-erro-msg');
+            const botaoRemover = item.linha.querySelector('.btn-remove');
 
-            const nomeLinhaOk =
-                !item.campoNome ||
-                item.campoNome.hasAttribute('readonly') ||
-                !!item.campoNome.value.trim();
-
-            item.linha.classList.toggle('erro-linha', !nomeLinhaOk);
-
-            atualizadoBox.style.color = '#1b5e20';
-            atualizadoBox.style.borderColor = '#4caf50';
-            atualizadoBox.style.backgroundColor = '#e8f5e9';
+            item.linha.classList.toggle('erro-linha', item.nomeComErro);
+            if (erroLinha) erroLinha.hidden = !item.nomeComErro;
+            if (item.campoNome) {
+                if (item.nomeComErro) item.campoNome.setAttribute('aria-invalid', 'true');
+                else item.campoNome.removeAttribute('aria-invalid');
+            }
+            if (botaoRemover) {
+                const rotulo = rotuloRemocao(item, indice);
+                botaoRemover.setAttribute('aria-label', rotulo);
+                botaoRemover.title = rotulo;
+            }
 
             if (valorBaseCentavos > 0 && item.valOriginalCentavos > 0) {
                 propBox.innerText =
@@ -2813,6 +2997,47 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
             }
         });
 
+        // Avisos de conferência (não bloqueiam o cálculo).
+        const avisos = [];
+        if (totalDecisaoCentavos > 0 && valorBaseCentavos > 0 &&
+            totalDecisaoCentavos !== valorBaseCentavos) {
+            const diferenca = valorBaseCentavos - totalDecisaoCentavos;
+            avisos.push(
+                `A soma dos valores originais (${formatarMoedaVisual(valorBaseCentavos / 100)}) está ` +
+                `${formatarMoedaVisual(Math.abs(diferenca) / 100)} ${diferenca > 0 ? 'acima' : 'abaixo'} ` +
+                `do total da decisão (${formatarMoedaVisual(totalDecisaoCentavos / 100)}).`
+            );
+        }
+        // Com o total da decisão informado e conferindo, não há o que apontar.
+        // Se ele diverge, só interessa a linha cujo valor é exatamente o
+        // excesso (retirá-la faz a soma bater). Sem o total, o aviso é
+        // apenas um alerta, pois a coincidência pode ser legítima.
+        const excessoDecisao = totalDecisaoCentavos > 0 ? valorBaseCentavos - totalDecisaoCentavos : null;
+        encontrarLancamentosDuplicados(valoresCalculados)
+            .filter(achado => excessoDecisao === null ||
+                (excessoDecisao > 0 && achado.alvo.item.valOriginalCentavos === excessoDecisao))
+            .forEach(achado => {
+            const nomeAlvo = nomeDaLinha(achado.alvo.item, achado.alvo.indice);
+            const nomesPartes = achado.partes.map(p => `“${nomeDaLinha(p.item, p.indice)}”`);
+            const listaPartes = nomesPartes.length > 1
+                ? nomesPartes.slice(0, -1).join(', ') + ' e ' + nomesPartes[nomesPartes.length - 1]
+                : nomesPartes[0];
+            avisos.push(
+                `O valor de “${nomeAlvo}” (${formatarMoedaVisual(achado.alvo.item.valOriginalCentavos / 100)}) ` +
+                (excessoDecisao === null
+                    ? `é igual à soma de ${listaPartes}. Se for o total dessas parcelas, ele foi lançado duas vezes; se for coincidência, desconsidere. Informe o total da decisão para uma conferência exata.`
+                    : `é igual à soma de ${listaPartes} e corresponde exatamente ao excesso. Provavelmente o total e as parcelas foram lançados juntos: remova “${nomeAlvo}” ou as parcelas.`)
+            );
+        });
+
+        const listaAvisos = document.getElementById('avisosRateio');
+        if (listaAvisos) {
+            listaAvisos.innerHTML = avisos
+                .map(texto => `<li><span aria-hidden="true">⚠</span> ${escaparHtml(texto)}</li>`)
+                .join('');
+            listaAvisos.hidden = avisos.length === 0;
+        }
+
         const diferencaCentavos = somaTotalFinalCentavos - saldoContaCentavos;
         const haDivergencia = saldoContaCentavos > 0 && diferencaCentavos !== 0;
         const haNomePendente = nomesPendentes > 0;
@@ -2820,41 +3045,87 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
 
         if (barraStatus) {
             barraStatus.classList.remove('erro', 'aviso', 'ok');
+            let mensagem = 'Preencha os valores originais e o saldo da conta para conferir o rateio.';
 
             if (haNomePendente) {
                 barraStatus.classList.add('erro');
-                if (erroMsgEl) {
-                    erroMsgEl.textContent =
-                        'Preencha o nome do beneficiário/referência em todos os alvarás.';
-                }
+                mensagem = nomesPendentes === 1
+                    ? 'Falta o nome do beneficiário em 1 alvará.'
+                    : `Falta o nome do beneficiário em ${nomesPendentes} alvarás.`;
             } else if (baseIncompleta && saldoContaCentavos > 0) {
                 barraStatus.classList.add('aviso');
-                if (erroMsgEl) {
-                    erroMsgEl.textContent =
-                        'Informe os valores originais dos alvarás para formar a base do cálculo.';
-                }
+                mensagem = 'Informe os valores originais dos alvarás para formar a base do cálculo.';
             } else if (haDivergencia) {
                 barraStatus.classList.add('aviso');
-                if (erroMsgEl) {
-                    const sinal = diferencaCentavos > 0 ? 'acima' : 'abaixo';
-                    erroMsgEl.textContent =
-                        `A soma dos alvarás ficou ${formatarMoedaVisual(Math.abs(diferencaCentavos) / 100)} ${sinal} do saldo da conta. Confira o rateio.`;
-                }
+                const sinal = diferencaCentavos > 0 ? 'acima' : 'abaixo';
+                mensagem = `A soma dos alvarás ficou ${formatarMoedaVisual(Math.abs(diferencaCentavos) / 100)} ${sinal} do saldo da conta. Confira o rateio.`;
             } else if (saldoContaCentavos > 0 && valorBaseCentavos > 0) {
-                barraStatus.classList.add('ok');
-                if (erroMsgEl) {
-                    erroMsgEl.textContent =
-                        'Rateio conferido: a soma dos alvarás coincide com o saldo da conta.';
+                if (avisos.length > 0) {
+                    barraStatus.classList.add('aviso');
+                    mensagem = avisos.length === 1
+                        ? 'A soma bate com o saldo, mas há 1 ponto a conferir (veja abaixo).'
+                        : `A soma bate com o saldo, mas há ${avisos.length} pontos a conferir (veja abaixo).`;
+                } else {
+                    barraStatus.classList.add('ok');
+                    mensagem = 'Rateio conferido: a soma dos alvarás coincide com o saldo da conta.';
                 }
-            } else if (erroMsgEl) {
-                erroMsgEl.textContent =
-                    'Preencha os valores originais e o saldo da conta para conferir o rateio.';
             }
+
+            if (erroMsgEl && erroMsgEl.textContent !== mensagem) {
+                erroMsgEl.textContent = mensagem;
+            }
+        }
+
+        const botaoCopiar = document.getElementById('btnCopiarRateio');
+        if (botaoCopiar) {
+            botaoCopiar.disabled = !(saldoContaCentavos > 0 && valorBaseCentavos > 0);
         }
 
         atualizarDisponibilidadeIntegracoes();
     }
 
+    function montarTextoRateio() {
+        const linhas = Array.from(document.querySelectorAll('.alvara-row'));
+        const saldo = document.getElementById('resSaldoContaRateio').innerText;
+        const base = document.getElementById('resValorBaseRateio').innerText;
+        const total = document.getElementById('spanTotalFinalAlvaras').innerText;
+        const totalDecisao = extrairNumero(document.getElementById('totalDecisao').value);
+
+        const partes = [
+            'RATEIO PARA EXPEDIÇÃO DE ALVARÁS',
+            '',
+            `Saldo atual da conta judicial: ${saldo}`
+        ];
+        if (totalDecisao > 0) partes.push(`Total da decisão: ${formatarMoedaVisual(totalDecisao)}`);
+        partes.push(`Valor base (soma dos valores originais): ${base}`, '');
+
+        let numero = 0;
+        linhas.forEach((linha, indice) => {
+            const valorOriginal = extrairNumero(linha.querySelector('.val-original').value);
+            if (valorOriginal <= 0) return;
+            numero++;
+            const nome = linha.querySelector('.beneficiario-nome').value.trim() || `Alvará ${indice + 1}`;
+            const proporcao = linha.querySelector('.prop-resultado').innerText;
+            const final = linha.querySelector('.val-atualizado').innerText;
+            partes.push(
+                `${numero}. ${nome}: valor original ${formatarMoedaVisual(valorOriginal)} (${proporcao}) → valor do alvará ${final}`
+            );
+        });
+
+        partes.push('', `Total dos alvarás: ${total}`);
+        return partes.join('\n');
+    }
+
+    async function copiarResultadoRateio() {
+        const status = document.getElementById('statusCopiaRateio');
+        const copiado = await copiarTextoParaAreaTransferencia(montarTextoRateio());
+        if (!status) return;
+        status.classList.toggle('error', !copiado);
+        status.textContent = copiado
+            ? '✓ Resultado copiado. Pronto para colar na minuta ou certidão.'
+            : 'Não foi possível copiar automaticamente. Tente novamente ou copie os valores da tela.';
+        if (copiado) setTimeout(() => { status.textContent = ''; }, 4000);
+    }
 
     /* ========================================================
        LÓGICA DO MÓDULO 2: TRIBUTAÇÃO DO CRÉDITO
@@ -3129,13 +3400,7 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
         campo.dataset.calculos = calculos;
     }
 
-    async function copiarCertidaoTributacao(apenasCalculos = false) {
-        const campo = document.getElementById('textoCertidaoTrib');
-        const status = document.getElementById('statusCopiaCertidao');
-        if (!campo) return;
-        const texto = apenasCalculos ? (campo.dataset.calculos || '') : campo.value;
-        if (!texto.trim()) return;
-
+    async function copiarTextoParaAreaTransferencia(texto) {
         let copiado = false;
         try {
             if (navigator.clipboard && window.isSecureContext) {
@@ -3154,6 +3419,17 @@ input[readonly] { background: #f3f6f8 !important; color: #54636f !important; }
             try { copiado = document.execCommand('copy'); } catch (e) { copiado = false; }
             document.body.removeChild(temp);
         }
+        return copiado;
+    }
+
+    async function copiarCertidaoTributacao(apenasCalculos = false) {
+        const campo = document.getElementById('textoCertidaoTrib');
+        const status = document.getElementById('statusCopiaCertidao');
+        if (!campo) return;
+        const texto = apenasCalculos ? (campo.dataset.calculos || '') : campo.value;
+        if (!texto.trim()) return;
+
+        const copiado = await copiarTextoParaAreaTransferencia(texto);
         status.classList.toggle('error', !copiado);
         status.textContent = copiado
             ? (apenasCalculos ? '✓ Quadro de cálculos copiado.' : '✓ Certidão completa copiada. Pronta para colar no processo.')
