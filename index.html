@@ -2231,6 +2231,100 @@ input:focus-visible {
 }
 </style>
 
+<style id="v16-tributacao-acessivel">
+/* V16 — Tributação: etapas numeradas, avisos em lista, barra fixa no celular. */
+.sr-only {
+    position: absolute !important;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0);
+    white-space: nowrap; border: 0;
+}
+.trib-form { display: grid; gap: 18px; }
+.trib-step {
+    margin: 0;
+    padding: 16px 0 0;
+    border: 0;
+    border-top: 1px solid var(--border, #dfe6eb);
+    min-width: 0;
+}
+.trib-step:first-child { border-top: 0; padding-top: 0; }
+.trib-step legend {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0;
+    margin: 0 0 12px;
+    font-size: .95rem;
+    font-weight: 800;
+    color: var(--text, #17212b);
+}
+.trib-step-num {
+    display: inline-grid;
+    place-items: center;
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: var(--brand, #173f5f);
+    color: #fff;
+    font-size: .8rem;
+    font-weight: 800;
+    flex: none;
+}
+.trib-step .plain-note { margin-top: 12px; }
+.trib-step .periodo-label {
+    color: #3f4d59 !important;
+    font-size: .82rem !important;
+    text-transform: none;
+}
+.tax-warning ul { margin: 0; padding: 0; list-style: none; }
+.tax-warning li + li { margin-top: 6px; }
+.tax-warning { font-size: .88rem !important; line-height: 1.4; }
+.result-row strong { font-variant-numeric: tabular-nums; }
+.tax-result-card:focus { outline: 3px solid #1d5d8b; outline-offset: 3px; }
+
+.rateio-pick { display: flex; align-items: center; gap: 8px; }
+.rateio-pick[hidden] { display: none; }
+.rateio-pick label {
+    margin: 0;
+    font-size: .8rem;
+    font-weight: 700;
+    color: #3f4d59;
+    text-transform: none;
+}
+.rateio-pick select { min-height: 40px; max-width: 260px; }
+
+.trib-sticky { display: none; }
+@media (max-width: 760px) {
+    .trib-sticky:not([hidden]) {
+        position: fixed;
+        left: 0; right: 0; bottom: 0;
+        z-index: 50;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+        background: #fff;
+        border-top: 1px solid var(--border, #dfe6eb);
+        box-shadow: 0 -6px 18px rgba(20, 38, 55, .10);
+    }
+    .trib-sticky span { display: block; font-size: .8rem; color: #4f5d68; font-weight: 600; }
+    .trib-sticky strong { font-size: 1.15rem; color: var(--success, #177245); font-variant-numeric: tabular-nums; }
+    .trib-sticky a {
+        display: inline-flex; align-items: center;
+        min-height: 44px; padding: 0 14px;
+        border-radius: 10px;
+        background: var(--brand, #173f5f); color: #fff;
+        font-weight: 700; text-decoration: none; white-space: nowrap;
+    }
+    #mod-tributacao { padding-bottom: 76px !important; }
+    .rateio-pick { width: 100%; flex-direction: column; align-items: stretch; }
+    .rateio-pick select { max-width: none; }
+    .clean-tax-table th { width: 52% !important; }
+    .clean-tax-table td { white-space: normal !important; overflow-wrap: anywhere; }
+}
+</style>
+
 </head>
 <body>
 
@@ -2385,6 +2479,10 @@ input:focus-visible {
                 </div>
             </div>
             <div class="tax-module-actions">
+                <div class="rateio-pick" id="rateioPickTrib" hidden>
+                    <label for="alvaraRateioTrib">Alvará do rateio</label>
+                    <select id="alvaraRateioTrib" onchange="atualizarDisponibilidadeIntegracoes()"></select>
+                </div>
                 <button type="button" class="btn-tax secondary integration-btn" id="btnUsarRateioTrib" onclick="usarCreditoParteNaTributacao()" disabled>Usar crédito do rateio</button>
                 <button type="button" class="btn-tax ghost" onclick="limparTributacao()">Limpar tributação</button>
             </div>
@@ -2405,97 +2503,109 @@ input:focus-visible {
                     <span class="fill-count" id="fillCountTrib">0 de 4 essenciais preenchidos</span>
                 </div>
 
-                <div class="tax-form-grid two compact-tax-grid">
-                    <div class="input-group">
-                        <label class="field-label-main" for="creditoTrib">Valor atualizado disponível / Calc GRV<span class="required-hint">obrigatório</span></label>
-                        <div class="control-with-affix prefix">
-                            <span class="control-prefix">R$</span>
-                            <input type="text" inputmode="decimal" id="creditoTrib" placeholder="617,41" oninput="mascaraMoeda(this); calcularTributacao()" aria-describedby="helpCreditoTrib">
+                <div class="trib-form">
+                    <fieldset class="trib-step">
+                        <legend><span class="trib-step-num" aria-hidden="true">1</span> Valores do crédito</legend>
+                        <div class="tax-form-grid two compact-tax-grid">
+                            <div class="input-group">
+                                <label class="field-label-main" for="creditoTrib">Valor atualizado disponível / Calc GRV<span class="required-hint">obrigatório</span></label>
+                                <div class="control-with-affix prefix">
+                                    <span class="control-prefix" aria-hidden="true">R$</span>
+                                    <input type="text" inputmode="decimal" id="creditoTrib" placeholder="0,00" required aria-required="true" oninput="mascaraMoeda(this); calcularTributacao()" aria-describedby="helpCreditoTrib">
+                                </div>
+                                <div class="input-help" id="helpCreditoTrib">Valor bruto disponível antes dos descontos.</div>
+                            </div>
+                            <div class="input-group">
+                                <label class="field-label-main" for="basePrevInformadaTrib">Principal remuneratório atualizado, sem juros<span class="required-hint">obrigatório</span></label>
+                                <div class="control-with-affix prefix">
+                                    <span class="control-prefix" aria-hidden="true">R$</span>
+                                    <input type="text" inputmode="decimal" id="basePrevInformadaTrib" placeholder="0,00" required aria-required="true" oninput="mascaraMoeda(this); calcularTributacao()" aria-describedby="helpBaseTrib">
+                                </div>
+                                <div class="input-help" id="helpBaseTrib">Principal corrigido que servirá de base para a previdência.</div>
+                            </div>
                         </div>
-                        <div class="input-help" id="helpCreditoTrib">Valor bruto disponível antes dos descontos.</div>
-                    </div>
+                    </fieldset>
 
-                    <div class="input-group">
-                        <label class="field-label-main" for="basePrevInformadaTrib">Principal remuneratório atualizado, sem juros<span class="required-hint">obrigatório</span></label>
-                        <div class="control-with-affix prefix">
-                            <span class="control-prefix">R$</span>
-                            <input type="text" inputmode="decimal" id="basePrevInformadaTrib" placeholder="419,18" oninput="mascaraMoeda(this); calcularTributacao()" aria-describedby="helpBaseTrib">
-                        </div>
-                        <div class="input-help" id="helpBaseTrib">Principal corrigido que servirá de base para a previdência.</div>
-                    </div>
-
-                    <div class="input-group periodo-parcelas-group">
-                        <label class="field-label-main">Período das parcelas <span class="optional-hint">opcional</span></label>
+                    <fieldset class="trib-step">
+                        <legend><span class="trib-step-num" aria-hidden="true">2</span> Período das parcelas <span class="optional-hint">opcional</span></legend>
                         <div class="periodo-parcelas-grid">
                             <div class="periodo-subcampo">
-                                <span class="periodo-label">Parcela inicial</span>
-                                <input type="month" id="competenciaInicialTrib" onchange="atualizarPeriodoTrib()" aria-label="Mês e ano da parcela inicial">
+                                <label class="periodo-label" for="competenciaInicialTrib">Parcela inicial (mês/ano)</label>
+                                <input type="month" id="competenciaInicialTrib" onchange="atualizarPeriodoTrib()" aria-describedby="helpMesesTrib">
                             </div>
                             <div class="periodo-subcampo">
-                                <span class="periodo-label">Parcela final</span>
-                                <input type="month" id="competenciaFinalTrib" onchange="atualizarPeriodoTrib()" aria-label="Mês e ano da parcela final">
+                                <label class="periodo-label" for="competenciaFinalTrib">Parcela final (mês/ano)</label>
+                                <input type="month" id="competenciaFinalTrib" onchange="atualizarPeriodoTrib()" aria-describedby="helpMesesTrib">
                             </div>
                             <div class="periodo-subcampo competencias-subcampo">
-                                <span class="periodo-label">Competências</span>
-                                <input type="number" id="mesesTrib" placeholder="7" min="1" step="1" oninput="calcularTributacao()" aria-describedby="helpMesesTrib">
+                                <label class="periodo-label" for="mesesTrib">Competências</label>
+                                <input type="number" id="mesesTrib" placeholder="Ex.: 12" min="1" step="1" inputmode="numeric" oninput="calcularTributacao()" aria-describedby="helpMesesTrib">
                             </div>
                         </div>
-                        <div class="input-help" id="helpMesesTrib">Informe os meses/anos das parcelas. Se preencher o início e o fim, o número de competências será calculado automaticamente. O período continua opcional.</div>
-                    </div>
+                        <div class="input-help" id="helpMesesTrib">Preenchendo o início e o fim, o número de competências é calculado automaticamente.</div>
+                    </fieldset>
 
-                    <div class="input-group">
-                        <label class="field-label-main" for="regimePrevTrib">Regime previdenciário<span class="required-hint">obrigatório</span></label>
-                        <select id="regimePrevTrib" onchange="atualizarRegimePrevidenciario()">
-                            <option value="impar" selected>IMPAR — Município de Araguaína</option>
-                            <option value="igeprev">IGEPREV-TO — Estado do Tocantins</option>
-                            <option value="outro">Outro RPPS</option>
-                        </select>
-                        <div class="input-help">IMPAR e IGEPREV-TO preenchem automaticamente 14%.</div>
-                    </div>
-
-                    <div class="input-group">
-                        <label class="field-label-main" for="aliquotaPrevTrib">Alíquota do segurado<span class="required-hint">obrigatório</span></label>
-                        <div class="control-with-affix suffix">
-                            <input type="number" id="aliquotaPrevTrib" value="14" min="0" max="100" step="0.01" oninput="marcarAliquotaManual(); calcularTributacao()">
-                            <span class="control-suffix">%</span>
+                    <fieldset class="trib-step">
+                        <legend><span class="trib-step-num" aria-hidden="true">3</span> Previdência</legend>
+                        <div class="tax-form-grid two compact-tax-grid">
+                            <div class="input-group">
+                                <label class="field-label-main" for="regimePrevTrib">Regime previdenciário<span class="required-hint">obrigatório</span></label>
+                                <select id="regimePrevTrib" onchange="atualizarRegimePrevidenciario()" aria-describedby="helpRegimeTrib">
+                                    <option value="impar" selected>IMPAR — Município de Araguaína</option>
+                                    <option value="igeprev">IGEPREV-TO — Estado do Tocantins</option>
+                                    <option value="outro">Outro RPPS</option>
+                                </select>
+                                <div class="input-help" id="helpRegimeTrib">IMPAR e IGEPREV-TO preenchem automaticamente 14%.</div>
+                            </div>
+                            <div class="input-group">
+                                <label class="field-label-main" for="aliquotaPrevTrib">Alíquota do segurado<span class="required-hint">obrigatório</span></label>
+                                <div class="control-with-affix suffix">
+                                    <input type="number" id="aliquotaPrevTrib" value="14" min="0" max="100" step="0.01" inputmode="decimal" aria-describedby="helpAliquotaTrib" oninput="marcarAliquotaManual(); calcularTributacao()">
+                                    <span class="control-suffix" aria-hidden="true">%</span>
+                                </div>
+                                <div class="input-help" id="helpAliquotaTrib">Percentual efetivamente descontado do servidor.</div>
+                            </div>
                         </div>
-                        <div class="input-help">Percentual efetivamente descontado do servidor.</div>
-                    </div>
+                        <div class="plain-note" id="regimeInfoTrib"><strong>IMPAR — Araguaína:</strong> contribuição do segurado configurada em 14%. Alíquota patronal não é descontada do crédito do servidor.</div>
+                    </fieldset>
 
-                    <div class="input-group optional-field">
-                        <label class="field-label-main" for="valorIrTrib">IRRF apurado <span class="optional-hint">se houver</span></label>
-                        <div class="control-with-affix prefix">
-                            <span class="control-prefix">R$</span>
-                            <input type="text" inputmode="decimal" id="valorIrTrib" placeholder="0,00" oninput="mascaraMoeda(this); calcularTributacao()">
+                    <fieldset class="trib-step">
+                        <legend><span class="trib-step-num" aria-hidden="true">4</span> Outros descontos <span class="optional-hint">se houver</span></legend>
+                        <div class="tax-form-grid two compact-tax-grid">
+                            <div class="input-group">
+                                <label class="field-label-main" for="valorIrTrib">IRRF apurado</label>
+                                <div class="control-with-affix prefix">
+                                    <span class="control-prefix" aria-hidden="true">R$</span>
+                                    <input type="text" inputmode="decimal" id="valorIrTrib" placeholder="0,00" aria-describedby="helpIrTrib" oninput="mascaraMoeda(this); calcularTributacao()">
+                                </div>
+                                <div class="input-help" id="helpIrTrib">Se não houver retenção, deixe em branco.</div>
+                            </div>
+                            <div class="input-group">
+                                <label class="field-label-main" for="outrosDescontosTrib">Outros descontos</label>
+                                <div class="control-with-affix prefix">
+                                    <span class="control-prefix" aria-hidden="true">R$</span>
+                                    <input type="text" inputmode="decimal" id="outrosDescontosTrib" placeholder="0,00" aria-describedby="helpOutrosTrib" oninput="mascaraMoeda(this); calcularTributacao()">
+                                </div>
+                                <div class="input-help" id="helpOutrosTrib">Utilize apenas quando houver outro desconto determinado.</div>
+                            </div>
                         </div>
-                        <div class="input-help">Se não houver retenção, deixe em branco.</div>
-                    </div>
-
-                    <div class="input-group optional-field">
-                        <label class="field-label-main" for="outrosDescontosTrib">Outros descontos <span class="optional-hint">se houver</span></label>
-                        <div class="control-with-affix prefix">
-                            <span class="control-prefix">R$</span>
-                            <input type="text" inputmode="decimal" id="outrosDescontosTrib" placeholder="0,00" oninput="mascaraMoeda(this); calcularTributacao()">
-                        </div>
-                        <div class="input-help">Utilize apenas quando houver outro desconto determinado.</div>
-                    </div>
+                    </fieldset>
                 </div>
 
-                <div class="auto-results-strip" aria-live="polite">
+                <div class="auto-results-strip" aria-label="Valores calculados automaticamente">
                     <div><span>Juros/acréscimos excluídos</span><strong id="resJurosTrib">R$ 0,00</strong></div>
                     <div><span>Parcela média mensal</span><strong id="resParcelaMesTrib">R$ 0,00</strong></div>
                     <div><span>Previdência calculada</span><strong id="resPrevPagamento">R$ 0,00</strong></div>
                     <div><span>Base após previdência</span><strong id="resBaseIrTrib">R$ 0,00</strong></div>
                 </div>
 
-                <div class="plain-note" id="regimeInfoTrib"><strong>IMPAR — Araguaína:</strong> contribuição do segurado configurada em 14%. Alíquota patronal não é descontada do crédito do servidor.</div>
-                <div id="taxWarning" class="tax-warning" role="alert" aria-live="assertive"></div>
+                <div id="taxWarning" class="tax-warning" role="status" aria-live="polite"></div>
             </section>
 
-            <aside class="tax-result-card" aria-label="Resultado do cálculo">
+            <aside class="tax-result-card" id="resultadoTrib" aria-labelledby="tituloResultadoTrib" tabindex="-1">
                 <div class="result-card-head">
                     <span>Conferência imediata</span>
-                    <h2>Resultado do cálculo</h2>
+                    <h2 id="tituloResultadoTrib">Resultado do cálculo</h2>
                 </div>
                 <div class="liquid-highlight">
                     <small>Valor líquido do credor</small>
@@ -2509,7 +2619,7 @@ input:focus-visible {
                     <div class="result-row total"><span>Total destinado</span><strong id="resultadoTotalDestinadoVisual">R$ 0,00</strong></div>
                 </div>
                 <div class="result-check-wrap">
-                    <div class="destination-check" id="destinoCheckTrib">A soma das destinações será conferida automaticamente.</div>
+                    <div class="destination-check" id="destinoCheckTrib" role="status">A soma das destinações será conferida automaticamente.</div>
                 </div>
             </aside>
         </div>
@@ -2527,12 +2637,12 @@ input:focus-visible {
                     <div class="table-card-title">Composição do crédito</div>
                     <table class="clean-tax-table">
                         <tbody>
-                            <tr><th>Valor atualizado disponível</th><td id="tabCreditoTrib">R$ 0,00</td></tr>
-                            <tr><th>Principal remuneratório atualizado</th><td id="tabBasePrevTrib">R$ 0,00</td></tr>
-                            <tr><th>Juros/acréscimos excluídos da base</th><td id="tabJurosTrib">R$ 0,00</td></tr>
-                            <tr><th>Período das parcelas</th><td id="tabPeriodoTrib">—</td></tr>
-                            <tr><th>Número de competências</th><td id="tabMesesTrib">—</td></tr>
-                            <tr><th>Parcela média do principal</th><td id="tabParcelaMesTrib">R$ 0,00</td></tr>
+                            <tr><th scope="row">Valor atualizado disponível</th><td id="tabCreditoTrib">R$ 0,00</td></tr>
+                            <tr><th scope="row">Principal remuneratório atualizado</th><td id="tabBasePrevTrib">R$ 0,00</td></tr>
+                            <tr><th scope="row">Juros/acréscimos excluídos da base</th><td id="tabJurosTrib">R$ 0,00</td></tr>
+                            <tr><th scope="row">Período das parcelas</th><td id="tabPeriodoTrib">—</td></tr>
+                            <tr><th scope="row">Número de competências</th><td id="tabMesesTrib">—</td></tr>
+                            <tr><th scope="row">Parcela média do principal</th><td id="tabParcelaMesTrib">R$ 0,00</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -2541,12 +2651,12 @@ input:focus-visible {
                     <div class="table-card-title">Descontos legais</div>
                     <table class="clean-tax-table">
                         <tbody>
-                            <tr><th>Regime previdenciário</th><td id="tabRegimeTrib">IMPAR</td></tr>
-                            <tr><th>Alíquota do segurado</th><td id="tabAliquotaPrevTrib">14,00%</td></tr>
-                            <tr><th>Contribuição previdenciária</th><td id="tabPrevTotalTrib">R$ 0,00</td></tr>
-                            <tr><th>Base após previdência</th><td id="tabBaseIrTrib">R$ 0,00</td></tr>
-                            <tr><th>IRRF</th><td id="tabIrPagTrib">R$ 0,00</td></tr>
-                            <tr><th>Outros descontos</th><td id="tabOutrosTrib">R$ 0,00</td></tr>
+                            <tr><th scope="row">Regime previdenciário</th><td id="tabRegimeTrib">IMPAR</td></tr>
+                            <tr><th scope="row">Alíquota do segurado</th><td id="tabAliquotaPrevTrib">14,00%</td></tr>
+                            <tr><th scope="row">Contribuição previdenciária</th><td id="tabPrevTotalTrib">R$ 0,00</td></tr>
+                            <tr><th scope="row">Base após previdência</th><td id="tabBaseIrTrib">R$ 0,00</td></tr>
+                            <tr><th scope="row">IRRF</th><td id="tabIrPagTrib">R$ 0,00</td></tr>
+                            <tr><th scope="row">Outros descontos</th><td id="tabOutrosTrib">R$ 0,00</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -2566,14 +2676,20 @@ input:focus-visible {
             </div>
             <div class="certidao-body">
                 <div class="document-preview">
-                    <textarea id="textoCertidaoTrib" class="certidao-textarea" readonly aria-label="Texto pronto para copiar e colar na certidão do processo"></textarea>
+                    <textarea id="textoCertidaoTrib" class="certidao-textarea" readonly aria-labelledby="tituloCertidaoTrib" aria-describedby="notaCertidaoTrib"></textarea>
                 </div>
-                <div id="statusCopiaCertidao" class="copy-status" aria-live="polite"></div>
-                <div class="subtle-note certidao-footnote"><strong>Antes de juntar:</strong> confira os valores informados, a alíquota previdenciária e eventual IRRF.</div>
+                <div id="statusCopiaCertidao" class="copy-status" role="status" aria-live="polite"></div>
+                <div class="subtle-note certidao-footnote" id="notaCertidaoTrib"><strong>Antes de juntar:</strong> confira os valores informados, a alíquota previdenciária e eventual IRRF.</div>
             </div>
         </section>
     </div>
 </section>
+
+<div class="trib-sticky" id="tribSticky" hidden>
+    <div><span>Valor líquido do credor</span><strong id="tribStickyLiquido">R$ 0,00</strong></div>
+    <a href="#resultadoTrib" onclick="irParaResultadoTrib(event)">Ver resultado</a>
+</div>
+<div class="sr-only" id="anuncioTrib" aria-live="polite" aria-atomic="true"></div>
 
 <!-- MÓDULO 3: DESTAQUE DE HONORÁRIOS CONTRATUAIS -->
 <section class="container module-card app-view" id="mod-honorarios" hidden>
@@ -3168,6 +3284,39 @@ input:focus-visible {
         return extrairNumero(box.innerText.replace('R$', '').trim());
     }
 
+    // Alvarás do rateio com valor final calculado, para escolha na Tributação.
+    function listarAlvarasRateio() {
+        return Array.from(document.querySelectorAll('.alvara-row')).map((linha, indice) => {
+            const nome = (linha.querySelector('.beneficiario-nome')?.value || '').trim() || `Alvará ${indice + 1}`;
+            const box = linha.querySelector('.val-atualizado');
+            const valor = box ? extrairNumero(box.innerText.replace('R$', '').trim()) : 0;
+            return { id: linha.id, nome, valor };
+        }).filter(item => item.valor > 0);
+    }
+
+    function obterAlvaraEscolhidoTrib() {
+        const alvaras = listarAlvarasRateio();
+        if (!alvaras.length) return null;
+        const select = document.getElementById('alvaraRateioTrib');
+        return alvaras.find(item => select && item.id === select.value) || alvaras[0];
+    }
+
+    function atualizarSeletorAlvaraTrib() {
+        const select = document.getElementById('alvaraRateioTrib');
+        const caixa = document.getElementById('rateioPickTrib');
+        if (!select || !caixa) return;
+        const alvaras = listarAlvarasRateio();
+        const atual = select.value;
+        const opcoes = alvaras
+            .map(item => `<option value="${item.id}">${escaparHtml(item.nome)} · ${formatarMoedaVisual(item.valor)}</option>`)
+            .join('');
+        if (select.innerHTML !== opcoes) {
+            select.innerHTML = opcoes;
+            if (alvaras.some(item => item.id === atual)) select.value = atual;
+        }
+        caixa.hidden = alvaras.length < 2;
+    }
+
     function obterLiquidoTributacao() {
         const el = document.getElementById('resLiquidoTrib');
         if (!el) return 0;
@@ -3175,9 +3324,10 @@ input:focus-visible {
     }
 
     function usarCreditoParteNaTributacao() {
-        const valor = obterCreditoParteRateio();
+        const escolhido = obterAlvaraEscolhidoTrib();
+        const valor = escolhido ? escolhido.valor : 0;
         if (valor <= 0) {
-            exibirAvisoTrib('Calcule primeiro o “Crédito da Parte” no módulo de rateio.');
+            exibirAvisoTrib('Calcule primeiro o rateio dos alvarás no módulo 01.');
             return;
         }
         definirCampoMoeda('creditoTrib', valor);
@@ -3204,15 +3354,18 @@ input:focus-visible {
     function atualizarDisponibilidadeIntegracoes() {
         const creditoRateio = obterCreditoParteRateio();
         const liquidoTrib = obterLiquidoTributacao();
+        atualizarSeletorAlvaraTrib();
+        const alvaraTrib = obterAlvaraEscolhidoTrib();
+        const valorAlvaraTrib = alvaraTrib ? alvaraTrib.valor : 0;
 
         const btnTrib = document.getElementById('btnUsarRateioTrib');
         const btnRateioHon = document.getElementById('btnRateioHonorarios');
         const btnTribHon = document.getElementById('btnTribHonorarios');
 
         if (btnTrib) {
-            btnTrib.disabled = creditoRateio <= 0;
-            btnTrib.textContent = creditoRateio > 0
-                ? `Usar crédito do rateio · ${formatarMoedaVisual(creditoRateio)}`
+            btnTrib.disabled = valorAlvaraTrib <= 0;
+            btnTrib.textContent = valorAlvaraTrib > 0
+                ? `Usar alvará do rateio · ${formatarMoedaVisual(valorAlvaraTrib)}`
                 : 'Usar crédito do rateio';
         }
 
@@ -3254,10 +3407,48 @@ input:focus-visible {
         }
     }
 
-    function exibirAvisoTrib(texto) {
+    function exibirAvisoTrib(avisos) {
         const warning = document.getElementById('taxWarning');
-        warning.innerText = texto || '';
-        warning.classList.toggle('show', !!texto);
+        if (!warning) return;
+        const lista = (Array.isArray(avisos) ? avisos : [avisos]).filter(Boolean);
+        const html = lista.length
+            ? '<ul>' + lista.map(t => `<li><span aria-hidden="true">⚠</span> ${escaparHtml(t)}</li>`).join('') + '</ul>'
+            : '';
+        if (warning.innerHTML !== html) warning.innerHTML = html;
+        warning.classList.toggle('show', lista.length > 0);
+    }
+
+    function formatarDesconto(valor) {
+        return valor > 0 ? `− ${formatarMoedaVisual(valor)}` : formatarMoedaVisual(0);
+    }
+
+    let temporizadorAnuncioTrib = null;
+    function anunciarResultadoTrib(liquido, credito) {
+        clearTimeout(temporizadorAnuncioTrib);
+        temporizadorAnuncioTrib = setTimeout(() => {
+            const regiao = document.getElementById('anuncioTrib');
+            if (!regiao) return;
+            regiao.textContent = credito > 0
+                ? `Valor líquido do credor: ${formatarMoedaVisual(liquido)}.`
+                : '';
+        }, 900);
+    }
+
+    function atualizarBarraFixaTrib(liquido, credito) {
+        const barra = document.getElementById('tribSticky');
+        const modulo = document.getElementById('mod-tributacao');
+        if (!barra) return;
+        barra.hidden = !(credito > 0 && modulo && !modulo.hidden);
+        const valor = document.getElementById('tribStickyLiquido');
+        if (valor) valor.textContent = formatarMoedaVisual(liquido);
+    }
+
+    function irParaResultadoTrib(evento) {
+        if (evento) evento.preventDefault();
+        const destino = document.getElementById('resultadoTrib');
+        if (!destino) return;
+        destino.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        destino.focus({ preventScroll: true });
     }
 
     function marcarAliquotaManual() {
@@ -3472,7 +3663,11 @@ input:focus-visible {
                 if (credito > 0 && basePrev > credito) avisos.push('O principal remuneratório está maior que o valor disponível. Confira os valores.');
         if ((regime === 'impar' || regime === 'igeprev') && Math.abs(aliquotaPrev - 14) > 0.001) avisos.push(`A alíquota padrão deste regime está configurada em 14%. Foi informado ${aliquotaPrev.toFixed(2).replace('.', ',')}%.`);
         if (liquido < 0) avisos.push('Os descontos superam o valor disponível. Confira os dados antes de utilizar o resultado.');
-        exibirAvisoTrib(avisos.join(' '));
+        const mesesPeriodo = calcularCompetenciasEntreTrib(competenciaInicial, competenciaFinal);
+        if (mesesPeriodo > 0 && mesesValido && mesesPeriodo !== meses) {
+            avisos.push(`O período informado tem ${mesesPeriodo} ${mesesPeriodo === 1 ? 'competência' : 'competências'}, mas o campo Competências está com ${meses}. Confira.`);
+        }
+        exibirAvisoTrib(avisos);
 
         document.getElementById('resJurosTrib').innerText = formatarMoedaVisual(juros);
         document.getElementById('resParcelaMesTrib').innerText = mesesValido ? formatarMoedaVisual(parcelaMensal) : 'Não informada';
@@ -3481,9 +3676,9 @@ input:focus-visible {
         document.getElementById('resValorLiberadoTrib').innerText = formatarMoedaVisual(credito);
         const totalDestinadoVisual = document.getElementById('resultadoTotalDestinadoVisual');
         if (totalDestinadoVisual) totalDestinadoVisual.innerText = formatarMoedaVisual(liquido + previdencia + valorIr + outrosDescontos);
-        document.getElementById('resPrevResumoTrib').innerText = formatarMoedaVisual(previdencia);
-        document.getElementById('resIrPagamento').innerText = formatarMoedaVisual(valorIr);
-        document.getElementById('resOutrosResumoTrib').innerText = formatarMoedaVisual(outrosDescontos);
+        document.getElementById('resPrevResumoTrib').innerText = formatarDesconto(previdencia);
+        document.getElementById('resIrPagamento').innerText = formatarDesconto(valorIr);
+        document.getElementById('resOutrosResumoTrib').innerText = formatarDesconto(outrosDescontos);
         document.getElementById('resLiquidoTrib').innerText = formatarMoedaVisual(liquido);
 
         document.getElementById('tabCreditoTrib').innerText = formatarMoedaVisual(credito);
@@ -3524,6 +3719,8 @@ input:focus-visible {
         });
         atualizarChipRegime();
         atualizarDisponibilidadeIntegracoes();
+        anunciarResultadoTrib(liquido, credito);
+        atualizarBarraFixaTrib(liquido, credito);
     }
 
     /* ========================================================
@@ -3611,6 +3808,11 @@ input:focus-visible {
         }
 
         atualizarDisponibilidadeIntegracoes();
+        if (typeof calcularTributacao === 'function' && document.getElementById('tribSticky')) {
+            const barra = document.getElementById('tribSticky');
+            const credito = extrairNumero(document.getElementById('creditoTrib').value);
+            barra.hidden = !(viewId === 'mod-tributacao' && credito > 0);
+        }
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
