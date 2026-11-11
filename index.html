@@ -2771,7 +2771,7 @@ input:focus-visible {
         </div>
         <div class="module-heading-actions">
             <button type="button" class="secondary-action integration-btn" id="btnRateioHonorarios" onclick="usarRateioNosHonorarios()" disabled>Usar crédito do rateio</button>
-            <button type="button" class="secondary-action integration-btn" id="btnTribHonorarios" onclick="usarLiquidoTributacaoNosHonorarios()" disabled>Usar líquido da tributação</button>
+            <button type="button" class="secondary-action integration-btn" id="btnTribHonorarios" onclick="usarDisponivelTributacaoNosHonorarios()" disabled>Usar valor disponível da tributação</button>
         </div>
     </div>
     <div class="module-body">
@@ -2782,7 +2782,7 @@ input:focus-visible {
                     <div class="input-group">
                         <label for="valorAtualizadoParte">Valor atualizado da parte</label>
                         <input type="text" inputmode="numeric" id="valorAtualizadoParte" placeholder="0,00" oninput="mascaraMoeda(this); calcularDestaque()">
-                        <div class="input-help">Informe o crédito sobre o qual incidirá o percentual contratual.</div>
+                        <div class="input-help">Informe o valor disponível (bruto), sem abater previdência, IRRF ou outros descontos.</div>
                     </div>
                     <div class="input-group">
                         <label for="percentualDestaque">Percentual a destacar</label>
@@ -3413,8 +3413,14 @@ input:focus-visible {
         document.getElementById('percentualDestaque').focus();
     }
 
-    function usarLiquidoTributacaoNosHonorarios() {
-        const valor = obterLiquidoTributacao();
+    // O destaque de honorários incide sobre o valor disponível (bruto),
+    // sem abater previdência, IRRF ou outros descontos.
+    function obterDisponivelTributacao() {
+        return extrairNumero(document.getElementById('creditoTrib').value);
+    }
+
+    function usarDisponivelTributacaoNosHonorarios() {
+        const valor = obterDisponivelTributacao();
         if (valor <= 0) return;
         definirCampoMoeda('valorAtualizadoParte', valor);
         calcularDestaque();
@@ -3447,10 +3453,11 @@ input:focus-visible {
         }
 
         if (btnTribHon) {
-            btnTribHon.disabled = liquidoTrib <= 0;
-            btnTribHon.textContent = liquidoTrib > 0
-                ? `Usar líquido · ${formatarMoedaVisual(liquidoTrib)}`
-                : 'Usar líquido da tributação';
+            const disponivelTrib = obterDisponivelTributacao();
+            btnTribHon.disabled = disponivelTrib <= 0;
+            btnTribHon.textContent = disponivelTrib > 0
+                ? `Usar valor disponível · ${formatarMoedaVisual(disponivelTrib)}`
+                : 'Usar valor disponível da tributação';
         }
 
         const badgeRateio = document.getElementById('badgeRateio');
