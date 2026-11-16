@@ -2547,7 +2547,7 @@ input:focus-visible {
                         <h2 id="dadosTrib">Dados do crédito</h2>
                         <p>Preencha de cima para baixo. Campos opcionais só precisam ser usados quando houver desconto.</p>
                     </div>
-                    <span class="fill-count" id="fillCountTrib">0 de 4 essenciais preenchidos</span>
+                    <span class="fill-count" id="fillCountTrib">0 de 2 essenciais preenchidos</span>
                 </div>
 
                 <div class="trib-form">
@@ -2596,7 +2596,7 @@ input:focus-visible {
                         <legend><span class="trib-step-num" aria-hidden="true">3</span> Previdência</legend>
                         <div class="tax-form-grid two compact-tax-grid">
                             <div class="input-group">
-                                <label class="field-label-main" for="regimePrevTrib">Regime previdenciário<span class="required-hint">obrigatório</span></label>
+                                <label class="field-label-main" for="regimePrevTrib">Regime previdenciário</label>
                                 <select id="regimePrevTrib" onchange="atualizarRegimePrevidenciario()" aria-describedby="helpRegimeTrib">
                                     <option value="impar" selected>IMPAR — Município de Araguaína</option>
                                     <option value="igeprev">IGEPREV-TO — Estado do Tocantins</option>
@@ -2606,9 +2606,9 @@ input:focus-visible {
                                 <div class="input-help" id="helpRegimeTrib">O regime não preenche a alíquota: informe-a no campo ao lado.</div>
                             </div>
                             <div class="input-group">
-                                <label class="field-label-main" for="aliquotaPrevTrib">Alíquota do segurado<span class="required-hint">obrigatório</span></label>
+                                <label class="field-label-main" for="aliquotaPrevTrib">Alíquota do segurado</label>
                                 <div class="control-with-affix suffix">
-                                    <input type="number" id="aliquotaPrevTrib" placeholder="Ex.: 14" required aria-required="true" min="0" max="100" step="0.01" inputmode="decimal" aria-describedby="helpAliquotaTrib" oninput="marcarAliquotaManual(); calcularTributacao()">
+                                    <input type="number" id="aliquotaPrevTrib" placeholder="Ex.: 14" min="0" max="100" step="0.01" inputmode="decimal" aria-describedby="helpAliquotaTrib" oninput="marcarAliquotaManual(); calcularTributacao()">
                                     <span class="control-suffix" aria-hidden="true">%</span>
                                 </div>
                                 <div class="input-help" id="helpAliquotaTrib">Digite o percentual descontado do servidor. Não é preenchido automaticamente.</div>
@@ -4013,11 +4013,10 @@ input:focus-visible {
         const baseIr = Math.max(basePrev - previdencia, 0);
         const liquido = credito - previdencia - valorIr - outrosDescontos;
 
-        const aliquotasOk = multi ? faixas.every(f => f.aliquota > 0) : aliquotaPrev > 0;
-        const essenciais = [credito > 0, basePrev > 0, !!regime, aliquotasOk];
+        const essenciais = [credito > 0, basePrev > 0];
         const preenchidos = essenciais.filter(Boolean).length;
         const fillCount = document.getElementById('fillCountTrib');
-        if (fillCount) fillCount.textContent = `${preenchidos} de 4 essenciais preenchidos`;
+        if (fillCount) fillCount.textContent = `${preenchidos} de 2 essenciais preenchidos`;
 
         let avisos = [];
         if (competenciaInicial && competenciaFinal && calcularCompetenciasEntreTrib(competenciaInicial, competenciaFinal) <= 0) {
@@ -4038,7 +4037,6 @@ input:focus-visible {
         if (basePrev > 0 && credito <= 0) avisos.push('Informe o valor atualizado disponível / Calc GRV.');
                 if (credito > 0 && basePrev > credito) avisos.push('O principal remuneratório está maior que o valor disponível. Confira os valores.');
         const aliquotaEsperada = aliquotaEsperadaTrib(regime, competenciaInicial, competenciaFinal);
-        if (!multi && credito > 0 && basePrev > 0 && aliquotaPrev <= 0) avisos.push('Informe a alíquota do segurado (etapa 3).');
         if (!multi && aliquotaPrev > 0 && aliquotaEsperada !== null && Math.abs(aliquotaPrev - aliquotaEsperada) > 0.001) {
             avisos.push(`A alíquota deste regime para o período é ${formatarPercentualTrib(aliquotaEsperada)}. Foi informado ${formatarPercentualTrib(aliquotaPrev)}.`);
         }
