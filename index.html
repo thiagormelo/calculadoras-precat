@@ -2310,11 +2310,15 @@ input:focus-visible {
 .faixas-table tbody th { width: auto !important; }
 #aliquotaPrevTrib:disabled { background: #f3f6f8; color: #54636f; cursor: not-allowed; }
 .faixa-trib > .input-group { grid-column: span 6; }
+.faixa-trib .faixa-meses { text-align: center; }
 .faixa-trib > .btn-remove { grid-column: span 1; justify-self: end; }
 @media (min-width: 761px) {
-    .faixa-trib > .input-group:nth-child(3) { grid-column: span 3; }
-    .faixa-trib > .input-group:nth-child(4),
-    .faixa-trib > .input-group:nth-child(5) { grid-column: span 4; }
+    .faixa-trib > .input-group:nth-child(1),
+    .faixa-trib > .input-group:nth-child(2) { grid-column: span 5; }
+    .faixa-trib > .input-group:nth-child(3) { grid-column: span 2; }
+    .faixa-trib > .input-group:nth-child(4) { grid-column: span 3; }
+    .faixa-trib > .input-group:nth-child(5),
+    .faixa-trib > .input-group:nth-child(6) { grid-column: span 4; }
 }
 @media (max-width: 760px) {
     .faixa-trib > .btn-remove { grid-column: span 6; }
@@ -2533,7 +2537,7 @@ input:focus-visible {
 
         <div class="tax-guidance">
             <div><strong>Fluxo simplificado:</strong> informe o valor disponível, o principal remuneratório sem juros e o regime previdenciário. Se desejar, informe também as competências para demonstrar a parcela média mensal. Os demais valores são calculados automaticamente.</div>
-            <span class="regime-chip" id="regimeChip">IMPAR • 14%</span>
+            <span class="regime-chip" id="regimeChip">IMPAR • alíquota a informar</span>
         </div>
 
         <div class="tax-workspace">
@@ -2585,7 +2589,7 @@ input:focus-visible {
                                 <input type="number" id="mesesTrib" placeholder="Ex.: 12" min="1" step="1" inputmode="numeric" oninput="calcularTributacao()" aria-describedby="helpMesesTrib">
                             </div>
                         </div>
-                        <div class="input-help" id="helpMesesTrib">Preenchendo o início e o fim, o número de competências é calculado automaticamente.</div>
+                        <div class="input-help" id="helpMesesTrib">Preenchendo o início e o fim, o número de competências é calculado automaticamente. Você pode alterar o número se houver meses já pagos.</div>
                     </fieldset>
 
                     <fieldset class="trib-step">
@@ -2599,23 +2603,23 @@ input:focus-visible {
                                     <option value="militar">Militar ativo — PM/BM do Tocantins</option>
                                     <option value="outro">Outro RPPS</option>
                                 </select>
-                                <div class="input-help" id="helpRegimeTrib">A alíquota é preenchida conforme o regime e o período das parcelas.</div>
+                                <div class="input-help" id="helpRegimeTrib">O regime não preenche a alíquota: informe-a no campo ao lado.</div>
                             </div>
                             <div class="input-group">
                                 <label class="field-label-main" for="aliquotaPrevTrib">Alíquota do segurado<span class="required-hint">obrigatório</span></label>
                                 <div class="control-with-affix suffix">
-                                    <input type="number" id="aliquotaPrevTrib" value="14" min="0" max="100" step="0.01" inputmode="decimal" aria-describedby="helpAliquotaTrib" oninput="marcarAliquotaManual(); calcularTributacao()">
+                                    <input type="number" id="aliquotaPrevTrib" placeholder="Ex.: 14" required aria-required="true" min="0" max="100" step="0.01" inputmode="decimal" aria-describedby="helpAliquotaTrib" oninput="marcarAliquotaManual(); calcularTributacao()">
                                     <span class="control-suffix" aria-hidden="true">%</span>
                                 </div>
-                                <div class="input-help" id="helpAliquotaTrib">Percentual efetivamente descontado do servidor.</div>
+                                <div class="input-help" id="helpAliquotaTrib">Digite o percentual descontado do servidor. Não é preenchido automaticamente.</div>
                             </div>
                         </div>
-                        <div class="plain-note" id="regimeInfoTrib"><strong>IMPAR — Araguaína:</strong> contribuição do segurado configurada em 14%. Alíquota patronal não é descontada do crédito do servidor.</div>
+                        <div class="plain-note" id="regimeInfoTrib"><strong>IMPAR — Araguaína:</strong> informe a alíquota do segurado (referência atual: 14%). Alíquota patronal não é descontada do crédito do servidor.</div>
                         <div class="faixas-trib-box">
                             <div class="faixas-head">
                                 <div>
                                     <h3 id="tituloFaixasTrib">Alíquotas por período</h3>
-                                    <p class="input-help" id="helpFaixasTrib">Use quando a alíquota mudou durante o período das parcelas. Para IGEPREV-TO e militares, basta informar o período na etapa 2: as alíquotas são separadas automaticamente. Depois, informe o principal de cada período.</p>
+                                    <p class="input-help" id="helpFaixasTrib">Use quando a alíquota mudou durante o período das parcelas. Para IGEPREV-TO e militares, basta informar o período na etapa 2: as alíquotas são separadas automaticamente. Depois, informe o principal de cada período. O número de competências de cada período pode ser alterado.</p>
                                 </div>
                                 <div class="faixas-acoes">
                                     <button type="button" class="btn-tax ghost" id="btnRestaurarFaixasTrib" onclick="restaurarFaixasAutomaticasTrib()" hidden>Refazer pelo período</button>
@@ -2894,7 +2898,7 @@ input:focus-visible {
         document.getElementById('mesesTrib').value = '';
         limparFaixasTrib();
         document.getElementById('regimePrevTrib').value = 'impar';
-        document.getElementById('aliquotaPrevTrib').value = '14';
+        document.getElementById('aliquotaPrevTrib').value = '';
         aliquotaFoiAlteradaManualmente = false;
         document.getElementById('valorIrTrib').value = '';
         document.getElementById('outrosDescontosTrib').value = '';
@@ -3337,7 +3341,7 @@ input:focus-visible {
         document.getElementById('mesesTrib').value = '';
         limparFaixasTrib();
         document.getElementById('regimePrevTrib').value = 'impar';
-        document.getElementById('aliquotaPrevTrib').value = '14';
+        document.getElementById('aliquotaPrevTrib').value = '';
         document.getElementById('valorIrTrib').value = '';
         document.getElementById('outrosDescontosTrib').value = '';
         aliquotaFoiAlteradaManualmente = false;
@@ -3553,7 +3557,9 @@ input:focus-visible {
             chip.innerText = `${nomeRegimeTrib(regime)} • ${taxas.join(' / ')}`;
             return;
         }
-        chip.innerText = `${nomeRegimeTrib(regime)} • ${aliquota.toFixed(2).replace('.', ',')}%${aliquotaFoiAlteradaManualmente ? ' (ajustada)' : ''}`;
+        chip.innerText = aliquota > 0
+            ? `${nomeRegimeTrib(regime)} • ${aliquota.toFixed(2).replace('.', ',')}%`
+            : `${nomeRegimeTrib(regime)} • alíquota a informar`;
     }
 
     /* ========================================================
@@ -3624,11 +3630,15 @@ input:focus-visible {
         div.innerHTML = `
             <div class="input-group">
                 <label for="faixa-inicio-${id}">De (mês/ano)</label>
-                <input type="month" id="faixa-inicio-${id}" class="faixa-inicio" value="${dados.inicio || ''}" onchange="calcularTributacao()">
+                <input type="month" id="faixa-inicio-${id}" class="faixa-inicio" value="${dados.inicio || ''}" onchange="atualizarCompetenciasFaixaTrib(${id})">
             </div>
             <div class="input-group">
                 <label for="faixa-fim-${id}">Até (mês/ano)</label>
-                <input type="month" id="faixa-fim-${id}" class="faixa-fim" value="${dados.fim || ''}" onchange="calcularTributacao()">
+                <input type="month" id="faixa-fim-${id}" class="faixa-fim" value="${dados.fim || ''}" onchange="atualizarCompetenciasFaixaTrib(${id})">
+            </div>
+            <div class="input-group">
+                <label for="faixa-meses-${id}">Competências</label>
+                <input type="number" id="faixa-meses-${id}" class="faixa-meses" min="1" step="1" inputmode="numeric" value="${dados.meses || calcularCompetenciasEntreTrib(dados.inicio, dados.fim) || ''}" oninput="calcularTributacao()">
             </div>
             <div class="input-group">
                 <label for="faixa-aliquota-${id}">Alíquota (%)</label>
@@ -3649,6 +3659,19 @@ input:focus-visible {
         return div;
     }
 
+    // Ao mudar as datas de um período, recalcula a sugestão de competências.
+    function atualizarCompetenciasFaixaTrib(id) {
+        const linha = document.getElementById(`faixa-trib-${id}`);
+        if (linha) {
+            const total = calcularCompetenciasEntreTrib(
+                linha.querySelector('.faixa-inicio').value,
+                linha.querySelector('.faixa-fim').value
+            );
+            if (total > 0) linha.querySelector('.faixa-meses').value = String(total);
+        }
+        calcularTributacao();
+    }
+
     function limparFaixasTrib() {
         const container = document.getElementById('faixasTrib');
         if (container) container.innerHTML = '';
@@ -3666,10 +3689,12 @@ input:focus-visible {
             const principal = extrairNumero(linha.querySelector('.faixa-principal').value);
             // Cada faixa é arredondada em centavos antes da soma.
             const contribuicao = Math.round(principal * aliquota) / 100;
-            return {
-                linha, inicio, fim, aliquota, principal, contribuicao,
-                meses: calcularCompetenciasEntreTrib(inicio, fim)
-            };
+            // Competências: o número digitado prevalece sobre a contagem do
+            // período (há meses já pagos que não entram no cálculo).
+            const mesesPeriodo = calcularCompetenciasEntreTrib(inicio, fim);
+            const mesesDigitados = parseInt(linha.querySelector('.faixa-meses').value, 10);
+            const meses = Number.isInteger(mesesDigitados) && mesesDigitados > 0 ? mesesDigitados : mesesPeriodo;
+            return { linha, inicio, fim, aliquota, principal, contribuicao, meses, mesesPeriodo };
         });
     }
 
@@ -3705,7 +3730,7 @@ input:focus-visible {
         if (ajudaAliquota) {
             ajudaAliquota.textContent = multi
                 ? 'Desativado: as alíquotas estão informadas por período, logo abaixo.'
-                : 'Percentual efetivamente descontado do servidor.';
+                : 'Digite o percentual descontado do servidor. Não é preenchido automaticamente.';
         }
         if (total) total.hidden = !multi;
     }
@@ -3726,22 +3751,22 @@ input:focus-visible {
                 limparFaixasTrib();
                 document.getElementById('basePrevInformadaTrib').value = '';
             }
-            if (!aliquotaFoiAlteradaManualmente) {
-                const padrao = aliquotaEsperadaTrib(regime, inicio, fim);
-                if (padrao !== null) campoAliquota.value = String(padrao);
-            }
             atualizarModoFaixasTrib();
             return;
         }
 
         // Preserva o principal já digitado em faixas que continuam idênticas.
         const principais = {};
+        const competencias = {};
         linhas.forEach(l => {
-            principais[`${l.querySelector('.faixa-inicio').value}|${l.querySelector('.faixa-fim').value}`] = l.querySelector('.faixa-principal').value;
+            const chave = `${l.querySelector('.faixa-inicio').value}|${l.querySelector('.faixa-fim').value}`;
+            principais[chave] = l.querySelector('.faixa-principal').value;
+            competencias[chave] = l.querySelector('.faixa-meses').value;
         });
         document.getElementById('faixasTrib').innerHTML = '';
         segmentos.forEach(seg => {
-            criarFaixaTrib({ ...seg, principal: principais[`${seg.inicio}|${seg.fim}`] || '' }, true);
+            const chave = `${seg.inicio}|${seg.fim}`;
+            criarFaixaTrib({ ...seg, principal: principais[chave] || '', meses: competencias[chave] || '' }, true);
         });
         atualizarModoFaixasTrib();
     }
@@ -3800,18 +3825,13 @@ input:focus-visible {
         aliquotaFoiAlteradaManualmente = false;
 
         if (regime === 'impar') {
-            aliquota.value = '14';
-            info.innerHTML = '<strong>IMPAR — Araguaína:</strong> contribuição do segurado configurada em 14%. Alíquota patronal não é descontada do crédito do servidor.';
+            info.innerHTML = '<strong>IMPAR — Araguaína:</strong> informe a alíquota do segurado (referência atual: 14%). Alíquota patronal não é descontada do crédito do servidor.';
         } else if (regime === 'igeprev') {
-            aliquota.value = '14';
-            info.innerHTML = '<strong>IGEPREV-TO:</strong> contribuição do segurado de 11% até out/2020 e de 14% a partir de nov/2020. Informe o período das parcelas para aplicar a alíquota de cada época. Alíquotas patronais não reduzem o valor líquido do credor.';
+            info.innerHTML = '<strong>IGEPREV-TO:</strong> referência de 11% até out/2020 e de 14% a partir de nov/2020. Informe a alíquota; se o período das parcelas atravessar a mudança, ele é separado em dois períodos de alíquota. Alíquotas patronais não reduzem o valor líquido do credor.';
         } else if (regime === 'militar') {
-            aliquota.value = '14';
-            info.innerHTML = '<strong>Militar ativo:</strong> 12% até dez/2019; 9,5% em 2020; 10,5% de jan/2021 a mar/2023; 14% a partir de abr/2023 (Lei Estadual nº 4.129/2023, com anterioridade nonagesimal). Informe o período das parcelas para aplicar a alíquota de cada época.';
+            info.innerHTML = '<strong>Militar ativo:</strong> 12% até dez/2019; 9,5% em 2020; 10,5% de jan/2021 a mar/2023; 14% a partir de abr/2023 (Lei Estadual nº 4.129/2023, com anterioridade nonagesimal). Informe a alíquota; se o período das parcelas atravessar uma mudança, ele é separado em períodos de alíquota.';
         } else {
-            aliquota.value = '';
             info.innerHTML = '<strong>Outro RPPS:</strong> informe a alíquota do segurado aplicável ao caso.';
-            setTimeout(() => aliquota.focus(), 0);
         }
         // Trocar o regime refaz as faixas automáticas pelo novo histórico.
         if (linhasFaixasTrib().every(l => l.dataset.auto === 'true')) aplicarHistoricoAliquotasTrib();
@@ -4008,24 +4028,23 @@ input:focus-visible {
             const semAliquota = faixas.filter(f => f.aliquota <= 0).length;
             if (semPrincipal) avisos.push(`Informe o principal de ${semPrincipal === 1 ? '1 período' : semPrincipal + ' períodos'} de alíquota (etapa 3).`);
             if (semAliquota) avisos.push(`Informe a alíquota de ${semAliquota === 1 ? '1 período' : semAliquota + ' períodos'} (etapa 3).`);
-            const invertida = faixas.some(f => f.inicio && f.fim && f.meses <= 0);
+            const invertida = faixas.some(f => f.inicio && f.fim && f.mesesPeriodo <= 0);
             if (invertida) avisos.push('Em um dos períodos de alíquota, o mês final é anterior ao inicial.');
             const mesesFaixas = faixas.reduce((t, f) => t + f.meses, 0);
             if (mesesValido && faixas.every(f => f.meses > 0) && mesesFaixas !== meses) {
-                avisos.push(`Os períodos de alíquota somam ${mesesFaixas} competências, mas o cálculo tem ${meses}. Confira as datas.`);
+                avisos.push(`Os períodos de alíquota somam ${mesesFaixas} competências, mas a etapa 2 informa ${meses}. Confira.`);
             }
         } else if (credito > 0 && basePrev <= 0) avisos.push('Informe o principal remuneratório atualizado, sem juros.');
         if (basePrev > 0 && credito <= 0) avisos.push('Informe o valor atualizado disponível / Calc GRV.');
                 if (credito > 0 && basePrev > credito) avisos.push('O principal remuneratório está maior que o valor disponível. Confira os valores.');
         const aliquotaEsperada = aliquotaEsperadaTrib(regime, competenciaInicial, competenciaFinal);
-        if (!multi && aliquotaEsperada !== null && Math.abs(aliquotaPrev - aliquotaEsperada) > 0.001) {
+        if (!multi && credito > 0 && basePrev > 0 && aliquotaPrev <= 0) avisos.push('Informe a alíquota do segurado (etapa 3).');
+        if (!multi && aliquotaPrev > 0 && aliquotaEsperada !== null && Math.abs(aliquotaPrev - aliquotaEsperada) > 0.001) {
             avisos.push(`A alíquota deste regime para o período é ${formatarPercentualTrib(aliquotaEsperada)}. Foi informado ${formatarPercentualTrib(aliquotaPrev)}.`);
         }
         if (liquido < 0) avisos.push('Os descontos superam o valor disponível. Confira os dados antes de utilizar o resultado.');
-        const mesesPeriodo = calcularCompetenciasEntreTrib(competenciaInicial, competenciaFinal);
-        if (mesesPeriodo > 0 && mesesValido && mesesPeriodo !== meses) {
-            avisos.push(`O período informado tem ${mesesPeriodo} ${mesesPeriodo === 1 ? 'competência' : 'competências'}, mas o campo Competências está com ${meses}. Confira.`);
-        }
+        // O número de competências é livre: pode diferir da contagem de meses
+        // do período (parcelas já pagas, 13º etc.), então não há aviso.
         exibirAvisoTrib(avisos);
 
         document.getElementById('resJurosTrib').innerText = formatarMoedaVisual(juros);
