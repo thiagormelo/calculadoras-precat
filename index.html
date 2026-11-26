@@ -2324,6 +2324,13 @@ input:focus-visible {
     .faixa-trib > .btn-remove { grid-column: span 6; }
 }
 .tax-warning ul { margin: 0; padding: 0; list-style: none; }
+#mod-tributacao input[aria-invalid="true"],
+#mod-tributacao select[aria-invalid="true"] {
+    border: 2px solid #b42318 !important;
+    background: #fff8f7 !important;
+}
+.fill-count.completo { background: #edf8f2 !important; color: #17663d !important; border-color: #c9e3d4 !important; }
+.trib-step legend .required-hint { font-size: .75rem !important; }
 .tax-warning li + li { margin-top: 6px; }
 .tax-warning { font-size: .88rem !important; line-height: 1.4; }
 .result-row strong { font-variant-numeric: tabular-nums; }
@@ -2536,7 +2543,7 @@ input:focus-visible {
         </div>
 
         <div class="tax-guidance">
-            <div><strong>Fluxo simplificado:</strong> informe o valor disponível, o principal remuneratório sem juros e o regime previdenciário. Se desejar, informe também as competências para demonstrar a parcela média mensal. Os demais valores são calculados automaticamente.</div>
+            <div><strong>Fluxo:</strong> preencha as etapas 1, 2 e 3 (obrigatórias): valores do crédito, período das parcelas e previdência. A certidão só é copiada com todas preenchidas. Os demais valores são calculados automaticamente.</div>
             <span class="regime-chip" id="regimeChip">Regime a selecionar</span>
         </div>
 
@@ -2547,7 +2554,7 @@ input:focus-visible {
                         <h2 id="dadosTrib">Dados do crédito</h2>
                         <p>Preencha de cima para baixo. Campos opcionais só precisam ser usados quando houver desconto.</p>
                     </div>
-                    <span class="fill-count" id="fillCountTrib">0 de 2 essenciais preenchidos</span>
+                    <span class="fill-count" id="fillCountTrib">0 de 7 obrigatórios preenchidos</span>
                 </div>
 
                 <div class="trib-form">
@@ -2574,30 +2581,30 @@ input:focus-visible {
                     </fieldset>
 
                     <fieldset class="trib-step">
-                        <legend><span class="trib-step-num" aria-hidden="true">2</span> Período das parcelas <span class="optional-hint">opcional</span></legend>
+                        <legend><span class="trib-step-num" aria-hidden="true">2</span> Período das parcelas <span class="required-hint">obrigatório</span></legend>
                         <div class="periodo-parcelas-grid">
                             <div class="periodo-subcampo">
                                 <label class="periodo-label" for="competenciaInicialTrib">Parcela inicial (mês/ano)</label>
-                                <input type="month" id="competenciaInicialTrib" onchange="atualizarPeriodoTrib()" aria-describedby="helpMesesTrib">
+                                <input type="month" id="competenciaInicialTrib" required aria-required="true" onchange="atualizarPeriodoTrib()" aria-describedby="helpMesesTrib">
                             </div>
                             <div class="periodo-subcampo">
                                 <label class="periodo-label" for="competenciaFinalTrib">Parcela final (mês/ano)</label>
-                                <input type="month" id="competenciaFinalTrib" onchange="atualizarPeriodoTrib()" aria-describedby="helpMesesTrib">
+                                <input type="month" id="competenciaFinalTrib" required aria-required="true" onchange="atualizarPeriodoTrib()" aria-describedby="helpMesesTrib">
                             </div>
                             <div class="periodo-subcampo competencias-subcampo">
                                 <label class="periodo-label" for="mesesTrib">Competências</label>
-                                <input type="number" id="mesesTrib" placeholder="Ex.: 12" min="1" step="1" inputmode="numeric" oninput="calcularTributacao()" aria-describedby="helpMesesTrib">
+                                <input type="number" id="mesesTrib" required aria-required="true" placeholder="Ex.: 12" min="1" step="1" inputmode="numeric" oninput="calcularTributacao()" aria-describedby="helpMesesTrib">
                             </div>
                         </div>
                         <div class="input-help" id="helpMesesTrib">Preenchendo o início e o fim, o número de competências é calculado automaticamente. Você pode alterar o número se houver meses já pagos.</div>
                     </fieldset>
 
                     <fieldset class="trib-step">
-                        <legend><span class="trib-step-num" aria-hidden="true">3</span> Previdência</legend>
+                        <legend><span class="trib-step-num" aria-hidden="true">3</span> Previdência <span class="required-hint">obrigatório</span></legend>
                         <div class="tax-form-grid two compact-tax-grid">
                             <div class="input-group">
-                                <label class="field-label-main" for="regimePrevTrib">Regime previdenciário</label>
-                                <select id="regimePrevTrib" onchange="atualizarRegimePrevidenciario()" aria-describedby="helpRegimeTrib">
+                                <label class="field-label-main" for="regimePrevTrib">Regime previdenciário<span class="required-hint">obrigatório</span></label>
+                                <select id="regimePrevTrib" required aria-required="true" onchange="atualizarRegimePrevidenciario()" aria-describedby="helpRegimeTrib">
                                     <option value="" selected>Selecione o regime…</option>
                                     <option value="impar">IMPAR — Município de Araguaína</option>
                                     <option value="igeprev">IGEPREV-TO — Estado do Tocantins</option>
@@ -2607,9 +2614,9 @@ input:focus-visible {
                                 <div class="input-help" id="helpRegimeTrib">Escolha o regime do credor. Ele não preenche a alíquota: informe-a no campo ao lado.</div>
                             </div>
                             <div class="input-group">
-                                <label class="field-label-main" for="aliquotaPrevTrib">Alíquota do segurado</label>
+                                <label class="field-label-main" for="aliquotaPrevTrib">Alíquota do segurado<span class="required-hint">obrigatório</span></label>
                                 <div class="control-with-affix suffix">
-                                    <input type="number" id="aliquotaPrevTrib" placeholder="Ex.: 14" min="0" max="100" step="0.01" inputmode="decimal" aria-describedby="helpAliquotaTrib" oninput="marcarAliquotaManual(); calcularTributacao()">
+                                    <input type="number" id="aliquotaPrevTrib" required aria-required="true" placeholder="Ex.: 14" min="0" max="100" step="0.01" inputmode="decimal" aria-describedby="helpAliquotaTrib" oninput="marcarAliquotaManual(); calcularTributacao()">
                                     <span class="control-suffix" aria-hidden="true">%</span>
                                 </div>
                                 <div class="input-help" id="helpAliquotaTrib">Digite o percentual descontado do servidor. Não é preenchido automaticamente.</div>
@@ -2892,6 +2899,7 @@ input:focus-visible {
         document.getElementById('percentualDestaque').value = '';
         calcularDestaque();
 
+        if (typeof tentouCopiarTrib !== 'undefined') tentouCopiarTrib = false;
         document.getElementById('creditoTrib').value = '';
         document.getElementById('basePrevInformadaTrib').value = '';
         document.getElementById('competenciaInicialTrib').value = '';
@@ -3335,6 +3343,7 @@ input:focus-visible {
     }
 
     function limparTributacao() {
+        tentouCopiarTrib = false;
         document.getElementById('creditoTrib').value = '';
         document.getElementById('basePrevInformadaTrib').value = '';
         document.getElementById('competenciaInicialTrib').value = '';
@@ -3947,7 +3956,11 @@ input:focus-visible {
         if (!campo) return;
         const introducao = 'Em obediência à decisão retro, CERTIFICO que o crédito possui natureza de diferença salarial, decorrente de verba remuneratória. Para fins de apuração dos descontos legais, considera-se o principal remuneratório atualizado informado no cálculo, com segregação dos juros de mora. Quanto ao imposto de renda, observa-se o entendimento firmado pelo Supremo Tribunal Federal no Tema 808 da repercussão geral (RE 855.091), cuja tese é: “Não incide imposto de renda sobre os juros de mora devidos pelo atraso no pagamento de remuneração por exercício de emprego, cargo ou função.” Para fins desta apuração, a contribuição previdenciária é calculada sobre o principal remuneratório atualizado, de acordo com o regime previdenciário e a alíquota informados. Quando informado, o principal é dividido pelo número de competências indicado para demonstração da parcela média mensal. Assim, apuram-se os valores abaixo:';
         const calculos = montarCalculosCertidaoTrib(dados);
-        campo.value = `${introducao}\n\n${calculos}`;
+        // Se faltar obrigatório e o texto for copiado à mão, o aviso vai junto.
+        const alerta = dados.pendentes && dados.pendentes.length && dados.credito > 0
+            ? `*** CÁLCULO INCOMPLETO — preencha: ${listarNomesTrib(dados.pendentes)} ***\n\n`
+            : '';
+        campo.value = `${alerta}${introducao}\n\n${calculos}`;
         campo.dataset.calculos = calculos;
     }
 
@@ -3973,12 +3986,72 @@ input:focus-visible {
         return copiado;
     }
 
+    // Campos obrigatórios das etapas 1, 2 e 3 que ainda estão em branco.
+    function camposObrigatoriosPendentesTrib() {
+        const valor = id => (document.getElementById(id)?.value || '').trim();
+        const pendentes = [];
+        const exigir = (ok, id, nome) => { if (!ok) pendentes.push({ id, nome }); };
+        const faixas = lerFaixasTrib();
+        exigir(extrairNumero(valor('creditoTrib')) > 0, 'creditoTrib', 'Valor atualizado disponível');
+        if (faixas.length) {
+            const semPrincipal = faixas.filter(f => f.principal <= 0).map(f => f.linha.querySelector('.faixa-principal').id);
+            if (semPrincipal.length) pendentes.push({ id: semPrincipal[0], ids: semPrincipal, nome: 'Principal de cada período de alíquota' });
+        } else {
+            exigir(extrairNumero(valor('basePrevInformadaTrib')) > 0, 'basePrevInformadaTrib', 'Principal remuneratório');
+        }
+        exigir(!!valor('competenciaInicialTrib'), 'competenciaInicialTrib', 'Parcela inicial');
+        exigir(!!valor('competenciaFinalTrib'), 'competenciaFinalTrib', 'Parcela final');
+        exigir(parseInt(valor('mesesTrib'), 10) > 0, 'mesesTrib', 'Competências');
+        exigir(!!valor('regimePrevTrib'), 'regimePrevTrib', 'Regime previdenciário');
+        if (faixas.length) {
+            const semAliquota = faixas.filter(f => f.aliquota <= 0).map(f => f.linha.querySelector('.faixa-aliquota').id);
+            if (semAliquota.length) pendentes.push({ id: semAliquota[0], ids: semAliquota, nome: 'Alíquota de cada período' });
+        } else {
+            exigir(parseFloat(valor('aliquotaPrevTrib')) > 0, 'aliquotaPrevTrib', 'Alíquota do segurado');
+        }
+        return pendentes;
+    }
+
+    function listarNomesTrib(pendentes) {
+        const nomes = pendentes.map(p => p.nome);
+        return nomes.length > 1 ? nomes.slice(0, -1).join(', ') + ' e ' + nomes[nomes.length - 1] : (nomes[0] || '');
+    }
+
+    // Destaca (borda + aria-invalid) os obrigatórios em branco.
+    function marcarObrigatoriosTrib(pendentes, mostrar) {
+        const ids = ['creditoTrib', 'basePrevInformadaTrib', 'competenciaInicialTrib', 'competenciaFinalTrib', 'mesesTrib', 'regimePrevTrib', 'aliquotaPrevTrib'];
+        document.querySelectorAll('#faixasTrib .faixa-principal, #faixasTrib .faixa-aliquota').forEach(el => ids.push(el.id));
+        const faltando = new Set(mostrar ? pendentes.flatMap(p => p.ids || [p.id]) : []);
+        ids.forEach(id => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            if (faltando.has(id)) el.setAttribute('aria-invalid', 'true');
+            else el.removeAttribute('aria-invalid');
+        });
+    }
+
+    let tentouCopiarTrib = false;
+
     async function copiarCertidaoTributacao(apenasCalculos = false) {
         const campo = document.getElementById('textoCertidaoTrib');
         const status = document.getElementById('statusCopiaCertidao');
         if (!campo) return;
         const texto = apenasCalculos ? (campo.dataset.calculos || '') : campo.value;
         if (!texto.trim()) return;
+
+        const pendentes = camposObrigatoriosPendentesTrib();
+        if (pendentes.length) {
+            tentouCopiarTrib = true;
+            marcarObrigatoriosTrib(pendentes, true);
+            status.classList.add('error');
+            status.textContent = `Não copiado. Preencha os campos obrigatórios: ${listarNomesTrib(pendentes)}.`;
+            const primeiro = document.getElementById(pendentes[0].id);
+            if (primeiro) {
+                primeiro.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                primeiro.focus({ preventScroll: true });
+            }
+            return;
+        }
 
         const copiado = await copiarTextoParaAreaTransferencia(texto);
         status.classList.toggle('error', !copiado);
@@ -4021,20 +4094,27 @@ input:focus-visible {
         const baseIr = Math.max(basePrev - previdencia, 0);
         const liquido = credito - previdencia - valorIr - outrosDescontos;
 
-        const essenciais = [credito > 0, basePrev > 0];
-        const preenchidos = essenciais.filter(Boolean).length;
+        const pendentesObrig = camposObrigatoriosPendentesTrib();
         const fillCount = document.getElementById('fillCountTrib');
-        if (fillCount) fillCount.textContent = `${preenchidos} de 2 essenciais preenchidos`;
+        if (fillCount) {
+            fillCount.textContent = `${7 - pendentesObrig.length} de 7 obrigatórios preenchidos`;
+            fillCount.classList.toggle('completo', pendentesObrig.length === 0);
+        }
+        // Destaca os campos em branco depois que a etapa 1 foi preenchida
+        // ou depois de uma tentativa de copiar a certidão.
+        const mostrarPendencias = tentouCopiarTrib || (credito > 0 && basePrev > 0);
+        const statusCopia = document.getElementById('statusCopiaCertidao');
+        if (statusCopia && statusCopia.classList.contains('error') && !pendentesObrig.length) {
+            statusCopia.classList.remove('error');
+            statusCopia.textContent = '';
+        }
+        marcarObrigatoriosTrib(pendentesObrig, mostrarPendencias);
 
         let avisos = [];
         if (competenciaInicial && competenciaFinal && calcularCompetenciasEntreTrib(competenciaInicial, competenciaFinal) <= 0) {
             avisos.push('A parcela final não pode ser anterior à parcela inicial.');
         }
         if (multi) {
-            const semPrincipal = faixas.filter(f => f.principal <= 0).length;
-            const semAliquota = faixas.filter(f => f.aliquota <= 0).length;
-            if (semPrincipal) avisos.push(`Informe o principal de ${semPrincipal === 1 ? '1 período' : semPrincipal + ' períodos'} de alíquota (etapa 3).`);
-            if (semAliquota) avisos.push(`Informe a alíquota de ${semAliquota === 1 ? '1 período' : semAliquota + ' períodos'} (etapa 3).`);
             const invertida = faixas.some(f => f.inicio && f.fim && f.mesesPeriodo <= 0);
             if (invertida) avisos.push('Em um dos períodos de alíquota, o mês final é anterior ao inicial.');
             const mesesFaixas = faixas.reduce((t, f) => t + f.meses, 0);
@@ -4044,7 +4124,9 @@ input:focus-visible {
         } else if (credito > 0 && basePrev <= 0) avisos.push('Informe o principal remuneratório atualizado, sem juros.');
         if (basePrev > 0 && credito <= 0) avisos.push('Informe o valor atualizado disponível / Calc GRV.');
                 if (credito > 0 && basePrev > credito) avisos.push('O principal remuneratório está maior que o valor disponível. Confira os valores.');
-        if (!regime && credito > 0 && basePrev > 0) avisos.push('Regime previdenciário não selecionado (etapa 3).');
+        if (mostrarPendencias && pendentesObrig.length) {
+            avisos.unshift(`Campos obrigatórios em branco: ${listarNomesTrib(pendentesObrig)}.`);
+        }
         const aliquotaEsperada = aliquotaEsperadaTrib(regime, competenciaInicial, competenciaFinal);
         if (!multi && aliquotaPrev > 0 && aliquotaEsperada !== null && Math.abs(aliquotaPrev - aliquotaEsperada) > 0.001) {
             avisos.push(`A alíquota deste regime para o período é ${formatarPercentualTrib(aliquotaEsperada)}. Foi informado ${formatarPercentualTrib(aliquotaPrev)}.`);
@@ -4113,6 +4195,9 @@ input:focus-visible {
             check.classList.remove('ok', 'error');
             if (credito <= 0) {
                 check.textContent = 'A soma das destinações será conferida automaticamente.';
+            } else if (pendentesObrig.length) {
+                check.classList.add('error');
+                check.textContent = `⚠️ Cálculo incompleto: ${pendentesObrig.length === 1 ? 'falta 1 campo obrigatório' : 'faltam ' + pendentesObrig.length + ' campos obrigatórios'}. A certidão não será copiada.`;
             } else if (liquido < 0 || diferenca > 0.02) {
                 check.classList.add('error');
                 check.textContent = '⚠️ A destinação não fecha com o valor disponível. Confira os descontos.';
@@ -4125,7 +4210,8 @@ input:focus-visible {
         atualizarTextoCertidaoTrib({
             credito, basePrev, meses, mesesValido, competenciaInicial, competenciaFinal,
             aliquotaPrev, valorIr, outrosDescontos, faixas,
-            regime, juros, parcelaMensal, previdencia, baseIr, liquido
+            regime, juros, parcelaMensal, previdencia, baseIr, liquido,
+            pendentes: pendentesObrig
         });
         atualizarChipRegime();
         atualizarDisponibilidadeIntegracoes();
